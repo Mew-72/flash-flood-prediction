@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*.parquet
+ml/models/*.pkl
+ml/models/*.joblib
+*.egg-info/
+.pytest_cache/
+.vscode/
+.idea/
+*.log

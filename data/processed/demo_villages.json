@@ -1,0 +1,57 @@
+[
+  {
+    "id": "v1",
+    "name": "Demo Village - Steep Slope Near Stream",
+    "catchment_id": "c1",
+    "lat": 30.35,
+    "lon": 78.95,
+    "slope_deg": 38.0,
+    "terrain_class": "himalayan_colluvium",
+    "distance_to_stream_m": 80.0,
+    "historical_event_count": 3
+  },
+  {
+    "id": "v2",
+    "name": "Demo Village - Gentle Plateau",
+    "catchment_id": "c2",
+    "lat": 30.36,
+    "lon": 78.97,
+    "slope_deg": 8.0,
+    "terrain_class": "generic_hillslope_default",
+    "distance_to_stream_m": 650.0,
+    "historical_event_count": 0
+  },
+  {
+    "id": "v3",
+    "name": "Demo Village - Moderate Slope, Instrumented",
+    "catchment_id": "c1",
+    "lat": 30.34,
+    "lon": 78.93,
+    "slope_deg": 24.0,
+    "terrain_class": "weathered_rock_debris",
+    "distance_to_stream_m": 220.0,
+    "historical_event_count": 1
+  },
+  {
+    "id": "v4",
+    "name": "Demo Village - Bare Slope High Risk",
+    "catchment_id": "c1",
+    "lat": 30.37,
+    "lon": 78.94,
+    "slope_deg": 41.0,
+    "terrain_class": "himalayan_colluvium",
+    "distance_to_stream_m": 45.0,
+    "historical_event_count": 5
+  },
+  {
+    "id": "v5",
+    "name": "Demo Village - Built-up Low Slope",
+    "catchment_id": "c2",
+    "lat": 30.33,
+    "lon": 78.96,
+    "slope_deg": 5.0,
+    "terrain_class": "generic_hillslope_default",
+    "distance_to_stream_m": 400.0,
+    "historical_event_count": 0
+  }
+]

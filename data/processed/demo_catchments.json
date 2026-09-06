@@ -1,0 +1,30 @@
+[
+  {
+    "id": "c1",
+    "name": "Demo Upper Mandakini Sub-catchment",
+    "centroid_lat": 30.355,
+    "centroid_lon": 78.945,
+    "area_km2": 18.4,
+    "land_use": "forest_fair",
+    "hydrologic_soil_group": "C",
+    "soil_texture": "sandy_loam",
+    "mean_slope_deg": 31.0,
+    "flow_path_length_m": 7200.0,
+    "channel_slope_percent": 8.5,
+    "base_rainfall_threshold_mm": 50.0
+  },
+  {
+    "id": "c2",
+    "name": "Demo Plateau Sub-catchment",
+    "centroid_lat": 30.345,
+    "centroid_lon": 78.965,
+    "area_km2": 11.2,
+    "land_use": "agriculture_row_crop",
+    "hydrologic_soil_group": "B",
+    "soil_texture": "loam",
+    "mean_slope_deg": 10.0,
+    "flow_path_length_m": 5100.0,
+    "channel_slope_percent": 3.0,
+    "base_rainfall_threshold_mm": 65.0
+  }
+]

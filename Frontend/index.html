@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FlashGuard — Flood Risk Dashboard</title>
   <link rel="preconnect" href="https://unpkg.com">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
   <div class="app-shell">
     <header class="topbar">
@@ -48,14 +50,22 @@
 
         <section class="side-section">
           <div class="section-heading">MAP LAYERS</div>
-          <label class="layer-row"><input type="checkbox" checked data-layer="risk"><span class="layer-icon risk-icon"></span>Flood Risk</label>
-          <label class="layer-row"><input type="checkbox" data-layer="rainfall"><span class="layer-icon rain-icon"></span>Rainfall</label>
-          <label class="layer-row"><input type="checkbox" data-layer="soil"><span class="layer-icon soil-icon"></span>Soil Moisture</label>
-          <label class="layer-row"><input type="checkbox" data-layer="slope"><span class="layer-icon slope-icon"></span>Slope</label>
-          <label class="layer-row"><input type="checkbox" data-layer="elevation"><span class="layer-icon elev-icon"></span>Elevation / DEM</label>
-          <label class="layer-row"><input type="checkbox" data-layer="streams"><span class="layer-icon stream-icon"></span>Streams</label>
-          <label class="layer-row"><input type="checkbox" data-layer="catchments"><span class="layer-icon catch-icon"></span>Sub-catchments</label>
-          <label class="layer-row"><input type="checkbox" data-layer="villages"><span class="layer-icon village-icon"></span>Villages</label>
+          <label class="layer-row"><input type="checkbox" checked data-layer="risk"><span
+              class="layer-icon risk-icon"></span>Flood Risk</label>
+          <label class="layer-row"><input type="checkbox" data-layer="rainfall"><span
+              class="layer-icon rain-icon"></span>Rainfall</label>
+          <label class="layer-row"><input type="checkbox" data-layer="soil"><span
+              class="layer-icon soil-icon"></span>Soil Moisture</label>
+          <label class="layer-row"><input type="checkbox" data-layer="slope"><span
+              class="layer-icon slope-icon"></span>Slope</label>
+          <label class="layer-row"><input type="checkbox" data-layer="elevation"><span
+              class="layer-icon elev-icon"></span>Elevation / DEM</label>
+          <label class="layer-row"><input type="checkbox" data-layer="streams"><span
+              class="layer-icon stream-icon"></span>Streams</label>
+          <label class="layer-row"><input type="checkbox" data-layer="catchments"><span
+              class="layer-icon catch-icon"></span>Sub-catchments</label>
+          <label class="layer-row"><input type="checkbox" checked data-layer="villages"><span
+              class="layer-icon village-icon"></span>Villages</label>
         </section>
 
         <section class="side-section">
@@ -107,25 +117,38 @@
             <div class="score" id="riskScore">74</div>
             <div class="score-caption">out of 100</div>
           </div>
-          <div class="gauge"><div class="gauge-fill" id="gaugeFill"></div></div>
+          <div class="gauge">
+            <div class="gauge-fill" id="gaugeFill"></div>
+          </div>
         </div>
 
         <div class="metric-grid">
           <div class="metric-card">
             <span class="metric-symbol">☔</span>
-            <div><div class="metric-name">Rainfall</div><strong id="rainfallValue">72 mm</strong><small>last 3 hours</small></div>
+            <div>
+              <div class="metric-name">Rainfall</div><strong id="rainfallValue">72 mm</strong><small>last 3
+                hours</small>
+            </div>
           </div>
           <div class="metric-card">
             <span class="metric-symbol">◉</span>
-            <div><div class="metric-name">Soil Moisture</div><strong id="soilValue">81%</strong><small>antecedent wetness</small></div>
+            <div>
+              <div class="metric-name">Soil Moisture</div><strong id="soilValue">81%</strong><small>antecedent
+                wetness</small>
+            </div>
           </div>
           <div class="metric-card">
             <span class="metric-symbol">⌁</span>
-            <div><div class="metric-name">Slope</div><strong id="slopeValue">31°</strong><small>terrain average</small></div>
+            <div>
+              <div class="metric-name">Slope</div><strong id="slopeValue">31°</strong><small>terrain average</small>
+            </div>
           </div>
           <div class="metric-card">
             <span class="metric-symbol">↘</span>
-            <div><div class="metric-name">Stream Response</div><strong id="streamValue">Rising</strong><small>catchment response</small></div>
+            <div>
+              <div class="metric-name">Stream Response</div><strong id="streamValue">Rising</strong><small>catchment
+                response</small>
+            </div>
           </div>
         </div>
 
@@ -166,4 +189,5 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="app.js"></script>
 </body>
+
 </html>

@@ -1,4 +1,23 @@
-const ADMIN_API = "http://localhost:8000";
+function getApiBase() {
+  if (typeof window !== "undefined") {
+    if (window.FLASHGUARD_API_BASE) return window.FLASHGUARD_API_BASE;
+    if (window.__API_BASE__) return window.__API_BASE__;
+    if (window.API_BASE) return window.API_BASE;
+    const urlParam = new URLSearchParams(window.location.search).get("api_base");
+    if (urlParam !== null) return urlParam;
+    const stored = localStorage.getItem("FLASHGUARD_API_BASE") || localStorage.getItem("API_BASE");
+    if (stored) return stored;
+    if (window.location && window.location.origin && window.location.origin.startsWith("http")) {
+      const hostname = window.location.hostname;
+      if (hostname !== "localhost" && hostname !== "127.0.0.1") {
+        return ""; // Relative path for production deployment
+      }
+    }
+  }
+  return "http://localhost:8000";
+}
+
+const ADMIN_API = getApiBase();
 const historyKey = "flashguard_alert_history";
 
 document.addEventListener("DOMContentLoaded",()=>{
@@ -25,7 +44,66 @@ document.addEventListener("DOMContentLoaded",()=>{
   severity.addEventListener("change",updatePreview);
   document.getElementById("alertForm").addEventListener("submit",sendAlert);
   renderHistory();
+
+  loadAdminRiskSnapshot();
+  const districtEl = document.getElementById("alertDistrict");
+  if (districtEl) {
+    districtEl.addEventListener("change", loadAdminRiskSnapshot);
+  }
 });
+
+async function loadAdminRiskSnapshot() {
+  try {
+    const districtEl = document.getElementById("alertDistrict");
+    const district = districtEl ? districtEl.value : "Rudraprayag";
+    const res = await fetch(`${ADMIN_API}/v1/risk/snapshots?district=${encodeURIComponent(district)}`);
+    if (!res.ok) return;
+    const json = await res.json();
+
+    let snapshots = [];
+    if (json && Array.isArray(json.catchments)) {
+      snapshots = json.catchments.flatMap(c => (Array.isArray(c.snapshots) ? c.snapshots : []));
+    } else if (Array.isArray(json)) {
+      snapshots = json;
+    } else if (json && Array.isArray(json.items)) {
+      snapshots = json.items;
+    }
+
+    if (snapshots.length > 0) {
+      const peak = snapshots.reduce((max, s) => {
+        const sScore = s.composite_score ?? (s.risk_score != null ? s.risk_score / 100 : (s.score != null ? (s.score > 1 ? s.score / 100 : s.score) : 0));
+        const mScore = max?.composite_score ?? (max?.risk_score != null ? max.risk_score / 100 : (max?.score != null ? (max.score > 1 ? max.score / 100 : max.score) : -1));
+        return sScore > mScore ? s : max;
+      }, snapshots[0]);
+
+      let score = 74;
+      if (peak.composite_score != null) {
+        score = peak.composite_score <= 1 ? Math.round(peak.composite_score * 100) : Math.round(peak.composite_score);
+      } else if (peak.risk_score != null) {
+        score = Math.round(peak.risk_score);
+      }
+      score = Math.min(Math.max(score, 0), 100);
+
+      const risk = (peak.overall_risk_level || peak.risk_level || (score >= 80 ? "CRITICAL" : score >= 60 ? "HIGH" : score >= 30 ? "MODERATE" : "LOW")).toUpperCase();
+
+      const scoreEl = document.getElementById("adminRiskScore");
+      if (scoreEl) scoreEl.textContent = score;
+
+      const badgeEl = document.querySelector(".info-card .risk-badge");
+      if (badgeEl) {
+        badgeEl.textContent = risk;
+        badgeEl.className = `risk-badge ${risk.toLowerCase()}`;
+      }
+
+      const descEl = document.querySelector(".info-card p");
+      if (descEl) {
+        descEl.textContent = `${district} regional risk is currently ${risk.toLowerCase()} based on active forecast snapshot.`;
+      }
+    }
+  } catch (e) {
+    // Keep fallback values if backend is unreachable
+  }
+}
 
 async function sendAlert(e){
   e.preventDefault();
@@ -49,14 +127,20 @@ async function sendAlert(e){
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify(payload)
     });
-    if(!res.ok) throw new Error("Alert endpoint unavailable");
-    saveHistory({...payload,status:"Sent"});
-    result.textContent="Alert sent successfully through the backend.";
-    result.style.color="#15803d";
+    if(res.ok){
+      saveHistory({...payload,status:"Sent (Backend)"});
+      result.textContent="Alert sent successfully through the backend.";
+      result.style.color="#15803d";
+    } else {
+      // Endpoint returned 404/405 (route pending implementation in backend)
+      saveHistory({...payload,status:"Recorded locally (Backend pending)"});
+      result.textContent=`Prototype alert recorded locally. Backend route POST /v1/admin/alerts returned ${res.status}.`;
+      result.style.color="#a16207";
+    }
   }catch(err){
-    // Prototype fallback: preserve the workflow locally until the alert API is implemented.
-    saveHistory({...payload,status:"Prototype / API not connected"});
-    result.textContent="Prototype alert recorded locally. Connect POST /v1/admin/alerts to deliver it.";
+    // Network offline or server unreachable
+    saveHistory({...payload,status:"Recorded locally (Offline)"});
+    result.textContent="Prototype alert recorded locally in browser storage (backend offline).";
     result.style.color="#a16207";
   }
   renderHistory();
@@ -89,3 +173,4 @@ function renderHistory(){
 function escapeHtml(value){
   return String(value).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
 }
+

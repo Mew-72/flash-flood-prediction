@@ -1,14 +1,5 @@
-"""Flash-flood risk forecasting at sub-catchment scale with village alerts.
+"""Catchment-scale flash-flood hazard and village-level risk composition."""
 
-Hydrology is computed for a sub-catchment because runoff follows drainage
-boundaries, not administrative boundaries. Villages are the reporting unit:
-they inherit catchment hazard and receive a local exposure adjustment based
-on stream proximity and terrain.
-
-The infinite-slope calculation is retained as a supplemental indicator because
-the SIH statement includes slope stability, but it does not drive the core
-flash-flood score.
-"""
 from app.core.lookup_tables.curve_number import get_curve_number
 from app.core.lookup_tables.soil_geotech import (
     get_soil_hydraulic_properties,
@@ -34,26 +25,21 @@ def _clip01(value: float) -> float:
     return max(0.0, min(1.0, value))
 
 
-def compute_time_of_concentration_minutes(flow_path_length_m: float,
-                                           channel_slope_fraction: float) -> float:
-    """Estimate catchment response time with the Kirpich equation.
-
-    Tc = 0.0195 * L^0.77 * S^-0.385, where L is metres and S is m/m.
-    This is an indicative response time, not a guaranteed evacuation lead time.
-    """
+def compute_time_of_concentration_minutes(
+    flow_path_length_m: float, channel_slope_fraction: float
+) -> float:
+    """Estimate catchment response time with the Kirpich equation."""
     if flow_path_length_m <= 0:
         raise ValueError("flow_path_length_m must be positive")
     if channel_slope_fraction <= 0:
         raise ValueError("channel_slope_fraction must be positive")
-    return 0.0195 * (flow_path_length_m ** 0.77) * (channel_slope_fraction ** -0.385)
+    return 0.0195 * (flow_path_length_m**0.77) * (
+        channel_slope_fraction**-0.385
+    )
 
 
 def compute_village_exposure(distance_to_stream_m: float, slope_deg: float) -> dict:
-    """Translate catchment hazard into local village exposure.
-
-    Proximity to the drainage network dominates. Local slope is a smaller
-    concentration proxy until relative elevation/flow-path data is available.
-    """
+    """Translate catchment hazard into local village exposure."""
     stream_proximity = 1.0 - _clip01(distance_to_stream_m / 1000.0)
     terrain_concentration = _clip01(slope_deg / 45.0)
     score = 0.70 * stream_proximity + 0.30 * terrain_concentration
@@ -75,28 +61,26 @@ def _risk_level(score: float) -> str:
     return "low"
 
 
-def assess_village_risk(village: dict, catchment: dict,
-                         daily_rainfall_mm: list[float],
-                         current_soil_moisture: float,
-                         base_threshold_override_mm: float | None = None) -> dict:
-    """Compute catchment hydrology and map the result to a village alert.
-
-    `daily_rainfall_mm` is chronological and its last value is the assessment
-    day's rainfall. The catchment supplies area-weighted land-use/soil inputs;
-    the village supplies only local exposure and supplemental slope inputs.
-    """
-    if not daily_rainfall_mm:
-        daily_rainfall_mm = [0.0]
-
-    today_rainfall = daily_rainfall_mm[-1]
-    prior_rainfall = daily_rainfall_mm[:-1]
+def assess_catchment_hazard(
+    catchment: dict,
+    daily_rainfall_mm: list[float],
+    base_threshold_override_mm: float | None = None,
+) -> dict:
+    """Compute hydrology once for forcing shared by a sub-catchment."""
+    rainfall = daily_rainfall_mm or [0.0]
+    today_rainfall = rainfall[-1]
+    prior_rainfall = rainfall[:-1]
     antecedent_5day = sum_last_n_days(prior_rainfall, n=5)
     antecedent_3day = sum_last_n_days(prior_rainfall, n=3)
     api_values = compute_api_series(prior_rainfall)
     latest_api = api_values[-1] if api_values else 0.0
 
-    cn_ii = get_curve_number(catchment["land_use"], catchment["hydrologic_soil_group"])
-    runoff = compute_moisture_adjusted_runoff_mm(today_rainfall, cn_ii, antecedent_5day)
+    cn_ii = get_curve_number(
+        catchment["land_use"], catchment["hydrologic_soil_group"]
+    )
+    runoff = compute_moisture_adjusted_runoff_mm(
+        today_rainfall, cn_ii, antecedent_5day
+    )
     runoff_volume_m3 = runoff["runoff_mm"] * catchment["area_km2"] * 1000.0
 
     base_threshold = (
@@ -106,25 +90,52 @@ def assess_village_risk(village: dict, catchment: dict,
     )
     rainfall_trigger = apply_threshold_reduction(base_threshold, antecedent_3day)
     effective_threshold = max(rainfall_trigger["effective_threshold_mm"], 1.0)
-
-    channel_slope_fraction = catchment["channel_slope_percent"] / 100.0
     response_time_minutes = compute_time_of_concentration_minutes(
-        catchment["flow_path_length_m"], channel_slope_fraction
+        catchment["flow_path_length_m"], catchment["channel_slope_percent"] / 100.0
     )
 
+    score_components = {
+        "runoff": _clip01(runoff["runoff_mm"] / 100.0),
+        "rainfall_trigger": _clip01(today_rainfall / effective_threshold),
+        "antecedent": _clip01(latest_api / max(base_threshold, 1.0)),
+    }
+    hazard_score = sum(
+        FALLBACK_WEIGHTS[name] * value for name, value in score_components.items()
+    )
+
+    return {
+        "catchment_id": catchment["id"],
+        "catchment_hydrology": {
+            **runoff,
+            "area_km2": catchment["area_km2"],
+            "runoff_volume_m3": round(runoff_volume_m3, 1),
+            "estimated_response_time_minutes": round(response_time_minutes, 1),
+        },
+        "rainfall_trigger": rainfall_trigger,
+        "hazard_score": hazard_score,
+        "today_rainfall_mm": today_rainfall,
+        "antecedent_3day_mm": antecedent_3day,
+        "antecedent_5day_mm": antecedent_5day,
+        "antecedent_precipitation_index": round(latest_api, 2),
+        "score_components": {
+            name: round(value, 3) for name, value in score_components.items()
+        },
+    }
+
+
+def compose_village_risk(
+    village: dict,
+    catchment: dict,
+    catchment_hazard: dict,
+    current_soil_moisture: float,
+) -> dict:
+    """Compose local exposure with a precomputed catchment hazard."""
     exposure = compute_village_exposure(
         village["distance_to_stream_m"], village["slope_deg"]
     )
-
-    runoff_score = _clip01(runoff["runoff_mm"] / 100.0)
-    rainfall_trigger_score = _clip01(today_rainfall / effective_threshold)
-    antecedent_score = _clip01(latest_api / max(base_threshold, 1.0))
-
-    composite_score = (
-        FALLBACK_WEIGHTS["runoff"] * runoff_score
-        + FALLBACK_WEIGHTS["rainfall_trigger"] * rainfall_trigger_score
-        + FALLBACK_WEIGHTS["antecedent"] * antecedent_score
-        + FALLBACK_WEIGHTS["village_exposure"] * exposure["score"]
+    components = catchment_hazard["score_components"]
+    composite_score = catchment_hazard["hazard_score"] + (
+        FALLBACK_WEIGHTS["village_exposure"] * exposure["score"]
     )
 
     soil_props = get_soil_hydraulic_properties(catchment["soil_texture"])
@@ -142,27 +153,22 @@ def assess_village_risk(village: dict, catchment: dict,
 
     return {
         "catchment_id": catchment["id"],
-        "catchment_hydrology": {
-            **runoff,
-            "area_km2": catchment["area_km2"],
-            "runoff_volume_m3": round(runoff_volume_m3, 1),
-            "estimated_response_time_minutes": round(response_time_minutes, 1),
-        },
-        "rainfall_trigger": rainfall_trigger,
+        "catchment_hydrology": catchment_hazard["catchment_hydrology"],
+        "rainfall_trigger": catchment_hazard["rainfall_trigger"],
         "village_exposure": exposure,
         "supplemental_slope_stability": slope_indicator,
         "composite_score": round(composite_score, 3),
         "overall_risk_level": _risk_level(composite_score),
         "explain": {
-            "today_rainfall_mm": today_rainfall,
-            "antecedent_3day_mm": antecedent_3day,
-            "antecedent_5day_mm": antecedent_5day,
-            "antecedent_precipitation_index": round(latest_api, 2),
+            "today_rainfall_mm": catchment_hazard["today_rainfall_mm"],
+            "antecedent_3day_mm": catchment_hazard["antecedent_3day_mm"],
+            "antecedent_5day_mm": catchment_hazard["antecedent_5day_mm"],
+            "antecedent_precipitation_index": catchment_hazard[
+                "antecedent_precipitation_index"
+            ],
             "current_soil_moisture": current_soil_moisture,
             "score_components": {
-                "runoff": round(runoff_score, 3),
-                "rainfall_trigger": round(rainfall_trigger_score, 3),
-                "antecedent": round(antecedent_score, 3),
+                **components,
                 "village_exposure": exposure["score"],
             },
             "method_note": (
@@ -172,3 +178,17 @@ def assess_village_risk(village: dict, catchment: dict,
             ),
         },
     }
+
+
+def assess_village_risk(
+    village: dict,
+    catchment: dict,
+    daily_rainfall_mm: list[float],
+    current_soil_moisture: float,
+    base_threshold_override_mm: float | None = None,
+) -> dict:
+    """Legacy orchestration API retained for simulation and replay clients."""
+    hazard = assess_catchment_hazard(
+        catchment, daily_rainfall_mm, base_threshold_override_mm
+    )
+    return compose_village_risk(village, catchment, hazard, current_soil_moisture)

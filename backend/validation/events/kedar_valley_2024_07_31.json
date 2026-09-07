@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "event_id": "in-uk-rudraprayag-kedar-valley-2024-07-31",
+  "name": "Kedar Valley destructive rainfall and flash flooding",
+  "event_type": "flash_flood_and_rainfall_triggered_slope_failures",
+  "impact_start": "2024-07-31T19:30:00+05:30",
+  "administrative_area": {
+    "state": "Uttarakhand",
+    "district": "Rudraprayag",
+    "subdistrict": "Ukhimath"
+  },
+  "reported_evidence": {
+    "sonprayag_max_hourly_rainfall_mm": 30.0,
+    "sonprayag_value_is_lower_bound": true,
+    "imd_warning_level": "red",
+    "cloudburst_by_imd_100mm_per_hour_definition": false,
+    "affected_places": [
+      "Kedarnath",
+      "Lincholi",
+      "Bhimbali",
+      "Rambada",
+      "Gaurikund",
+      "Sonprayag"
+    ]
+  },
+  "sources": [
+    {
+      "kind": "event_report",
+      "publisher": "Down To Earth",
+      "title": "Rains caused havoc in Uttarakhand on July 31; not cloudbursts, but climate change imprint definitely there, say experts",
+      "url": "https://www.downtoearth.org.in/climate-change/rains-caused-havoc-in-uttarakhand-on-july-31-not-cloudbursts-but-climate-change-imprint-definitely-there-experts",
+      "published_at": "2024-08-04"
+    },
+    {
+      "kind": "event_report",
+      "publisher": "Down To Earth",
+      "title": "July 31 has brought back 2013 memories for Kedarnath; have no lessons been learnt?",
+      "url": "https://www.downtoearth.org.in/climate-change/july-31-has-brought-back-2013-memories-for-kedarnath-have-no-lessons-been-learnt",
+      "published_at": "2024-08-04"
+    },
+    {
+      "kind": "weather_documentation",
+      "publisher": "Open-Meteo",
+      "title": "Previous Model Runs API",
+      "url": "https://open-meteo.com/en/docs/previous-runs-api"
+    },
+    {
+      "kind": "weather_documentation",
+      "publisher": "Open-Meteo",
+      "title": "Historical Forecast API",
+      "url": "https://open-meteo.com/en/docs/historical-forecast-api"
+    }
+  ],
+  "model_context": {
+    "catchment_id": "c1",
+    "village_ids": ["v1", "v3", "v4"],
+    "soil_moisture_assumption": 0.35,
+    "actionable_levels": ["high", "critical"],
+    "notes": [
+      "The catchment and villages are synthetic demo records, not real Kedar Valley features.",
+      "Soil moisture affects only the supplemental slope-stability output and not the composite flood score.",
+      "Forecast scenarios reuse completed event-analysis antecedent totals. This is optimistic and leaks some future rainfall at 48-hour and 72-hour lead times; failure despite that optimism is still informative."
+    ]
+  },
+  "forcing_cases": [
+    {
+      "case_id": "current-demo-c1-grid",
+      "label": "Exact weather grid used by demo catchment c1",
+      "requested_coordinates": {"latitude": 30.355, "longitude": 78.945},
+      "returned_grid_coordinates": {"latitude": 30.333918, "longitude": 78.921455},
+      "distance_to_kedarnath_km_approx": 39.0,
+      "antecedent_daily_rainfall_mm": [37.0, 23.3, 12.4, 0.9, 3.2, 21.1],
+      "event_day_analysis_rainfall_mm": 43.6,
+      "previous_run_forecast_rainfall_mm": {
+        "24": 3.8,
+        "48": 10.4,
+        "72": 10.3
+      },
+      "retrieval_urls": [
+        "https://archive-api.open-meteo.com/v1/archive?latitude=30.355&longitude=78.945&start_date=2024-07-25&end_date=2024-08-02&daily=precipitation_sum&timezone=Asia%2FKolkata",
+        "https://previous-runs-api.open-meteo.com/v1/forecast?latitude=30.355&longitude=78.945&start_date=2024-07-31&end_date=2024-07-31&hourly=precipitation,precipitation_previous_day1,precipitation_previous_day2,precipitation_previous_day3&timezone=Asia%2FKolkata"
+      ]
+    },
+    {
+      "case_id": "kedarnath-grid-sensitivity",
+      "label": "Location-corrected Kedarnath weather with demo terrain parameters",
+      "requested_coordinates": {"latitude": 30.72016, "longitude": 79.06831},
+      "returned_grid_coordinates": {"latitude": 30.685411, "longitude": 79.0684},
+      "antecedent_daily_rainfall_mm": [48.0, 24.4, 32.0, 2.6, 3.9, 16.5],
+      "event_day_analysis_rainfall_mm": 76.9,
+      "previous_run_forecast_rainfall_mm": {
+        "24": 0.1,
+        "48": 1.0,
+        "72": 2.1
+      },
+      "retrieval_urls": [
+        "https://archive-api.open-meteo.com/v1/archive?latitude=30.72016&longitude=79.06831&start_date=2024-07-25&end_date=2024-08-02&daily=precipitation_sum&timezone=Asia%2FKolkata",
+        "https://previous-runs-api.open-meteo.com/v1/forecast?latitude=30.72016&longitude=79.06831&start_date=2024-07-31&end_date=2024-07-31&hourly=precipitation,precipitation_previous_day1,precipitation_previous_day2,precipitation_previous_day3&timezone=Asia%2FKolkata"
+      ]
+    }
+  ],
+  "supplemental_location": {
+    "case_id": "gaurikund-grid",
+    "requested_coordinates": {"latitude": 30.66028, "longitude": 79.03271},
+    "returned_grid_coordinates": {"latitude": 30.615112, "longitude": 79.081276},
+    "event_day_stitched_rainfall_mm": 48.5,
+    "previous_run_forecast_rainfall_mm": {"24": 8.3, "48": 20.0, "72": 12.4},
+    "note": "Retained as supporting evidence only because a matching antecedent series was not pinned for this location."
+  },
+  "expected_conclusion": {
+    "retrospective_detection": true,
+    "reliable_actionable_advance_warning": false,
+    "reason": "The engine escalates when supplied completed event-day rainfall, but Open-Meteo previous runs severely underpredicted the localized storm and the engine discards the reported hourly intensity."
+  }
+}

@@ -1,14 +1,22 @@
 """Central configuration and physical constants for the risk engines."""
 from functools import lru_cache
+from typing import Literal
+
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
+    data_mode: Literal["demo", "production"] = "demo"
     open_meteo_forecast_url: str = "https://api.open-meteo.com/v1/forecast"
     open_meteo_archive_url: str = "https://archive-api.open-meteo.com/v1/archive"
     open_meteo_flood_url: str = "https://flood-api.open-meteo.com/v1/flood"
+    weather_timeout_seconds: float = Field(default=15.0, gt=0)
+    weather_cache_ttl_seconds: float = Field(default=300.0, gt=0)
+    weather_cache_max_entries: int = Field(default=128, gt=0)
+    weather_max_concurrency: int = Field(default=8, gt=0)
     mqtt_broker_host: str = "localhost"
     mqtt_broker_port: int = 1883
 

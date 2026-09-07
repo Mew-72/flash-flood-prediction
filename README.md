@@ -50,7 +50,11 @@ The MVP intentionally uses JSON instead of PostgreSQL/PostGIS:
 
 - `data/processed/catchments.json` — generated catchment features
 - `data/processed/villages.json` — generated village mappings/exposure
-- `demo_catchments.json` and `demo_villages.json` — automatic fallback fixtures
+- `demo_catchments.json` and `demo_villages.json` — explicit `DATA_MODE=demo` fixtures
+
+Production mode never falls back to demo data. It fails at startup when the
+canonical processed files are missing, and `/health` reports the active mode
+and source filenames.
 
 GeoPandas/Rasterio are used only during one-time preprocessing. JSON is simpler
 for a one-region hackathon demo and easy for the team to inspect/version. A
@@ -64,11 +68,13 @@ backend/app/
 ├── main.py
 ├── api/                 villages, catchments, risk, replay, simulation
 ├── core/
-│   ├── data_sources/    JSON store, Open-Meteo client, IoT simulator
+│   ├── data_sources/    indexed JSON store, async cached weather, IoT simulator
 │   ├── lookup_tables/   Curve Number and soil reference values
-│   └── physics/         runoff, antecedent wetness, slope, risk orchestration
-└── schemas/
+│   ├── physics/         catchment hazard and village risk composition
+│   └── risk_service.py  grouped/bulk assessment orchestration
+└── schemas/              typed admin, weather, hazard, risk, provenance
 backend/etl/              one-time geospatial preprocessing contract
+backend/validation/       reproducible historical-event hindcasts
 data/processed/           compact runtime JSON files
 ```
 
@@ -80,6 +86,7 @@ python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
 copy .env.example .env
+# .env uses DATA_MODE=demo for the included fixtures
 uvicorn app.main:app --reload --port 8000
 ```
 
@@ -87,13 +94,31 @@ Open `http://localhost:8000/docs`.
 
 Useful endpoints:
 
-- `GET /catchments`
-- `GET /villages`
-- `GET /risk/{village_id}`
+- `GET /v1/catchments?district=...&offset=0&limit=100`
+- `GET /v1/villages?district=...&offset=0&limit=100`
+- `GET /v1/risk/{village_id}`
+- `POST /v1/risk/batch` — bounded bulk assessment grouped by catchment
+- `GET /v1/risk/snapshots?district=...` — grouped current/forecast snapshots
 - `POST /simulate`
 - `GET /replay/{village_id}?start_date=YYYY-MM-DD&end_date=YYYY-MM-DD`
 
+The weather client is asynchronous, caches/coalesces identical requests, and
+bounds concurrent upstream calls. Villages in one catchment share one weather
+request and one catchment-hazard computation.
+
 Run tests with `pytest tests -v` from `backend/`.
+
+Reproduce the pinned 31 July 2024 Kedar Valley hindcast with:
+
+```bash
+python -m validation.hindcast
+pytest tests/test_hindcast_kedar_2024.py -v
+```
+
+The current result is scientifically useful but deliberately limited: the
+engine detects the completed event-day rainfall as high/critical, while the
+24–72 hour Open-Meteo previous runs do not produce a reliable actionable
+warning. See `docs/HINDCAST_KEDAR_2024.md`.
 
 Install heavier tools only when needed:
 
@@ -102,7 +127,8 @@ Install heavier tools only when needed:
 
 ## Next implementation step
 
-Choose one pilot region, download its DEM, catchment, village, land-use, soil,
-and stream layers, then adapt `backend/etl/build_village_features.py` to their
-actual columns. Historical events are optional calibration/validation evidence,
-not a prerequisite for the baseline engine.
+Build real Rudraprayag/Kedar Valley features from DEM, catchment, village,
+land-use, soil, and stream layers, then adapt
+`backend/etl/build_village_features.py` to their profiled columns. Add more
+positive events and matched non-event controls before calibrating thresholds or
+claiming predictive skill.

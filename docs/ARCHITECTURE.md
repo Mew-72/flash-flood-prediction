@@ -35,21 +35,22 @@ The ETL writes `catchments.json` and `villages.json`.
 ### Runtime assessment
 
 ```text
-Open-Meteo rainfall/soil wetness
+async Open-Meteo current/forecast timeline
         ↓
-3-day/5-day antecedent rainfall + API + AMC
+1 h/3 h/6 h/24 h windows + completed antecedent days
         ↓
-SCS-CN runoff per sub-catchment
+SCS-CN runoff once per sub-catchment
         ↓
 threshold exceedance + estimated response time
         ↓
 stream-proximity/terrain exposure per village
         ↓
-village risk class and explanation
+cached/grouped village risk snapshots
 ```
 
-Historical replay calls the same engine with archived weather. IoT is an
-optional override/correction rather than a requirement.
+Historical replay calls the same engine with archived weather. Lead-time
+validation uses pinned Previous Runs data instead of treating reanalysis as a
+forecast. IoT remains an optional override/correction rather than a requirement.
 
 ## Baseline score
 
@@ -83,8 +84,9 @@ safe-evacuation lead time.
 
 The MVP uses JSON files, not PostGIS. This is appropriate for one pilot region
 because the processed records are compact, mostly read-only, transparent, and
-loaded once with an in-process cache. Raw raster/vector processing still uses
-GeoPandas and Rasterio offline.
+loaded once into indexed in-process catalogs. `DATA_MODE=production` requires
+canonical processed files and never falls back to demo fixtures. Raw
+raster/vector processing still uses GeoPandas and Rasterio offline.
 
 Move to PostGIS only if later requirements include multiple states, large
 geometries served dynamically, concurrent updates, or long sensor time-series.
@@ -93,8 +95,10 @@ geometries served dynamically, concurrent updates, or long sensor time-series.
 
 | Data | Runtime role |
 |---|---|
-| Open-Meteo forecast | Live/demo rainfall and soil wetness forcing |
-| Open-Meteo archive | Historical event replay |
+| Open-Meteo forecast | Model-derived current and forecast forcing; async, cached, bounded |
+| Open-Meteo archive | Historical event replay, not proof of advance warning |
+| Open-Meteo Previous Runs | Fixed-lead hindcast sensitivity and forecast-skill evaluation |
+| IMD warnings/radar | Required future regional warning and short-duration nowcast signal |
 | DEM | Offline slope, drainage, flow path, catchment derivation |
 | Land use + soil | Offline catchment Curve Number inputs |
 | Village boundaries + streams | Offline village mapping/exposure |
@@ -103,13 +107,20 @@ geometries served dynamically, concurrent updates, or long sensor time-series.
 
 ## Known approximations
 
-- Rainfall and modeled soil moisture remain coarse-grid forcing.
+- Rainfall and modeled soil moisture remain coarse-grid forcing; current model
+  values are not labeled as gauge observations.
+- The 1 h/3 h/6 h/24 h windows are preserved in API snapshots, but the baseline
+  composite still uses a 24-hour/event-depth SCS-CN calculation and needs an
+  independently calibrated intensity trigger.
 - The base rainfall trigger is a pilot parameter until calibrated against
   verified events or channel observations.
 - Time of concentration is empirical and indicative.
 - Stream proximity/local slope are exposure proxies; relative elevation and
   inundation routing would improve a future version.
 - Geotechnical properties are literature lookups, not field measurements.
+- The Kedar Valley 31 July 2024 hindcast detects completed event rainfall but
+  fails to show reliable high/critical warning at 24–72 hours; Open-Meteo alone
+  is insufficient for localized Himalayan extremes.
 
 ## Defensible contribution
 

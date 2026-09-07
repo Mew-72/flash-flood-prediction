@@ -1,0 +1,1753 @@
+/* =========================================================
+   FLASHGUARD
+   Village-Level Flash-Flood Risk Forecasting
+   Main Dashboard + Administrator Dashboard
+   ========================================================= */
+
+
+/* =========================================================
+   1. GLOBAL VARIABLES
+   ========================================================= */
+
+:root {
+    --bg: #f4f7fb;
+    --panel: #ffffff;
+    --line: #dfe5ed;
+
+    --text: #172033;
+    --muted: #687386;
+
+    --navy: #10233f;
+    --blue: #2563eb;
+
+    --green: #16a34a;
+    --yellow: #eab308;
+    --orange: #f97316;
+    --red: #dc2626;
+    --critical: #991b1b;
+}
+
+
+/* =========================================================
+   2. RESET / GLOBAL STYLES
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    background: var(--bg);
+    color: var(--text);
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+
+/* =========================================================
+   3. TOP NAVIGATION BAR
+   ========================================================= */
+
+.topbar {
+    height: 76px;
+
+    background: #ffffff;
+    border-bottom: 1px solid var(--line);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 24px;
+
+    position: relative;
+    z-index: 1000;
+}
+
+
+/* ---------- Brand ---------- */
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-mark {
+    width: 42px;
+    height: 42px;
+
+    border-radius: 12px;
+
+    background: #e9f1ff;
+
+    display: grid;
+    place-items: center;
+
+    font-size: 22px;
+}
+
+.brand-title {
+    font-weight: 900;
+
+    letter-spacing: 0.12em;
+
+    font-size: 15px;
+}
+
+.brand-subtitle {
+    font-size: 11px;
+
+    color: var(--muted);
+
+    margin-top: 2px;
+}
+
+
+/* ---------- Top Actions ---------- */
+
+.top-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    font-size: 12px;
+}
+
+.system-status {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    font-weight: 700;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: var(--green);
+
+    box-shadow: 0 0 0 4px #dcfce7;
+}
+
+.last-updated {
+    color: var(--muted);
+}
+
+.admin-link {
+    border: 1px solid var(--line);
+
+    border-radius: 8px;
+
+    padding: 9px 12px;
+
+    color: var(--navy);
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+    background: #ffffff;
+}
+
+.admin-link:hover {
+    background: #f8fafc;
+}
+
+
+/* =========================================================
+   4. MAIN DASHBOARD LAYOUT
+   ========================================================= */
+
+.dashboard {
+    height: calc(100vh - 76px);
+
+    display: grid;
+
+    grid-template-columns:
+        255px
+        minmax(400px, 1fr)
+        360px;
+}
+
+
+/* =========================================================
+   5. SIDEBAR
+   ========================================================= */
+
+.sidebar,
+.right-panel {
+    background: #ffffff;
+    overflow: auto;
+}
+
+.sidebar {
+    border-right: 1px solid var(--line);
+
+    padding: 22px 18px;
+}
+
+.right-panel {
+    border-left: 1px solid var(--line);
+
+    padding: 22px;
+}
+
+
+/* ---------- Sidebar Sections ---------- */
+
+.side-section {
+    padding-bottom: 21px;
+
+    margin-bottom: 20px;
+
+    border-bottom: 1px solid var(--line);
+}
+
+
+/* ---------- Section Headings ---------- */
+
+.section-heading,
+.eyebrow {
+    font-size: 10px;
+
+    letter-spacing: 0.13em;
+
+    font-weight: 900;
+
+    color: #738095;
+}
+
+
+/* ---------- Form Labels ---------- */
+
+.field-label {
+    font-size: 11px;
+
+    font-weight: 700;
+
+    color: var(--muted);
+
+    display: block;
+
+    margin: 12px 0 6px;
+}
+
+
+/* ---------- Select Boxes ---------- */
+
+.select,
+.form-card select,
+.form-card textarea {
+    width: 100%;
+
+    border: 1px solid var(--line);
+
+    background: #ffffff;
+
+    border-radius: 8px;
+
+    padding: 10px 11px;
+
+    color: var(--text);
+
+    outline: none;
+}
+
+.select:focus,
+.form-card select:focus,
+.form-card textarea:focus {
+    border-color: #93b4ff;
+
+    box-shadow:
+        0 0 0 3px #e7efff;
+}
+
+
+/* =========================================================
+   6. MAP LAYER CONTROLS
+   ========================================================= */
+
+.layer-row {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    font-size: 13px;
+
+    margin: 13px 0;
+
+    cursor: pointer;
+}
+
+.layer-row input {
+    accent-color: var(--blue);
+}
+
+.layer-icon {
+    width: 13px;
+    height: 13px;
+
+    border-radius: 4px;
+
+    display: inline-block;
+
+    border: 1px solid #b8c1ce;
+}
+
+
+/* ---------- Layer Colors ---------- */
+
+.risk-icon {
+    background: #ef4444;
+}
+
+.rain-icon {
+    background: #60a5fa;
+}
+
+.soil-icon {
+    background: #a16207;
+}
+
+.slope-icon {
+    background: #f59e0b;
+}
+
+.elev-icon {
+    background: #94a3b8;
+}
+
+.stream-icon {
+    background: #38bdf8;
+}
+
+.catch-icon {
+    background: #a78bfa;
+}
+
+.village-icon {
+    background: #ffffff;
+
+    border-radius: 50%;
+
+    border: 3px solid #334155;
+}
+
+
+/* =========================================================
+   7. RISK LEGEND
+   ========================================================= */
+
+.legend-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    font-size: 12px;
+
+    margin: 11px 0;
+
+    color: #475569;
+}
+
+.legend-item span:last-child {
+    margin-left: auto;
+
+    color: #94a3b8;
+}
+
+.legend-box {
+    width: 14px;
+    height: 14px;
+
+    border-radius: 3px;
+}
+
+
+/* ---------- Risk Colors ---------- */
+
+.low {
+    background: #22c55e;
+}
+
+.moderate {
+    background: #eab308;
+}
+
+.high {
+    background: #f97316;
+}
+
+.critical {
+    background: #dc2626;
+}
+
+
+/* =========================================================
+   8. SIDEBAR FOOTER
+   ========================================================= */
+
+.side-footer {
+    color: #7b8798;
+
+    font-size: 11px;
+
+    line-height: 1.5;
+}
+
+.data-badge {
+    display: inline-block;
+
+    background: #eef5ff;
+
+    color: #2563eb;
+
+    border-radius: 6px;
+
+    padding: 5px 7px;
+
+    font-size: 9px;
+
+    font-weight: 900;
+
+    letter-spacing: 0.08em;
+}
+
+
+/* =========================================================
+   9. MAP AREA
+   ========================================================= */
+
+.map-area {
+    position: relative;
+
+    min-width: 0;
+}
+
+.map-area #map {
+    width: 100%;
+    height: 100%;
+
+    background: #dfe8ee;
+}
+
+
+/* =========================================================
+   10. MAP TITLE CARD
+   ========================================================= */
+
+.map-title-card {
+    position: absolute;
+
+    left: 20px;
+    top: 20px;
+
+    background: rgba(255, 255, 255, 0.96);
+
+    border: 1px solid var(--line);
+
+    border-radius: 12px;
+
+    padding: 15px 17px;
+
+    box-shadow:
+        0 7px 25px rgba(15, 23, 42, 0.08);
+
+    z-index: 500;
+
+    max-width: 360px;
+}
+
+.map-title-card h1 {
+    margin: 4px 0 5px;
+
+    font-size: 20px;
+}
+
+.map-title-card p {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   11. MAP TOOLBAR
+   ========================================================= */
+
+.map-toolbar {
+    position: absolute;
+
+    right: 20px;
+    top: 20px;
+
+    display: flex;
+
+    gap: 7px;
+
+    z-index: 500;
+}
+
+.tool-btn {
+    border: 1px solid var(--line);
+
+    background: rgba(255, 255, 255, 0.96);
+
+    border-radius: 8px;
+
+    padding: 9px 11px;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 4px 15px rgba(15, 23, 42, 0.08);
+}
+
+.tool-btn:hover {
+    background: #f8fafc;
+}
+
+.tool-btn.active {
+    background: var(--navy);
+
+    color: #ffffff;
+
+    border-color: var(--navy);
+}
+
+
+/* =========================================================
+   12. MAP STATUS
+   ========================================================= */
+
+.map-scale-note {
+    position: absolute;
+
+    bottom: 20px;
+    left: 20px;
+
+    background: rgba(255, 255, 255, 0.94);
+
+    border: 1px solid var(--line);
+
+    border-radius: 999px;
+
+    padding: 7px 10px;
+
+    font-size: 10px;
+
+    color: #516074;
+
+    z-index: 500;
+}
+
+.pulse {
+    display: inline-block;
+
+    width: 7px;
+    height: 7px;
+
+    background: var(--green);
+
+    border-radius: 50%;
+
+    margin-right: 5px;
+}
+
+
+/* =========================================================
+   13. RIGHT RISK PANEL
+   ========================================================= */
+
+.panel-header {
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+}
+
+.panel-header h2 {
+    font-size: 20px;
+
+    margin: 4px 0 0;
+}
+
+
+/* =========================================================
+   14. RISK BADGES
+   ========================================================= */
+
+.risk-badge {
+    display: inline-flex;
+
+    padding: 6px 9px;
+
+    border-radius: 7px;
+
+    font-size: 10px;
+
+    font-weight: 900;
+
+    letter-spacing: 0.08em;
+}
+
+.risk-badge.high {
+    background: #fff0e8;
+
+    color: #c2410c;
+}
+
+.risk-badge.moderate {
+    background: #fffbe5;
+
+    color: #a16207;
+}
+
+.risk-badge.low {
+    background: #eaf9ef;
+
+    color: #15803d;
+}
+
+.risk-badge.critical {
+    background: #fee2e2;
+
+    color: #991b1b;
+}
+
+
+/* =========================================================
+   15. RISK SCORE CARD
+   ========================================================= */
+
+.score-card {
+    margin-top: 18px;
+
+    padding: 16px;
+
+    border: 1px solid var(--line);
+
+    border-radius: 12px;
+
+    background: #f8fafc;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+}
+
+.small-label {
+    font-size: 9px;
+
+    letter-spacing: 0.1em;
+
+    color: #8490a2;
+
+    font-weight: 900;
+}
+
+.score {
+    font-size: 44px;
+
+    font-weight: 900;
+
+    line-height: 1;
+
+    margin-top: 5px;
+}
+
+.score-caption {
+    font-size: 10px;
+
+    color: var(--muted);
+}
+
+
+/* ---------- Risk Gauge ---------- */
+
+.gauge {
+    height: 8px;
+
+    width: 90px;
+
+    background: #e2e8f0;
+
+    border-radius: 99px;
+
+    overflow: hidden;
+}
+
+.gauge-fill {
+    height: 100%;
+
+    width: 74%;
+
+    background: var(--orange);
+
+    border-radius: 99px;
+}
+
+
+/* =========================================================
+   16. ENVIRONMENT METRIC CARDS
+   ========================================================= */
+
+.metric-grid {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 8px;
+
+    margin: 12px 0 20px;
+}
+
+.metric-card {
+    border: 1px solid var(--line);
+
+    border-radius: 10px;
+
+    padding: 11px;
+
+    display: flex;
+
+    gap: 9px;
+
+    min-width: 0;
+}
+
+.metric-symbol {
+    font-size: 17px;
+}
+
+.metric-name {
+    font-size: 9px;
+
+    color: #7a8798;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.05em;
+
+    font-weight: 800;
+}
+
+.metric-card strong {
+    display: block;
+
+    font-size: 14px;
+
+    margin-top: 2px;
+}
+
+.metric-card small {
+    display: block;
+
+    font-size: 9px;
+
+    color: #98a2b1;
+
+    margin-top: 2px;
+}
+
+
+/* =========================================================
+   17. VILLAGE PRIORITY SECTION
+   ========================================================= */
+
+.panel-section {
+    border-top: 1px solid var(--line);
+
+    padding-top: 18px;
+}
+
+.village-list {
+    margin-top: 8px;
+}
+
+.village-item {
+    padding: 11px 0;
+
+    border-bottom: 1px solid #edf0f4;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    cursor: pointer;
+}
+
+.village-item:hover {
+    background: #f8fafc;
+}
+
+.village-name {
+    font-weight: 800;
+
+    font-size: 12px;
+}
+
+.village-meta {
+    font-size: 9px;
+
+    color: #8a95a5;
+
+    margin-top: 3px;
+}
+
+.village-score {
+    font-size: 12px;
+
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   18. ADMINISTRATOR ALERT NOTICE
+   ========================================================= */
+
+.alert-banner {
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 18px;
+
+    padding: 11px;
+
+    background: #fff7ed;
+
+    border: 1px solid #fed7aa;
+
+    border-radius: 10px;
+}
+
+.alert-symbol {
+    width: 22px;
+    height: 22px;
+
+    background: var(--orange);
+
+    color: #ffffff;
+
+    border-radius: 50%;
+
+    display: grid;
+
+    place-items: center;
+
+    font-weight: 900;
+
+    font-size: 12px;
+}
+
+.alert-banner strong {
+    font-size: 11px;
+}
+
+.alert-banner p {
+    font-size: 9px;
+
+    color: #7c5a3a;
+
+    margin: 3px 0 0;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   19. VILLAGE DETAILS MODAL
+   ========================================================= */
+
+.modal {
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(15, 23, 42, 0.45);
+
+    z-index: 2000;
+
+    display: grid;
+
+    place-items: center;
+
+    padding: 20px;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-card {
+    width: min(440px, 100%);
+
+    background: #ffffff;
+
+    border-radius: 16px;
+
+    padding: 24px;
+
+    position: relative;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.modal-close {
+    position: absolute;
+
+    right: 14px;
+    top: 12px;
+
+    border: 0;
+
+    background: #f1f5f9;
+
+    border-radius: 50%;
+
+    width: 30px;
+    height: 30px;
+
+    font-size: 20px;
+
+    cursor: pointer;
+}
+
+.modal-close:hover {
+    background: #e2e8f0;
+}
+
+.modal-card h2 {
+    margin: 5px 0 9px;
+}
+
+
+/* ---------- Village Details ---------- */
+
+.detail-grid {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 10px;
+
+    margin-top: 18px;
+}
+
+.detail-grid div {
+    background: #f8fafc;
+
+    border: 1px solid var(--line);
+
+    padding: 10px;
+
+    border-radius: 8px;
+}
+
+.detail-grid span {
+    display: block;
+
+    color: var(--muted);
+
+    font-size: 9px;
+}
+
+.detail-grid strong {
+    font-size: 13px;
+
+    display: block;
+
+    margin-top: 3px;
+}
+
+.modal-note {
+    margin-top: 15px;
+
+    color: var(--muted);
+
+    font-size: 10px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   20. ADMINISTRATOR PAGE
+   ========================================================= */
+
+.admin-body {
+    min-height: 100vh;
+}
+
+.admin-layout {
+    display: grid;
+
+    grid-template-columns: 235px 1fr;
+
+    min-height: calc(100vh - 76px);
+}
+
+
+/* =========================================================
+   21. ADMIN SIDEBAR
+   ========================================================= */
+
+.admin-sidebar {
+    background: var(--navy);
+
+    color: #ffffff;
+
+    padding: 22px 16px;
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+
+/* ---------- Admin User ---------- */
+
+.admin-user {
+    display: flex;
+
+    gap: 10px;
+
+    align-items: center;
+
+    padding-bottom: 22px;
+
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.12);
+}
+
+.avatar {
+    width: 38px;
+    height: 38px;
+
+    border-radius: 50%;
+
+    background: #dbeafe;
+
+    color: #1d4ed8;
+
+    display: grid;
+
+    place-items: center;
+
+    font-weight: 900;
+}
+
+.admin-user strong {
+    font-size: 11px;
+
+    display: block;
+}
+
+.admin-user span {
+    font-size: 9px;
+
+    color: #aebbd0;
+
+    display: block;
+
+    margin-top: 3px;
+}
+
+
+/* =========================================================
+   22. ADMIN NAVIGATION
+   ========================================================= */
+
+.admin-sidebar nav {
+    display: grid;
+
+    gap: 6px;
+
+    margin-top: 20px;
+}
+
+.admin-nav {
+    border: 0;
+
+    background: transparent;
+
+    color: #bdc8d9;
+
+    text-align: left;
+
+    padding: 11px;
+
+    border-radius: 7px;
+
+    cursor: pointer;
+
+    font-weight: 700;
+
+    font-size: 11px;
+}
+
+.admin-nav:hover,
+.admin-nav.active {
+    background: #1f3b62;
+
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   23. ADMIN WARNING
+   ========================================================= */
+
+.admin-warning {
+    margin-top: auto;
+
+    background: #1a3355;
+
+    border: 1px solid #29486e;
+
+    padding: 10px;
+
+    border-radius: 8px;
+
+    color: #aebbd0;
+
+    font-size: 9px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   24. ADMIN CONTENT
+   ========================================================= */
+
+.admin-content {
+    padding: 30px;
+
+    overflow: auto;
+}
+
+.admin-section {
+    display: none;
+
+    max-width: 1100px;
+}
+
+.admin-section.active {
+    display: block;
+}
+
+
+/* =========================================================
+   25. ADMIN PAGE HEADER
+   ========================================================= */
+
+.page-heading {
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    margin-bottom: 22px;
+}
+
+.page-heading h1 {
+    margin: 5px 0;
+
+    font-size: 27px;
+}
+
+.page-heading p {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 12px;
+}
+
+.admin-status-pill {
+    background: #ffffff;
+
+    border: 1px solid var(--line);
+
+    border-radius: 999px;
+
+    padding: 8px 11px;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    color: #64748b;
+}
+
+
+/* =========================================================
+   26. ADMIN FORM GRID
+   ========================================================= */
+
+.admin-grid {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.5fr)
+        minmax(280px, 0.8fr);
+
+    gap: 16px;
+}
+
+
+/* =========================================================
+   27. ADMIN CARDS
+   ========================================================= */
+
+.form-card,
+.info-card,
+.table-card,
+.monitor-card,
+.status-table {
+    background: #ffffff;
+
+    border: 1px solid var(--line);
+
+    border-radius: 13px;
+}
+
+
+/* =========================================================
+   28. ALERT FORM
+   ========================================================= */
+
+.form-card {
+    padding: 20px;
+}
+
+.form-title {
+    font-weight: 900;
+
+    font-size: 15px;
+
+    margin-bottom: 16px;
+}
+
+.form-card label {
+    display: block;
+
+    font-size: 10px;
+
+    color: #69768a;
+
+    font-weight: 800;
+
+    margin: 13px 0;
+}
+
+.form-card textarea {
+    resize: vertical;
+
+    margin-top: 6px;
+}
+
+.form-card select {
+    display: block;
+
+    margin-top: 6px;
+}
+
+
+/* =========================================================
+   29. ALERT PREVIEW
+   ========================================================= */
+
+.preview-alert {
+    display: flex;
+
+    gap: 10px;
+
+    background: #fff7ed;
+
+    border: 1px solid #fed7aa;
+
+    border-radius: 10px;
+
+    padding: 11px;
+
+    margin: 15px 0;
+}
+
+.alert-preview-icon {
+    width: 26px;
+    height: 26px;
+
+    background: var(--orange);
+
+    color: #ffffff;
+
+    border-radius: 50%;
+
+    display: grid;
+
+    place-items: center;
+
+    font-weight: 900;
+}
+
+.preview-alert strong {
+    font-size: 11px;
+}
+
+.preview-alert p {
+    font-size: 10px;
+
+    margin: 3px 0;
+
+    color: #7c5a3a;
+}
+
+
+/* =========================================================
+   30. PRIMARY BUTTON
+   ========================================================= */
+
+.primary-btn {
+    width: 100%;
+
+    border: 0;
+
+    background: var(--navy);
+
+    color: #ffffff;
+
+    padding: 12px;
+
+    border-radius: 8px;
+
+    font-weight: 900;
+
+    cursor: pointer;
+}
+
+.primary-btn:hover {
+    background: #19365f;
+}
+
+.form-result {
+    font-size: 10px;
+
+    margin-top: 10px;
+}
+
+
+/* =========================================================
+   31. ADMIN INFORMATION CARDS
+   ========================================================= */
+
+.info-stack {
+    display: grid;
+
+    gap: 16px;
+
+    align-content: start;
+}
+
+.info-card {
+    padding: 18px;
+}
+
+.big-risk {
+    font-size: 45px;
+
+    font-weight: 900;
+
+    margin: 8px 0;
+}
+
+.big-risk small {
+    font-size: 14px;
+
+    color: var(--muted);
+}
+
+.info-card p {
+    font-size: 10px;
+
+    color: var(--muted);
+
+    line-height: 1.5;
+}
+
+
+/* ---------- Checklist ---------- */
+
+.check-list {
+    padding-left: 17px;
+
+    color: #58667a;
+
+    font-size: 10px;
+
+    line-height: 2;
+}
+
+
+/* =========================================================
+   32. ALERT HISTORY TABLE
+   ========================================================= */
+
+.table-card {
+    overflow: auto;
+}
+
+.table-card table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    font-size: 10px;
+}
+
+.table-card th,
+.table-card td {
+    padding: 12px;
+
+    border-bottom: 1px solid #edf0f4;
+
+    text-align: left;
+
+    white-space: nowrap;
+}
+
+.table-card th {
+    color: #738095;
+
+    font-size: 9px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.05em;
+}
+
+
+/* =========================================================
+   33. DATA MONITOR
+   ========================================================= */
+
+.monitor-grid {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 12px;
+}
+
+.monitor-card {
+    padding: 17px;
+
+    position: relative;
+}
+
+.monitor-card span {
+    font-size: 18px;
+}
+
+.monitor-card strong {
+    display: block;
+
+    font-size: 12px;
+
+    margin-top: 10px;
+}
+
+.monitor-card b {
+    display: block;
+
+    font-size: 20px;
+
+    margin-top: 5px;
+}
+
+.monitor-card small {
+    display: block;
+
+    color: var(--muted);
+
+    font-size: 9px;
+
+    margin-top: 3px;
+}
+
+.monitor-card i {
+    position: absolute;
+
+    right: 12px;
+    top: 12px;
+
+    font-style: normal;
+
+    font-size: 8px;
+
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   34. SYSTEM STATUS
+   ========================================================= */
+
+.online {
+    color: #15803d;
+}
+
+.ready {
+    color: var(--blue);
+}
+
+.offline {
+    color: #9a6a00;
+}
+
+.status-table {
+    overflow: hidden;
+}
+
+.status-table > div {
+    display: flex;
+
+    justify-content: space-between;
+
+    padding: 16px 18px;
+
+    border-bottom: 1px solid #edf0f4;
+
+    font-size: 11px;
+}
+
+.status-table > div:last-child {
+    border-bottom: 0;
+}
+
+.status-table b {
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   35. RESPONSIVE DESIGN
+   ========================================================= */
+
+
+/* ---------- Tablets / Small Desktop ---------- */
+
+@media (max-width: 1150px) {
+
+    .dashboard {
+        grid-template-columns:
+            220px
+            minmax(350px, 1fr)
+            310px;
+    }
+
+    .monitor-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+
+/* ---------- Tablet ---------- */
+
+@media (max-width: 900px) {
+
+    .dashboard {
+        grid-template-columns:
+            210px
+            1fr;
+    }
+
+    .right-panel {
+        display: none;
+    }
+
+    .top-actions .last-updated {
+        display: none;
+    }
+
+    /* Admin */
+
+    .admin-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-sidebar {
+        padding: 12px;
+
+        position: sticky;
+
+        top: 0;
+
+        z-index: 10;
+    }
+
+    .admin-sidebar nav {
+        display: flex;
+
+        overflow: auto;
+    }
+
+    .admin-warning {
+        display: none;
+    }
+
+    .admin-content {
+        padding: 20px;
+    }
+
+    .admin-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 650px) {
+
+    /* Top Bar */
+
+    .topbar {
+        height: auto;
+
+        min-height: 68px;
+
+        padding: 10px 12px;
+    }
+
+    .brand-subtitle {
+        display: none;
+    }
+
+    .top-actions {
+        gap: 8px;
+    }
+
+    .system-status,
+    .last-updated {
+        display: none;
+    }
+
+
+    /* Dashboard */
+
+    .dashboard {
+        height: auto;
+
+        min-height: calc(100vh - 68px);
+
+        display: block;
+    }
+
+
+    /* Sidebar */
+
+    .sidebar {
+        border-right: 0;
+
+        border-bottom: 1px solid var(--line);
+
+        display: grid;
+
+        grid-template-columns: 1fr 1fr;
+
+        padding: 12px;
+    }
+
+    .side-section {
+        margin: 0;
+
+        padding: 10px;
+
+        border: 0;
+    }
+
+    .side-footer {
+        display: none;
+    }
+
+
+    /* Map */
+
+    .map-area {
+        height: 65vh;
+    }
+
+    .map-title-card {
+        left: 10px;
+
+        top: 10px;
+    }
+
+    .map-toolbar {
+        right: 10px;
+
+        top: 10px;
+    }
+
+    .map-toolbar .tool-btn:nth-child(2) {
+        display: none;
+    }
+
+
+    /* Admin */
+
+    .monitor-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .page-heading {
+        display: block;
+    }
+
+    .admin-status-pill {
+        display: inline-block;
+
+        margin-top: 12px;
+    }
+}
+

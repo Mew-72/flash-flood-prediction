@@ -116,9 +116,14 @@ Useful endpoints:
 - `GET /v1/risk/snapshots?district=...` — grouped current/forecast snapshots
 - `GET /v1/weather/tiles/{layer}/{z}/{x}/{y}.png` — server-side proxy for the
   allowlisted `precipitation_new` and `clouds_new` OpenWeather layers
-- `POST /simulate`
-- `GET /replay/{village_id}?start_date=YYYY-MM-DD&end_date=YYYY-MM-DD` —
-  returns `501` because the free runtime endpoints do not support replay
+- `POST /simulate` — deterministic rainfall scenarios; catalog-only production
+  records use explicitly marked provisional terrain/hydrology defaults
+- `GET /replay/events` — catalog of versioned, pinned historical events
+- `GET /replay/events/{event_id}?case_id=...` — deterministic daily event replay,
+  alert transitions, source evidence, and pinned 24/48/72-hour forecast comparison
+- `GET /replay/{village_id}?start_date=YYYY-MM-DD&end_date=YYYY-MM-DD` — legacy
+  provider date-range route; returns `501` because the free runtime endpoints do
+  not support historical replay
 
 FastAPI is the only component that calls OpenWeather. The asynchronous runtime
 provider uses the free-compatible metric `/data/2.5/weather` and
@@ -154,6 +159,12 @@ caches successful images, emits browser cache headers, and maps upstream errors
 to safe API responses.
 
 Run tests with `pytest tests -v` from `backend/`.
+
+The event replay endpoints read only versioned fixtures under
+`backend/validation/events/` and never call a weather provider or other network
+service. Timeline frames accumulate only rainfall available through each replay
+day, from every antecedent day through the impact day. Alerts are explicitly
+historical reconstructions, not current warnings or operational forecasts.
 
 Reproduce the pinned 31 July 2024 Kedar Valley hindcast with:
 

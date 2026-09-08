@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -22,6 +23,13 @@ DATA_DIR = PROJECT_ROOT.parent / "data" / "processed"
 DEFAULT_EVENT_PATH = (
     Path(__file__).resolve().parent / "events" / "kedar_valley_2024_07_31.json"
 )
+PINNED_EVENT_PATHS = (DEFAULT_EVENT_PATH,)
+RISK_ALERT_MAPPING = {
+    "low": ("INFO", "NORMAL"),
+    "moderate": ("MODERATE", "WATCH"),
+    "high": ("HIGH", "WARNING"),
+    "critical": ("CRITICAL", "EMERGENCY"),
+}
 
 
 def load_event(path: Path = DEFAULT_EVENT_PATH) -> dict[str, Any]:
@@ -30,6 +38,35 @@ def load_event(path: Path = DEFAULT_EVENT_PATH) -> dict[str, Any]:
     if event.get("schema_version") != 1:
         raise ValueError(f"Unsupported event schema: {event.get('schema_version')}")
     return event
+
+
+def list_pinned_events() -> list[dict[str, Any]]:
+    """Load the versioned replay catalog without external I/O."""
+    return [load_event(path) for path in PINNED_EVENT_PATHS]
+
+
+def get_pinned_event(event_id: str) -> dict[str, Any] | None:
+    return next(
+        (event for event in list_pinned_events() if event["event_id"] == event_id),
+        None,
+    )
+
+
+def _forcing_case(event: dict[str, Any], case_id: str | None) -> dict[str, Any]:
+    available_ids = {case["case_id"] for case in event["forcing_cases"]}
+    preferred_id = "kedarnath-grid-sensitivity"
+    default_id = (
+        preferred_id
+        if preferred_id in available_ids
+        else event["forcing_cases"][0]["case_id"]
+    )
+    selected_id = case_id or default_id
+    try:
+        return next(
+            case for case in event["forcing_cases"] if case["case_id"] == selected_id
+        )
+    except StopIteration as exc:
+        raise ValueError(f"Unknown replay case: {selected_id}") from exc
 
 
 def _load_demo_context(event: dict[str, Any]) -> tuple[dict, list[dict]]:
@@ -88,6 +125,91 @@ def _assess(
         "any_actionable": any(item["actionable"] for item in village_results),
         "all_actionable": all(item["actionable"] for item in village_results),
     }
+
+
+def create_timeline_frames(
+    event: dict[str, Any], case_id: str | None = None
+) -> list[dict[str, Any]]:
+    """Create deterministic daily frames from pinned rainfall available by each day."""
+    forcing = _forcing_case(event, case_id)
+    catchment, villages = _load_demo_context(event)
+    context = event["model_context"]
+    soil_moisture = float(context["soil_moisture_assumption"])
+    actionable_levels = set(context["actionable_levels"])
+    antecedent = [float(value) for value in forcing["antecedent_daily_rainfall_mm"]]
+    rainfall = [*antecedent, float(forcing["event_day_analysis_rainfall_mm"])]
+    impact_date = datetime.fromisoformat(event["impact_start"]).date()
+    first_date = impact_date - timedelta(days=len(antecedent))
+
+    frames = []
+    previous_severity = None
+    for frame_index, rainfall_mm in enumerate(rainfall):
+        available_rainfall = rainfall[: frame_index + 1]
+        hazard = assess_catchment_hazard(catchment, available_rainfall)
+        hazard["antecedent_3day_mm"] = round(hazard["antecedent_3day_mm"], 3)
+        hazard["antecedent_5day_mm"] = round(hazard["antecedent_5day_mm"], 3)
+        village_results = []
+        for village in villages:
+            result = compose_village_risk(
+                village,
+                catchment,
+                hazard,
+                current_soil_moisture=soil_moisture,
+            )
+            risk_level = result["overall_risk_level"]
+            village_results.append(
+                {
+                    "id": village["id"],
+                    "name": village["name"],
+                    "risk_level": risk_level,
+                    "composite_score": result["composite_score"],
+                    "actionable": risk_level in actionable_levels,
+                }
+            )
+
+        peak = max(village_results, key=lambda item: item["composite_score"])
+        severity, status = RISK_ALERT_MAPPING[peak["risk_level"]]
+        frame_date = first_date + timedelta(days=frame_index)
+        phase = "impact" if frame_date == impact_date else "antecedent"
+        changed = previous_severity is not None and severity != previous_severity
+        frames.append(
+            {
+                "frame_index": frame_index,
+                "date": frame_date.isoformat(),
+                "phase": phase,
+                "label": (
+                    "Impact day"
+                    if phase == "impact"
+                    else f"Antecedent rainfall day {frame_index + 1}"
+                ),
+                "rainfall_mm": rainfall_mm,
+                "cumulative_3day_rainfall_mm": round(
+                    sum(available_rainfall[-3:]), 3
+                ),
+                "hazard": hazard,
+                "villages": village_results,
+                "peak_risk_level": peak["risk_level"],
+                "peak_composite_score": peak["composite_score"],
+                "alert": {
+                    "severity": severity,
+                    "status": status,
+                    "headline": (
+                        f"Historical replay: {severity} modeled risk on "
+                        f"{frame_date.isoformat()}"
+                    ),
+                    "message": (
+                        "Historical replay only; this frame reconstructs modeled risk "
+                        "from pinned rainfall and is not a current warning or an "
+                        "operational forecast."
+                    ),
+                    "actionable": peak["risk_level"] in actionable_levels,
+                    "changed_from_previous": changed,
+                    "previous_severity": previous_severity,
+                },
+            }
+        )
+        previous_severity = severity
+    return frames
 
 
 def run_hindcast(event: dict[str, Any]) -> dict[str, Any]:
@@ -149,6 +271,120 @@ def run_hindcast(event: dict[str, Any]) -> dict[str, Any]:
                 "optimistic sensitivity test, not a leakage-free operational replay."
             ),
         },
+    }
+
+
+def event_catalog() -> dict[str, Any]:
+    items = []
+    for event in list_pinned_events():
+        cases = event["forcing_cases"]
+        items.append(
+            {
+                "event_id": event["event_id"],
+                "name": event["name"],
+                "event_type": event["event_type"],
+                "impact_start": event["impact_start"],
+                "administrative_area": event["administrative_area"],
+                "affected_places": event["reported_evidence"]["affected_places"],
+                "cases": [
+                    {"case_id": case["case_id"], "label": case["label"]}
+                    for case in cases
+                ],
+                "case_ids": [case["case_id"] for case in cases],
+                "default_case_id": (
+                    "kedarnath-grid-sensitivity"
+                    if any(
+                        case["case_id"] == "kedarnath-grid-sensitivity"
+                        for case in cases
+                    )
+                    else cases[0]["case_id"]
+                ),
+            }
+        )
+    return {"items": items, "total": len(items)}
+
+
+def _replay_villages(
+    assessment: dict[str, Any], village_names: dict[str, str]
+) -> list[dict[str, Any]]:
+    return [
+        {
+            "id": village["village_id"],
+            "name": village_names[village["village_id"]],
+            "risk_level": village["risk_level"],
+            "composite_score": village["composite_score"],
+            "actionable": village["actionable"],
+        }
+        for village in assessment["villages"]
+    ]
+
+
+def build_event_replay(
+    event: dict[str, Any], case_id: str | None = None
+) -> dict[str, Any]:
+    """Build the API replay response solely from pinned fixture data."""
+    selected_case = _forcing_case(event, case_id)
+    report = run_hindcast(event)
+    selected_report = next(
+        case for case in report["cases"] if case["case_id"] == selected_case["case_id"]
+    )
+    _, villages = _load_demo_context(event)
+    village_names = {village["id"]: village["name"] for village in villages}
+
+    comparisons = []
+    for lead in (24, 48, 72):
+        assessment = selected_report["forecasts"][str(lead)]
+        replay_villages = _replay_villages(assessment, village_names)
+        peak = max(replay_villages, key=lambda item: item["composite_score"])
+        analysis_rainfall = float(selected_case["event_day_analysis_rainfall_mm"])
+        comparisons.append(
+            {
+                "lead_hours": lead,
+                "forecast_rainfall_mm": assessment["rainfall_mm"],
+                "event_day_analysis_rainfall_mm": analysis_rainfall,
+                "rainfall_shortfall_mm": round(
+                    analysis_rainfall - assessment["rainfall_mm"], 3
+                ),
+                "villages": replay_villages,
+                "peak_risk_level": peak["risk_level"],
+                "peak_composite_score": peak["composite_score"],
+                "actionable": assessment["any_actionable"],
+            }
+        )
+
+    expected = event["expected_conclusion"]
+    caveats = [*event["model_context"]["notes"], report["verdict"]["caveat"]]
+    return {
+        "event_id": event["event_id"],
+        "name": event["name"],
+        "event_type": event["event_type"],
+        "impact_start": event["impact_start"],
+        "historical_replay": True,
+        "administrative_area": event["administrative_area"],
+        "affected_places": event["reported_evidence"]["affected_places"],
+        "source_evidence": {
+            "reported": {
+                key: value
+                for key, value in event["reported_evidence"].items()
+                if key != "affected_places"
+            },
+            "sources": event["sources"],
+        },
+        "cases": event["forcing_cases"],
+        "selected_case_id": selected_case["case_id"],
+        "selected_case_label": selected_case["label"],
+        "selected_case": selected_case,
+        "timeline": create_timeline_frames(event, selected_case["case_id"]),
+        "pinned_forecast_comparison": comparisons,
+        "verdict": {
+            "retrospective_detection": expected["retrospective_detection"],
+            "reliable_actionable_advance_warning": expected[
+                "reliable_actionable_advance_warning"
+            ],
+            "reason": expected["reason"],
+            "scope": report["verdict"]["scope"],
+        },
+        "caveats": caveats,
     }
 
 

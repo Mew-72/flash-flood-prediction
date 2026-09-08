@@ -38,6 +38,7 @@ const EMPTY_SUMMARY = {
   wind: "—",
   soil: "—",
   responseTime: "—",
+  responseTimeDetail: "estimated catchment runoff travel time",
 };
 
 function formatApiError(error) {
@@ -260,6 +261,7 @@ export default function Dashboard() {
     const score = getSnapshotScore(peak, 0);
     const conditions = getSnapshotConditions(peak);
     const responseMinutes = peak.hazard?.catchment_hydrology?.estimated_response_time_minutes;
+    const provisional = peak.assessment_mode === "provisional_defaults";
     return {
       score,
       risk: getRiskLevel(peak, score),
@@ -270,14 +272,19 @@ export default function Dashboard() {
       wind: conditions.wind ?? "—",
       soil: conditions.soil ?? "—",
       responseTime: Number.isFinite(Number(responseMinutes))
-        ? `${Math.round(Number(responseMinutes))} min`
+        ? `${provisional ? "~" : ""}${Math.round(Number(responseMinutes))} min`
         : "—",
+      responseTimeDetail: provisional
+        ? "provisional runoff travel time · not warning lead"
+        : "estimated runoff travel time · not warning lead",
     };
   }, [visibleSnapshots]);
 
   const averageSlope = useMemo(() => {
     const values = villageRecords
-      .map((village) => Number(village.slope_deg))
+      .map((village) => village.slope_deg)
+      .filter((value) => value != null && value !== "")
+      .map(Number)
       .filter(Number.isFinite);
     if (values.length === 0) return "—";
     return `${Math.round(values.reduce((sum, value) => sum + value, 0) / values.length)}°`;
@@ -508,7 +515,12 @@ export default function Dashboard() {
             <MetricCard symbol="◉" name="Humidity" value={summary.humidity} detail="OpenWeather relative humidity" />
             <MetricCard symbol="↝" name="Wind" value={summary.wind} detail="speed and direction" />
             <MetricCard symbol="⌁" name="Slope" value={averageSlope} detail={`terrain · soil ${summary.soil}`} />
-            <MetricCard symbol="↘" name="Response time" value={summary.responseTime} detail="indicative catchment Tc" />
+            <MetricCard
+              symbol="↘"
+              name="Catchment response"
+              value={summary.responseTime}
+              detail={summary.responseTimeDetail}
+            />
           </div>
 
           <div className="panel-section">
@@ -563,7 +575,7 @@ export default function Dashboard() {
 
 function MetricCard({ symbol, name, value, detail }) {
   return (
-    <div className="metric-card">
+    <div className="metric-card" title={detail}>
       <span className="metric-symbol" aria-hidden="true">{symbol}</span>
       <div>
         <div className="metric-name">{name}</div>

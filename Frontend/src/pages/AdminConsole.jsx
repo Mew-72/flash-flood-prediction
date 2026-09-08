@@ -8,13 +8,13 @@ import {
   getAllVillages,
   getHealth,
   getPeakSnapshot,
-  getReplay,
   getRiskLevel,
   getSnapshotConditions,
   getSnapshotScore,
   simulate,
 } from "../api";
 import Header from "../components/Header";
+import HistoricalReplay from "../components/HistoricalReplay";
 import { DISTRICTS, STATES } from "../data";
 
 const NAV_ITEMS = [
@@ -65,19 +65,6 @@ function batchWarnings(payload) {
     .join("; ");
 }
 
-function isValidDate(value) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
-  const date = new Date(`${value}T00:00:00Z`);
-  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
-}
-
-function addDays(dateString, amount) {
-  if (!isValidDate(dateString)) return `Day ${amount + 1}`;
-  const date = new Date(`${dateString}T00:00:00Z`);
-  date.setUTCDate(date.getUTCDate() + amount);
-  return date.toISOString().slice(0, 10);
-}
-
 export default function AdminConsole() {
   const [activeSection, setActiveSection] = useState("send");
   const [healthState, setHealthState] = useState({ phase: "loading", data: null, error: "" });
@@ -104,6 +91,7 @@ export default function AdminConsole() {
   const [noTargetMessage, setNoTargetMessage] = useState("");
   const [sendResult, setSendResult] = useState(null);
   const [sending, setSending] = useState(false);
+  const [replayDraft, setReplayDraft] = useState(null);
   const [scenarioForm, setScenarioForm] = useState({
     villageId: "",
     rainfall: "",
@@ -113,19 +101,9 @@ export default function AdminConsole() {
   const [scenarioResult, setScenarioResult] = useState(null);
   const [scenarioError, setScenarioError] = useState("");
   const [scenarioLoading, setScenarioLoading] = useState(false);
-  const [replayForm, setReplayForm] = useState({
-    villageId: "",
-    startDate: "",
-    endDate: "",
-  });
-  const [replayResult, setReplayResult] = useState(null);
-  const [replayError, setReplayError] = useState("");
-  const [replayLoading, setReplayLoading] = useState(false);
-
   const alertControllerRef = useRef(null);
   const historyControllerRef = useRef(null);
   const scenarioControllerRef = useRef(null);
-  const replayControllerRef = useRef(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -168,10 +146,6 @@ export default function AdminConsole() {
           selectedVillageId: chooseValidVillage(current.selectedVillageId),
         }));
         setScenarioForm((current) => ({
-          ...current,
-          villageId: chooseValidVillage(current.villageId),
-        }));
-        setReplayForm((current) => ({
           ...current,
           villageId: chooseValidVillage(current.villageId),
         }));
@@ -306,7 +280,6 @@ export default function AdminConsole() {
     alertControllerRef.current?.abort();
     historyControllerRef.current?.abort();
     scenarioControllerRef.current?.abort();
-    replayControllerRef.current?.abort();
   }, []);
 
   const dataMode = healthState.data?.data_mode || riskBatchMeta?.data_mode;
@@ -340,6 +313,10 @@ export default function AdminConsole() {
     }
     return `${description} (${selectedTargetVillages.length}): ${selectedTargetVillages.map(villageLabel).join(", ")}`;
   }, [dataMode, form.district, form.target, selectedTargetVillages]);
+
+  const effectiveAlertTarget = replayDraft
+    ? `HISTORICAL SIMULATION — ${replayDraft.target}; forcing case ${replayDraft.caseLabel}`
+    : serializedTarget;
 
   const monitorSnapshot = useMemo(
     () => getPeakSnapshot(currentSnapshots),
@@ -434,7 +411,7 @@ export default function AdminConsole() {
     event.preventDefault();
     const message = form.message.trim();
     if (!message || sending) return;
-    if (!serializedTarget) {
+    if (!effectiveAlertTarget) {
       setSendResult({ text: noTargetMessage || "No valid alert target is available.", tone: "warning" });
       return;
     }
@@ -443,18 +420,24 @@ export default function AdminConsole() {
     historyControllerRef.current?.abort();
     const controller = new AbortController();
     alertControllerRef.current = controller;
+    const historicalMessage = replayDraft && !message.startsWith("[HISTORICAL SIMULATION")
+      ? `[HISTORICAL SIMULATION — NOT LIVE] ${message}`
+      : message;
     const payload = {
       state: form.state,
-      district: dataMode === "demo" ? "demo" : form.district,
-      target: serializedTarget,
+      district: replayDraft?.area || (dataMode === "demo" ? "demo" : form.district),
+      target: effectiveAlertTarget,
       severity: form.severity,
-      message,
-      issued_by: "administrator",
+      message: historicalMessage,
+      issued_by: replayDraft ? "administrator (historical simulation)" : "administrator",
       issued_at: new Date().toISOString(),
     };
 
     setSending(true);
-    setSendResult({ text: "Sending…", tone: "sending" });
+    setSendResult({
+      text: replayDraft ? "Recording historical simulation alert…" : "Sending…",
+      tone: "sending",
+    });
 
     try {
       const createdAlert = await createAlert(payload, { signal: controller.signal });
@@ -464,7 +447,9 @@ export default function AdminConsole() {
       ].slice(0, 50));
       setHistoryError("");
       setSendResult({
-        text: `Alert ${createdAlert.id} was accepted by the backend.`,
+        text: replayDraft
+          ? `Historical simulation alert ${createdAlert.id} was recorded by the backend.`
+          : `Alert ${createdAlert.id} was accepted by the backend.`,
         tone: "success",
       });
 
@@ -474,7 +459,7 @@ export default function AdminConsole() {
         setHistory(Array.isArray(refreshed?.items) ? refreshed.items : [createdAlert]);
       } catch (refreshError) {
         if (!isAbortError(refreshError)) {
-          setHistoryError(`Alert was sent, but history refresh failed. ${errorMessage(refreshError)}`);
+          setHistoryError(`${replayDraft ? "Historical simulation alert was recorded" : "Alert was sent"}, but history refresh failed. ${errorMessage(refreshError)}`);
         }
       } finally {
         if (!controller.signal.aborted) setHistoryLoading(false);
@@ -542,40 +527,50 @@ export default function AdminConsole() {
     }
   }
 
-  async function runReplay(event) {
-    event.preventDefault();
-    replayControllerRef.current?.abort();
-    setReplayError("");
-    setReplayResult(null);
+  function copyReplayAlertToDraft(context) {
+    setReplayDraft(context);
+    setForm((current) => ({
+      ...current,
+      severity: context.severity,
+      message: context.message,
+    }));
+    setSendResult({
+      text: "Historical simulation alert copied. Review it before recording; it cannot be labeled live.",
+      tone: "success",
+    });
+    setActiveSection("send");
+  }
 
-    if (!replayForm.villageId) {
-      setReplayError("Select a village to replay.");
-      return;
-    }
-    if (!isValidDate(replayForm.startDate) || !isValidDate(replayForm.endDate)) {
-      setReplayError("Enter valid start and end dates.");
-      return;
-    }
-    if (replayForm.startDate > replayForm.endDate) {
-      setReplayError("Start date must be on or before end date.");
-      return;
-    }
+  function clearReplayDraft() {
+    setReplayDraft(null);
+    setForm((current) => ({
+      ...current,
+      message: current.message.startsWith("[HISTORICAL SIMULATION") ? "" : current.message,
+    }));
+    setSendResult(null);
+  }
 
-    const controller = new AbortController();
-    replayControllerRef.current = controller;
-    setReplayLoading(true);
-    try {
-      setReplayResult(await getReplay(
-        replayForm.villageId,
-        { start_date: replayForm.startDate, end_date: replayForm.endDate },
-        { signal: controller.signal },
-      ));
-    } catch (error) {
-      if (!isAbortError(error)) setReplayError(errorMessage(error));
-    } finally {
-      if (!controller.signal.aborted) setReplayLoading(false);
-      if (replayControllerRef.current === controller) replayControllerRef.current = null;
-    }
+  async function recordReplayAlert(context) {
+    const payload = {
+      state: form.state || "Uttarakhand",
+      district: context.area || "Historical event",
+      target: `HISTORICAL SIMULATION — ${context.target}; forcing case ${context.caseLabel}`,
+      severity: context.severity,
+      message: context.message.startsWith("[HISTORICAL SIMULATION")
+        ? context.message
+        : `[HISTORICAL SIMULATION — NOT LIVE] ${context.message}`,
+      issued_by: "administrator (historical simulation)",
+      issued_at: context.date
+        ? `${context.date}T12:00:00+05:30`
+        : new Date().toISOString(),
+    };
+    const createdAlert = await createAlert(payload);
+    setHistory((current) => [
+      createdAlert,
+      ...current.filter((alert) => alert.id !== createdAlert.id),
+    ].slice(0, 50));
+    setHistoryError("");
+    return createdAlert;
   }
 
   const previewTone = form.severity === "CRITICAL"
@@ -689,6 +684,15 @@ export default function AdminConsole() {
               <div className="admin-grid">
                 <form className="form-card" onSubmit={sendAlert}>
                   <div className="form-title">Alert configuration</div>
+                  {replayDraft && (
+                    <div className="historical-draft-notice" role="status">
+                      <div>
+                        <strong>Historical simulation draft — never live</strong>
+                        <span>{replayDraft.eventName} · {formatDateTime(replayDraft.date)} · {replayDraft.caseLabel}</span>
+                      </div>
+                      <button type="button" onClick={clearReplayDraft}>Return to live alert draft</button>
+                    </div>
+                  )}
 
                   <SelectField label="State" name="state" value={form.state} onChange={updateField} options={STATES} />
                   <SelectField label="District" name="district" value={form.district} onChange={updateField} options={DISTRICTS} />
@@ -742,9 +746,9 @@ export default function AdminConsole() {
                   <div className={`preview-alert ${previewTone}`}>
                     <div className="alert-preview-icon">!</div>
                     <div>
-                      <strong>{form.severity} Alert Preview</strong>
+                      <strong>{replayDraft ? "HISTORICAL SIMULATION Alert Preview" : `${form.severity} Alert Preview`}</strong>
                       <p>{form.message || "Your message will appear here."}</p>
-                      <small>{serializedTarget || noTargetMessage || "Resolving exact backend targets…"}</small>
+                      <small>{effectiveAlertTarget || noTargetMessage || "Resolving exact backend targets…"}</small>
                     </div>
                   </div>
 
@@ -753,9 +757,9 @@ export default function AdminConsole() {
                   <button
                     className="primary-btn"
                     type="submit"
-                    disabled={sending || riskLoading || !serializedTarget}
+                    disabled={sending || (!replayDraft && riskLoading) || !effectiveAlertTarget}
                   >
-                    {sending ? "Sending…" : riskLoading ? "Loading risk preview…" : "Send Alert"}
+                    {sending ? replayDraft ? "Recording simulation…" : "Sending…" : replayDraft ? "Record Historical Simulation Alert" : riskLoading ? "Loading risk preview…" : "Send Alert"}
                   </button>
                   <div className={`form-result ${sendResult?.tone ?? ""}`} aria-live="polite">
                     {sendResult?.text}
@@ -816,7 +820,11 @@ export default function AdminConsole() {
                         <td><span className={`risk-badge ${String(alert.severity).toLowerCase()}`}>{alert.severity}</span></td>
                         <td>{alert.target}</td>
                         <td>{alert.message}</td>
-                        <td>{alert.status || "—"}</td>
+                        <td>
+                          {String(alert.issued_by || alert.message || "").toLowerCase().includes("historical simulation")
+                            ? <span className="historical-history-label">Historical simulation</span>
+                            : alert.status || "—"}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -920,79 +928,11 @@ export default function AdminConsole() {
           )}
 
           {activeSection === "replay" && (
-            <section className="admin-section active">
-              <PageHeading title="Historical Replay" description="Replay an inclusive historical weather window through GET /replay/{id}." />
-              <form className="form-card replay-form" onSubmit={runReplay}>
-                <div className="form-title">Replay inputs</div>
-                <label>
-                  Village
-                  <select
-                    value={replayForm.villageId}
-                    onChange={(event) => setReplayForm((current) => ({ ...current, villageId: event.target.value }))}
-                    required
-                    disabled={villagesLoading || villages.length === 0}
-                  >
-                    {villages.length === 0 && <option value="">No villages available</option>}
-                    {villages.map((village) => (
-                      <option value={village.id} key={village.id}>{villageLabel(village)}</option>
-                    ))}
-                  </select>
-                </label>
-                <label>
-                  Start date
-                  <input
-                    type="date"
-                    value={replayForm.startDate}
-                    max={replayForm.endDate || undefined}
-                    onChange={(event) => setReplayForm((current) => ({ ...current, startDate: event.target.value }))}
-                    required
-                  />
-                </label>
-                <label>
-                  End date
-                  <input
-                    type="date"
-                    value={replayForm.endDate}
-                    min={replayForm.startDate || undefined}
-                    onChange={(event) => setReplayForm((current) => ({ ...current, endDate: event.target.value }))}
-                    required
-                  />
-                </label>
-                <button className="primary-btn" type="submit" disabled={replayLoading || villages.length === 0}>
-                  {replayLoading ? "Loading replay…" : "Run Historical Replay"}
-                </button>
-                {replayError && <div className="form-result warning" aria-live="polite">{replayError}</div>}
-              </form>
-
-              {replayResult && (
-                <div className="table-card replay-table">
-                  <div className="form-title">
-                    {replayResult.village_id} / {replayResult.catchment_id} — {replayResult.start_date} to {replayResult.end_date}
-                  </div>
-                  <table>
-                    <thead><tr><th>Day</th><th>Date</th><th>Rainfall</th><th>Risk</th><th>Score</th></tr></thead>
-                    <tbody>
-                      {Array.isArray(replayResult.timeline) && replayResult.timeline.length > 0 ? (
-                        replayResult.timeline.map((entry, index) => {
-                          const score = getSnapshotScore(entry, 0);
-                          const risk = getRiskLevel(entry, score);
-                          return (
-                            <tr key={`${entry.day_index}-${index}`}>
-                              <td>{entry.day_index ?? index + 1}</td>
-                              <td>{addDays(replayResult.start_date, Number(entry.day_index ?? index + 1) - 1)}</td>
-                              <td>{formatNumber(entry.rainfall_mm, " mm")}</td>
-                              <td><span className={`risk-badge ${risk.toLowerCase()}`}>{risk}</span></td>
-                              <td>{score}/100</td>
-                            </tr>
-                          );
-                        })
-                      ) : (
-                        <tr><td className="empty-history" colSpan="5">The replay returned an empty timeline.</td></tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              )}
+            <section className="admin-section active replay-admin-section">
+              <HistoricalReplay
+                onCopyAlert={copyReplayAlertToDraft}
+                onRecordAlert={recordReplayAlert}
+              />
             </section>
           )}
 

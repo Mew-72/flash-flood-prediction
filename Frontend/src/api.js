@@ -235,6 +235,17 @@ export function getReplay(
   });
 }
 
+export function getReplayEvents(options = {}) {
+  return apiRequest("/replay/events", options);
+}
+
+export function getEventReplay(eventId, { case_id } = {}, options = {}) {
+  return apiRequest(`/replay/events/${pathSegment(eventId, "eventId")}`, {
+    ...options,
+    params: { case_id },
+  });
+}
+
 export function createAlert(payload, options = {}) {
   return apiRequest("/v1/admin/alerts", {
     ...options,
@@ -451,6 +462,10 @@ function windDirection(degrees) {
 }
 
 export function getSnapshotConditions(snapshot) {
+  const weatherSource = String(snapshot?.provenance?.weather_source ?? "");
+  const currentObservationHasNoRainField = weatherSource.includes(
+    "openweather-current:no-rain-field=0",
+  );
   const hasOneHourRainfall = snapshot?.precipitation_1h_mm != null;
   const hasThreeHourRainfall = snapshot?.precipitation_3h_mm != null;
   const hasSixHourRainfall = snapshot?.precipitation_6h_mm != null;
@@ -486,15 +501,17 @@ export function getSnapshotConditions(snapshot) {
 
   return {
     rainfall,
-    rainfallLabel: hasThreeHourRainfall
-      ? "3-hour accumulation"
-      : hasOneHourRainfall
-        ? "1-hour accumulation"
-        : hasSixHourRainfall
-          ? "6-hour accumulation"
-          : rainValue == null
-            ? "rainfall unavailable"
-            : "24-hour accumulation",
+    rainfallLabel: currentObservationHasNoRainField
+      ? "current observation · no recent rain field"
+      : hasThreeHourRainfall
+        ? "3-hour accumulation"
+        : hasOneHourRainfall
+          ? "1-hour accumulation"
+          : hasSixHourRainfall
+            ? "6-hour accumulation"
+            : rainValue == null
+              ? "rainfall unavailable"
+              : "24-hour accumulation",
     soil,
     temperature: formatMeasurement(snapshot?.temperature_c, " °C", 1),
     feelsLike: formatMeasurement(snapshot?.feels_like_c, " °C", 1),

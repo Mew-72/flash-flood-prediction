@@ -12,9 +12,12 @@ import {
   getRiskLevel,
   getSnapshotConditions,
   getSnapshotScore,
+  getRiskSnapshots,
   simulate,
 } from "../api";
 import Header from "../components/Header";
+import DistrictAnalysisChart from "../components/ui/DistrictAnalysisChart";
+import IndiaSmsMap from "../components/ui/IndiaSmsMap";
 import { DISTRICTS, STATES } from "../data";
 
 const NAV_ITEMS = [
@@ -56,6 +59,35 @@ function formatDateTime(value) {
 function formatNumber(value, suffix = "") {
   const number = Number(value);
   return Number.isFinite(number) ? `${number.toFixed(2)}${suffix}` : "—";
+}
+
+function numericCondition(value) {
+  if (value == null) return null;
+  const number = Number.parseFloat(String(value));
+  return Number.isFinite(number) ? number : null;
+}
+
+function snapshotWind(snapshot) {
+  const value = snapshot?.wind_speed_kmh ?? snapshot?.wind_speed_10m ?? snapshot?.wind_speed;
+  return numericCondition(value);
+}
+
+function analysisChartData(payload) {
+  return flattenSnapshots(payload)
+    .sort((left, right) => new Date(left.valid_at || 0) - new Date(right.valid_at || 0))
+    .slice(0, 24)
+    .map((snapshot, index) => {
+      const conditions = getSnapshotConditions(snapshot);
+      const validAt = snapshot.valid_at ? new Date(snapshot.valid_at) : null;
+      return {
+        label: validAt && !Number.isNaN(validAt.getTime())
+          ? validAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+          : `T${index + 1}`,
+        rainfall: numericCondition(conditions.rainfall),
+        soil: numericCondition(conditions.soil),
+        wind: snapshotWind(snapshot),
+      };
+    });
 }
 
 function batchWarnings(payload) {
@@ -121,11 +153,16 @@ export default function AdminConsole() {
   const [replayResult, setReplayResult] = useState(null);
   const [replayError, setReplayError] = useState("");
   const [replayLoading, setReplayLoading] = useState(false);
+  const [monitorDistrict, setMonitorDistrict] = useState("");
+  const [monitorAnalysis, setMonitorAnalysis] = useState(null);
+  const [monitorError, setMonitorError] = useState("");
+  const [monitorLoading, setMonitorLoading] = useState(false);
 
   const alertControllerRef = useRef(null);
   const historyControllerRef = useRef(null);
   const scenarioControllerRef = useRef(null);
   const replayControllerRef = useRef(null);
+  const monitorControllerRef = useRef(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -307,6 +344,7 @@ export default function AdminConsole() {
     historyControllerRef.current?.abort();
     scenarioControllerRef.current?.abort();
     replayControllerRef.current?.abort();
+    monitorControllerRef.current?.abort();
   }, []);
 
   const dataMode = healthState.data?.data_mode || riskBatchMeta?.data_mode;
@@ -341,81 +379,6 @@ export default function AdminConsole() {
     return `${description} (${selectedTargetVillages.length}): ${selectedTargetVillages.map(villageLabel).join(", ")}`;
   }, [dataMode, form.district, form.target, selectedTargetVillages]);
 
-  const monitorSnapshot = useMemo(
-    () => getPeakSnapshot(currentSnapshots),
-    [currentSnapshots],
-  );
-
-  const monitors = useMemo(() => {
-    const conditions = getSnapshotConditions(monitorSnapshot);
-    const provenance = monitorSnapshot?.provenance || healthState.data?.provenance;
-    const exposure = monitorSnapshot?.details?.village_exposure;
-    const slope = monitorSnapshot?.details?.supplemental_slope_stability;
-    const monitoredVillage = villages.find(
-      (village) => village.id === monitorSnapshot?.village_id,
-    );
-    const hasSnapshot = Boolean(monitorSnapshot);
-    const sourceNames = Array.isArray(provenance?.static_sources)
-      ? provenance.static_sources.join(", ")
-      : "No source metadata returned";
-
-    return [
-      {
-        symbol: "☔",
-        name: "Rainfall",
-        value: conditions.rainfall || "Unavailable",
-        detail: hasSnapshot ? `Valid ${formatDateTime(monitorSnapshot.valid_at)}` : "No batch snapshot",
-        status: hasSnapshot ? "LIVE DATA" : "UNAVAILABLE",
-        tone: hasSnapshot ? "online" : "offline",
-      },
-      {
-        symbol: "◉",
-        name: "Soil Moisture",
-        value: conditions.soil || "Unavailable",
-        detail: hasSnapshot ? `For ${monitorSnapshot.village_name}` : "No batch snapshot",
-        status: hasSnapshot ? "LIVE DATA" : "UNAVAILABLE",
-        tone: hasSnapshot ? "online" : "offline",
-      },
-      {
-        symbol: "▱",
-        name: "DEM / Slope",
-        value: slope?.risk_class ? `${String(slope.risk_class).toUpperCase()} stability risk` : "Unavailable",
-        detail: `Static sources: ${sourceNames}`,
-        status: provenance ? "PROVENANCE" : "UNAVAILABLE",
-        tone: provenance ? "ready" : "offline",
-      },
-      {
-        symbol: "⌁",
-        name: "Streams",
-        value: Number.isFinite(Number(exposure?.distance_to_stream_m))
-          ? `${Math.round(Number(exposure.distance_to_stream_m))} m`
-          : "Unavailable",
-        detail: "Village distance to stream",
-        status: hasSnapshot ? "SNAPSHOT" : "UNAVAILABLE",
-        tone: hasSnapshot ? "ready" : "offline",
-      },
-      {
-        symbol: "◈",
-        name: "Historical Events",
-        value: Number.isFinite(Number(monitoredVillage?.historical_event_count))
-          ? String(monitoredVillage.historical_event_count)
-          : "Unavailable",
-        detail: monitoredVillage ? `Catalog record for ${monitoredVillage.name}` : sourceNames,
-        status: monitoredVillage ? "CATALOG" : "UNAVAILABLE",
-        tone: monitoredVillage ? "ready" : "offline",
-      },
-      {
-        symbol: "◉",
-        name: "Weather Source",
-        value: provenance?.weather_source || "Not reported",
-        detail: provenance?.retrieved_at
-          ? `Retrieved ${formatDateTime(provenance.retrieved_at)}`
-          : `Data mode: ${provenance?.data_mode || dataMode || "unknown"}`,
-        status: provenance?.weather_source ? "PROVENANCE" : "UNVERIFIED",
-        tone: provenance?.weather_source ? "online" : "offline",
-      },
-    ];
-  }, [dataMode, healthState.data?.provenance, monitorSnapshot, villages]);
 
   const scenarioSummary = useMemo(() => {
     const result = scenarioResult?.result;
@@ -542,6 +505,40 @@ export default function AdminConsole() {
     }
   }
 
+  async function analyzeDistrict(event) {
+    event.preventDefault();
+    const district = monitorDistrict.trim();
+    if (!district) {
+      setMonitorError("Enter a district name before analyzing.");
+      setMonitorAnalysis(null);
+      return;
+    }
+
+    monitorControllerRef.current?.abort();
+    const controller = new AbortController();
+    monitorControllerRef.current = controller;
+    setMonitorLoading(true);
+    setMonitorError("");
+    setMonitorAnalysis(null);
+    try {
+      const payload = await getRiskSnapshots(
+        { district, include_forecast: true, limit: 500 },
+        { signal: controller.signal },
+      );
+      const data = analysisChartData(payload);
+      if (data.length === 0) {
+        setMonitorError(`No risk snapshots were returned for ${district}.`);
+        return;
+      }
+      setMonitorAnalysis({ district, data });
+    } catch (error) {
+      if (!isAbortError(error)) setMonitorError(errorMessage(error));
+    } finally {
+      if (!controller.signal.aborted) setMonitorLoading(false);
+      if (monitorControllerRef.current === controller) monitorControllerRef.current = null;
+    }
+  }
+
   async function runReplay(event) {
     event.preventDefault();
     replayControllerRef.current?.abort();
@@ -626,7 +623,7 @@ export default function AdminConsole() {
   ];
 
   return (
-    <>
+    <div className="admin-shell">
       <Header
         admin
         health={healthState.phase === "success" ? healthState.data : healthState.phase === "error" ? null : undefined}
@@ -792,6 +789,18 @@ export default function AdminConsole() {
             <section className="admin-section active">
               <PageHeading title="Alert History" description="Alerts returned by GET /v1/admin/alerts (prototype process-memory storage)." />
               {historyError && <div className="form-result warning">{historyError}</div>}
+              <div className="history-summary-grid">
+                <div className="history-summary-card">
+                  <span>TOTAL SMS ALERT RECORDS</span>
+                  <strong>{history.length.toLocaleString()}</strong>
+                  <small>Sent alerts currently held by the backend</small>
+                </div>
+                <div className="history-summary-card">
+                  <span>STATES REACHED</span>
+                  <strong>{new Set(history.map((alert) => alert.state).filter(Boolean)).size}</strong>
+                  <small>Unique states represented in alert history</small>
+                </div>
+              </div>
               <div className="table-card">
                 <table>
                   <thead><tr><th>Time</th><th>Location</th><th>Severity</th><th>Target</th><th>Message</th><th>Status</th></tr></thead>
@@ -813,6 +822,7 @@ export default function AdminConsole() {
                   </tbody>
                 </table>
               </div>
+              <IndiaSmsMap alerts={history} />
             </section>
           )}
 
@@ -989,16 +999,33 @@ export default function AdminConsole() {
 
           {activeSection === "monitor" && (
             <section className="admin-section active">
-              <PageHeading title="Data Monitor" description="Conditions and provenance from the latest exact backend risk batch." />
-              {riskError && <div className="form-result warning">{riskError}</div>}
-              <div className="monitor-grid">
-                {monitors.map((monitor) => (
-                  <div className="monitor-card" key={monitor.name}>
-                    <span>{monitor.symbol}</span><strong>{monitor.name}</strong><b>{monitor.value}</b>
-                    <small>{monitor.detail}</small><i className={monitor.tone}>{monitor.status}</i>
-                  </div>
-                ))}
-              </div>
+              <PageHeading title="District Data Monitor" description="Analyze district rainfall, soil moisture, and wind conditions from backend risk snapshots." />
+              <form className="district-analysis-search" onSubmit={analyzeDistrict}>
+                <label htmlFor="monitor-district" className="sr-only">District name</label>
+                <span aria-hidden="true">⌕</span>
+                <input
+                  id="monitor-district"
+                  type="search"
+                  value={monitorDistrict}
+                  onChange={(event) => setMonitorDistrict(event.target.value)}
+                  placeholder="Enter district name, e.g. Rudraprayag"
+                  autoComplete="off"
+                />
+                <button type="submit" disabled={monitorLoading}>
+                  {monitorLoading ? "Analyzing…" : "Analyze"}
+                </button>
+              </form>
+              {monitorError && <div className="form-result warning monitor-analysis-error">{monitorError}</div>}
+              {!monitorAnalysis && !monitorError && (
+                <div className="monitor-empty-state">
+                  <span>⌁</span>
+                  <strong>Ready for district analysis</strong>
+                  <p>Enter a district above and click Analyze to generate the environmental graph.</p>
+                </div>
+              )}
+              {monitorAnalysis && (
+                <DistrictAnalysisChart data={monitorAnalysis.data} district={monitorAnalysis.district} />
+              )}
             </section>
           )}
 
@@ -1018,7 +1045,7 @@ export default function AdminConsole() {
           )}
         </section>
       </main>
-    </>
+    </div>
   );
 }
 

@@ -20,8 +20,10 @@ import RiskMap from "../components/RiskMap";
 import VillageModal from "../components/VillageModal";
 import {
   DEFAULT_VISIBLE_LAYERS,
+  DISTRICTS,
   MAP_LAYERS,
   STATES,
+  SUPPORT_LAYERS,
   riskColor,
 } from "../data";
 
@@ -43,14 +45,15 @@ function snapshotForVillage(snapshots, villageId) {
 }
 
 export default function Dashboard() {
-  const [state, setState] = useState("Uttarakhand");
+  const [state, setState] = useState("");
   const [district, setDistrict] = useState("");
   const [catchmentId, setCatchmentId] = useState("");
   const [visibleLayers, setVisibleLayers] = useState(DEFAULT_VISIBLE_LAYERS);
+  const [activeLayer, setActiveLayer] = useState("risk");
   const [health, setHealth] = useState(undefined);
   const [villageRecords, setVillageRecords] = useState([]);
   const [catchments, setCatchments] = useState([]);
-  const [availableDistricts, setAvailableDistricts] = useState([]);
+  const [locationCatalog, setLocationCatalog] = useState([]);
   const [snapshotPayload, setSnapshotPayload] = useState(null);
   const [viewPeriod, setViewPeriod] = useState("current");
   const [forecastLead, setForecastLead] = useState(24);
@@ -97,18 +100,15 @@ export default function Dashboard() {
         setLastUpdated(`Updated ${new Date(risks.generated_at).toLocaleString()}`);
 
         if (!district) {
-          const districts = new Set(
-            [...villageCatalog.items, ...catchmentCatalog.items]
-              .map((item) => item.district)
-              .filter(Boolean),
-          );
-          setAvailableDistricts([...districts].sort((left, right) => left.localeCompare(right)));
+          const locations = villageCatalog.items
+            .map((item) => ({
+              state: item.admin?.state?.name || "Uttarakhand",
+              district: item.admin?.district?.name || item.district,
+            }))
+            .filter((item) => item.district);
+          setLocationCatalog((current) => current.length > 0 ? current : locations);
+          if (!state && locations[0]?.state) setState(locations[0].state);
         }
-
-        const stateName = villageCatalog.items
-          .map((item) => item.admin?.state?.name)
-          .find(Boolean);
-        if (stateName) setState(stateName);
       } catch (error) {
         if (error.name !== "AbortError") {
           setHealth(null);
@@ -258,11 +258,42 @@ export default function Dashboard() {
     setReloadToken((value) => value + 1);
   }, []);
 
+  function selectThematicLayer(layerId) {
+    setActiveLayer(layerId);
+    setVisibleLayers((current) => ({
+      ...current,
+      ...Object.fromEntries(MAP_LAYERS.map((layer) => [layer.id, layer.id === layerId])),
+    }));
+  }
+
   function toggleLayer(layerId) {
     setVisibleLayers((current) => ({
       ...current,
       [layerId]: !current[layerId],
     }));
+  }
+
+  const availableStates = useMemo(
+    () => [...new Set([...STATES, ...locationCatalog.map((item) => item.state)].filter(Boolean))]
+      .sort((left, right) => left.localeCompare(right)),
+    [locationCatalog],
+  );
+
+  const availableDistricts = useMemo(() => {
+    const catalogDistricts = locationCatalog
+      .filter((item) => !state || item.state === state)
+      .map((item) => item.district)
+      .filter((item) => item && item.toLowerCase() !== "demo");
+    const fallbackDistricts = state === "Uttarakhand" ? DISTRICTS : [];
+    return [...new Set([...catalogDistricts, ...fallbackDistricts])]
+      .sort((left, right) => left.localeCompare(right));
+  }, [locationCatalog, state]);
+
+  function changeState(event) {
+    setState(event.target.value);
+    setDistrict("");
+    setCatchmentId("");
+    setSelectedVillageId(null);
   }
 
   function changeDistrict(event) {
@@ -284,11 +315,10 @@ export default function Dashboard() {
               id="state-select"
               className="select"
               value={state}
-              onChange={(event) => setState(event.target.value)}
-              disabled
-              title="The backend currently exposes district and catchment filters; state is catalog metadata."
+              onChange={changeState}
             >
-              {[...new Set([state, ...STATES])].map((item) => <option key={item}>{item}</option>)}
+              <option value="">Select a state</option>
+              {availableStates.map((item) => <option key={item}>{item}</option>)}
             </select>
 
             <label className="field-label" htmlFor="district-select">District</label>
@@ -298,7 +328,7 @@ export default function Dashboard() {
               value={district}
               onChange={changeDistrict}
             >
-              <option value="">All available districts</option>
+              <option value="">Select a district</option>
               {availableDistricts.map((item) => <option key={item}>{item}</option>)}
             </select>
 
@@ -356,8 +386,25 @@ export default function Dashboard() {
           </section>
 
           <section className="side-section">
-            <div className="section-heading">MAP LAYERS</div>
-            {MAP_LAYERS.map((layer) => (
+            <div className="section-heading">INDIA THEMATIC LAYER</div>
+            <div className="thematic-layers" role="radiogroup" aria-label="India thematic map layer">
+              {MAP_LAYERS.map((layer) => (
+                <button
+                  className={`layer-row thematic ${activeLayer === layer.id ? "active" : ""}`}
+                  key={layer.id}
+                  type="button"
+                  role="radio"
+                  aria-checked={activeLayer === layer.id}
+                  onClick={() => selectThematicLayer(layer.id)}
+                >
+                  <span className={`layer-icon ${layer.iconClass}`} />
+                  <span>{layer.label}</span>
+                  <span className="layer-arrow">›</span>
+                </button>
+              ))}
+            </div>
+            <div className="section-heading overlay-heading">MAP OVERLAYS</div>
+            {SUPPORT_LAYERS.map((layer) => (
               <label className="layer-row" key={layer.id}>
                 <input
                   type="checkbox"
@@ -371,11 +418,12 @@ export default function Dashboard() {
           </section>
 
           <section className="side-section">
-            <div className="section-heading">RISK LEGEND</div>
-            <div className="legend-item"><span className="legend-box low" />Low <span>0–24</span></div>
-            <div className="legend-item"><span className="legend-box moderate" />Moderate <span>25–49</span></div>
-            <div className="legend-item"><span className="legend-box high" />High <span>50–74</span></div>
-            <div className="legend-item"><span className="legend-box critical" />Critical <span>75–100</span></div>
+            <div className="section-heading">MAP CLASSIFICATION</div>
+            <div className="legend-item"><span className="legend-box very-low" />Very Low <span>Safe</span></div>
+            <div className="legend-item"><span className="legend-box low" />Low <span>Normal</span></div>
+            <div className="legend-item"><span className="legend-box moderate" />Moderate <span>Watch</span></div>
+            <div className="legend-item"><span className="legend-box high" />High <span>Warning</span></div>
+            <div className="legend-item"><span className="legend-box very-high" />Very High <span>Action</span></div>
           </section>
 
           <div className="side-footer">
@@ -389,13 +437,14 @@ export default function Dashboard() {
         <section className="map-area">
           <RiskMap
             state={state}
-            district={district || "All available districts"}
+            district={district || "Select a district"}
             villages={villages}
             catchments={catchments}
             selectedVillage={selectedVillage}
             regionalScore={summary.score}
             regionalRisk={summary.risk}
             visibleLayers={visibleLayers}
+            activeLayer={activeLayer}
             onSelectVillage={(village) => setSelectedVillageId(village.id)}
             onRefresh={refreshSnapshot}
             refreshing={refreshing}

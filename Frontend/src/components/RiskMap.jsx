@@ -1,78 +1,126 @@
 import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 
-import { DEFAULT_RISK_ZONES, REGION_CENTER, riskColor } from "../data";
+import { getWeatherTileUrl } from "../api";
+import { REGION_CENTER, riskColor } from "../data";
 
-function addStaticOverlays(groups) {
-  L.polyline(
-    [
-      [30.77, 79.03],
-      [30.70, 79.04],
-      [30.63, 79.02],
-      [30.56, 79.01],
-      [30.49, 78.99],
-      [30.41, 79.00],
-    ],
-    { color: "#0284c7", weight: 4, opacity: 0.75 },
-  ).addTo(groups.streams);
+const VILLAGE_ZOOM = 11;
+const BOUNDARY_ZOOM = 14;
 
+function hasCoordinates(record) {
+  return Number.isFinite(Number(record?.lat)) && Number.isFinite(Number(record?.lon));
+}
 
-  [
-    { lat: 30.69, lon: 79.06, radius: 19000, value: "90+ mm" },
-    { lat: 30.55, lon: 79.02, radius: 15000, value: "70–90 mm" },
-    { lat: 30.45, lon: 79.01, radius: 12000, value: "50–70 mm" },
-  ].forEach((zone) => {
-    L.circle([zone.lat, zone.lon], {
-      radius: zone.radius,
-      color: "#2563eb",
-      fillColor: "#60a5fa",
-      fillOpacity: 0.12,
-      weight: 1,
-    })
-      .bindTooltip(`Rainfall zone: ${zone.value}`)
-      .addTo(groups.rainfall);
+function textElement(tagName, text, className) {
+  const element = document.createElement(tagName);
+  if (className) element.className = className;
+  element.textContent = text == null || text === "" ? "—" : String(text);
+  return element;
+}
+
+function createPopup(title, rows, action) {
+  const popup = document.createElement("div");
+  popup.className = "map-popup";
+  popup.appendChild(textElement("h3", title));
+
+  const list = document.createElement("dl");
+  rows.forEach(([label, value]) => {
+    list.appendChild(textElement("dt", label));
+    list.appendChild(textElement("dd", value));
+  });
+  popup.appendChild(list);
+
+  if (action) {
+    const button = textElement("button", action.label, "map-popup-action");
+    button.type = "button";
+    button.addEventListener("click", action.onClick);
+    popup.appendChild(button);
+  }
+
+  L.DomEvent.disableClickPropagation(popup);
+  return popup;
+}
+
+function createTooltip(text) {
+  return textElement("span", text);
+}
+
+function formatDateTime(value) {
+  if (!value) return "Unavailable";
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString();
+}
+
+function geometryFrom(record) {
+  const candidate = record?.geometry
+    ?? record?.boundary
+    ?? record?.geojson
+    ?? record?.geometry_geojson
+    ?? record?.boundary_geojson
+    ?? record?.polygon;
+  if (!candidate) return null;
+  if (typeof candidate !== "string") return candidate;
+  try {
+    return JSON.parse(candidate);
+  } catch {
+    return null;
+  }
+}
+
+function districtAggregates(villages) {
+  const districts = new Map();
+  villages.filter(hasCoordinates).forEach((village) => {
+    const name = village.district || "District unavailable";
+    const current = districts.get(name) ?? { name, villages: [] };
+    current.villages.push(village);
+    districts.set(name, current);
   });
 
-  L.polygon(
-    [[30.72, 79.01], [30.75, 79.11], [30.60, 79.10], [30.58, 79.02]],
-    {
-      color: "#f59e0b",
-      fillColor: "#f59e0b",
-      fillOpacity: 0.12,
-      weight: 1,
-    },
-  )
-    .bindTooltip("Steep-slope indicator")
-    .addTo(groups.slope);
+  return [...districts.values()].map((aggregate) => {
+    const assessed = aggregate.villages.filter((village) => village.snapshot);
+    const peak = assessed.reduce(
+      (current, village) => (!current || village.score > current.score ? village : current),
+      null,
+    );
+    const average = assessed.length
+      ? Math.round(assessed.reduce((total, village) => total + village.score, 0) / assessed.length)
+      : null;
+    const lat = aggregate.villages.reduce((total, village) => total + Number(village.lat), 0)
+      / aggregate.villages.length;
+    const lon = aggregate.villages.reduce((total, village) => total + Number(village.lon), 0)
+      / aggregate.villages.length;
 
-  [
-    { lat: 30.71, lon: 79.05, radius: 16000, value: "High Saturation (85–90%)" },
-    { lat: 30.52, lon: 79.03, radius: 14000, value: "Moderate Wetness (70–80%)" },
-  ].forEach((zone) => {
-    L.circle([zone.lat, zone.lon], {
-      radius: zone.radius,
-      color: "#059669",
-      fillColor: "#10b981",
-      fillOpacity: 0.16,
-      weight: 1.5,
-    })
-      .bindTooltip(`Soil Moisture: ${zone.value}`)
-      .addTo(groups.soil);
+    return { ...aggregate, assessed, peak, average, lat, lon };
   });
+}
 
-  [
-    [[30.78, 78.95], [30.78, 79.15], [30.70, 79.12], [30.70, 78.98]],
-    [[30.70, 78.98], [30.70, 79.12], [30.58, 79.10], [30.58, 78.96]],
-  ].forEach((band, index) => {
-    L.polygon(band, {
-      color: "#8b5cf6",
-      fillColor: "#8b5cf6",
-      fillOpacity: 0.08 + index * 0.06,
-      weight: 1,
-    })
-      .bindTooltip(`Elevation Band: >${3000 - index * 1000}m ASL`)
-      .addTo(groups.elevation);
+function districtWeatherSummary(aggregate) {
+  const weather = aggregate.peak?.weather;
+  if (!weather) return "OpenWeather conditions unavailable";
+  return [
+    weather.weatherCondition,
+    weather.temperature,
+    weather.humidity ? `${weather.humidity} humidity` : null,
+    weather.wind ? `wind ${weather.wind}` : null,
+  ].filter(Boolean).join(" · ") || "OpenWeather conditions unavailable";
+}
+
+function districtIcon(score, riskLevel) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "district-marker";
+  wrapper.style.setProperty("--marker-color", riskColor(score ?? 0));
+  wrapper.appendChild(textElement("span", riskLevel || "N/A"));
+  return L.divIcon({
+    html: wrapper,
+    className: "district-marker-wrapper",
+    iconSize: [64, 64],
+    iconAnchor: [32, 32],
   });
+}
+
+function setLayerVisibility(map, layer, visible) {
+  if (visible && !map.hasLayer(layer)) layer.addTo(map);
+  if (!visible && map.hasLayer(layer)) map.removeLayer(layer);
 }
 
 export default function RiskMap({
@@ -82,173 +130,263 @@ export default function RiskMap({
   catchments,
   villageBoundaries,
   selectedVillage,
-  regionalScore,
-  regionalRisk,
   visibleLayers,
   onSelectVillage,
   onRefresh,
   refreshing,
   backendOnline,
+  weatherReady,
   periodLabel,
 }) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
-  const groupsRef = useRef({});
+  const layersRef = useRef({});
   const selectVillageRef = useRef(onSelectVillage);
   const [ready, setReady] = useState(false);
+  const [zoom, setZoom] = useState(10);
 
   useEffect(() => {
     selectVillageRef.current = onSelectVillage;
   }, [onSelectVillage]);
 
   useEffect(() => {
-    const map = L.map(containerRef.current, { zoomControl: false }).setView(
-      REGION_CENTER,
-      10,
-    );
+    const map = L.map(containerRef.current, { zoomControl: false }).setView(REGION_CENTER, 10);
     L.control.zoom({ position: "bottomright" }).addTo(map);
+
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
       attribution: "© OpenStreetMap contributors",
+      zIndex: 100,
     }).addTo(map);
 
-    const groups = Object.fromEntries(
-      ["risk", "rainfall", "soil", "slope", "elevation", "streams", "catchments", "villages"]
-        .map((name) => [name, L.layerGroup()]),
-    );
-    addStaticOverlays(groups);
+    const layers = {
+      districts: L.layerGroup(),
+      risk: L.layerGroup(),
+      catchments: L.layerGroup(),
+      villages: L.layerGroup(),
+      boundaries: L.layerGroup(),
+      precipitation: L.tileLayer(getWeatherTileUrl("precipitation_new"), {
+        maxZoom: 19,
+        opacity: 0.7,
+        zIndex: 220,
+        attribution: "Weather via backend · OpenWeather",
+      }),
+      clouds: L.tileLayer(getWeatherTileUrl("clouds_new"), {
+        maxZoom: 19,
+        opacity: 0.5,
+        zIndex: 210,
+        attribution: "Weather via backend · OpenWeather",
+      }),
+    };
 
+    const updateZoom = () => setZoom(map.getZoom());
+    map.on("zoomend", updateZoom);
     mapRef.current = map;
-    groupsRef.current = groups;
+    layersRef.current = layers;
+    setZoom(map.getZoom());
     setReady(true);
 
     return () => {
       setReady(false);
+      map.off("zoomend", updateZoom);
       map.remove();
       mapRef.current = null;
-      groupsRef.current = {};
+      layersRef.current = {};
     };
   }, []);
 
   useEffect(() => {
     if (!ready) return;
+    const districtGroup = layersRef.current.districts;
+    districtGroup.clearLayers();
 
-    const catchmentGroup = groupsRef.current.catchments;
-    catchmentGroup.clearLayers();
-    catchments.forEach((catchment) => {
-      L.circleMarker([catchment.centroid_lat, catchment.centroid_lon], {
-        radius: 12,
-        color: "#7c3aed",
-        weight: 2,
-        fillColor: "#a78bfa",
-        fillOpacity: 0.18,
+    districtAggregates(villages).forEach((aggregate) => {
+      const peakScore = aggregate.peak?.score;
+      L.marker([aggregate.lat, aggregate.lon], {
+        icon: districtIcon(peakScore, aggregate.peak?.risk),
+        keyboard: true,
+        title: `${aggregate.name} district risk summary`,
       })
-        .bindTooltip(
-          `${catchment.name} · ${catchment.area_km2} km² · ${catchment.land_use}`,
-        )
-        .addTo(catchmentGroup);
+        .bindPopup(createPopup(aggregate.name, [
+          ["Villages", aggregate.villages.length],
+          ["Peak risk", peakScore == null ? "Unavailable" : `${peakScore}/100 · ${aggregate.peak.risk}`],
+          ["Average risk", aggregate.average == null ? "Unavailable" : `${aggregate.average}/100`],
+          ["Assessment", aggregate.peak?.snapshot?.assessment_mode === "provisional_defaults" ? "Provisional defaults + live weather" : "Canonical risk inputs"],
+          ["Weather", districtWeatherSummary(aggregate)],
+        ]), { maxWidth: 320 })
+        .addTo(districtGroup);
+    });
+  }, [ready, villages]);
+
+  useEffect(() => {
+    if (!ready) return;
+    const catchmentGroup = layersRef.current.catchments;
+    catchmentGroup.clearLayers();
+
+    catchments.forEach((catchment) => {
+      const geometry = geometryFrom(catchment);
+      const popup = createPopup(catchment.name || catchment.id || "Catchment", [
+        ["District", catchment.district],
+        ["Area", Number.isFinite(Number(catchment.area_km2)) ? `${Number(catchment.area_km2).toFixed(1)} km²` : "Unavailable"],
+        ["Land use", catchment.land_use],
+      ]);
+
+      if (geometry) {
+        L.geoJSON(geometry, {
+          style: {
+            color: "#7c3aed",
+            weight: 2,
+            fillColor: "#a78bfa",
+            fillOpacity: 0.08,
+          },
+        }).bindPopup(popup).addTo(catchmentGroup);
+      } else if (
+        Number.isFinite(Number(catchment.centroid_lat))
+        && Number.isFinite(Number(catchment.centroid_lon))
+      ) {
+        L.circleMarker([Number(catchment.centroid_lat), Number(catchment.centroid_lon)], {
+          radius: 9,
+          color: "#7c3aed",
+          weight: 2,
+          fillColor: "#a78bfa",
+          fillOpacity: 0.25,
+        }).bindPopup(popup).addTo(catchmentGroup);
+      }
     });
   }, [catchments, ready]);
 
   useEffect(() => {
     if (!ready) return;
-
-    const riskGroup = groupsRef.current.risk;
-    const villageGroup = groupsRef.current.villages;
-    const color = riskColor(regionalScore);
+    const riskGroup = layersRef.current.risk;
+    const villageGroup = layersRef.current.villages;
+    const boundaryGroup = layersRef.current.boundaries;
+    const villagesById = new Map(villages.map((village) => [String(village.id), village]));
+    const villagesByName = new Map(
+      villages.map((village) => [String(village.name).trim().toLowerCase(), village]),
+    );
 
     riskGroup.clearLayers();
-    DEFAULT_RISK_ZONES.forEach((zone) => {
-      L.polygon(zone.poly, {
-        color,
+    villageGroup.clearLayers();
+    boundaryGroup.clearLayers();
+
+    villages.filter(hasCoordinates).forEach((village) => {
+      if (village.snapshot) {
+        L.circleMarker([Number(village.lat), Number(village.lon)], {
+          radius: 11 + Math.round(village.score / 20),
+          stroke: false,
+          fillColor: riskColor(village.score),
+          fillOpacity: 0.2,
+          interactive: false,
+        }).addTo(riskGroup);
+      }
+
+      const marker = L.circleMarker([Number(village.lat), Number(village.lon)], {
+        radius: 7,
+        color: "#ffffff",
         weight: 2,
-        dashArray: "4, 4",
-        fillColor: color,
-        fillOpacity: 0.22,
-      })
-        .bindTooltip(
-          `Flood Risk Zone: ${zone.name} · ${regionalRisk} (${regionalScore}/100)`,
-        )
-        .addTo(riskGroup);
+        fillColor: village.snapshot ? riskColor(village.score) : "#64748b",
+        fillOpacity: 0.95,
+        keyboard: true,
+      });
+      marker.bindTooltip(createTooltip(`${village.name} · ${village.snapshot ? `${village.risk} · ${village.score}/100` : "risk unavailable"}`));
+      marker.bindPopup(createPopup(village.name, [
+        ["District", village.district],
+        ["Risk", village.snapshot ? `${village.score}/100 · ${village.risk}` : "Unavailable"],
+        ["Assessment", village.snapshot?.assessment_mode === "provisional_defaults" ? `Provisional · ${village.assessmentScope}` : "Canonical risk inputs"],
+        ["Rain", village.weather?.rainfall],
+        ["Temperature", village.weather?.temperature],
+        ["Humidity / wind", [village.weather?.humidity, village.weather?.wind].filter(Boolean).join(" · ") || "Unavailable"],
+        ["Valid time", formatDateTime(village.snapshot?.valid_at)],
+      ], {
+        label: "Open full village details",
+        onClick: () => selectVillageRef.current(village),
+      }), { maxWidth: 310 });
+      marker.addTo(villageGroup);
     });
 
-    villageGroup.clearLayers();
     villageBoundaries.forEach((boundary) => {
-      L.geoJSON(boundary.geometry, {
+      const geometry = geometryFrom(boundary);
+      if (!geometry) return;
+      const villageId = boundary.village_id ?? boundary.id;
+      const matchedVillage = villagesById.get(String(villageId))
+        ?? villagesByName.get(String(boundary.name ?? "").trim().toLowerCase());
+      const color = matchedVillage?.snapshot ? riskColor(matchedVillage.score) : "#475569";
+      const layer = L.geoJSON(geometry, {
         style: {
-          color: "#334155",
-          weight: 1,
-          fillColor: "#cbd5e1",
-          fillOpacity: 0.08,
+          color,
+          weight: matchedVillage?.snapshot ? 2 : 1,
+          fillColor: color,
+          fillOpacity: visibleLayers.risk && matchedVillage?.snapshot ? 0.13 : 0.03,
         },
-      })
-        .bindTooltip(`${boundary.name} · LGD ${boundary.lgd_village_code}`)
-        .addTo(villageGroup);
+      });
+      layer.bindTooltip(createTooltip(`${boundary.name || matchedVillage?.name || "Village boundary"}${matchedVillage?.snapshot ? ` · ${matchedVillage.risk} ${matchedVillage.score}/100` : ""}`));
+      if (matchedVillage) {
+        layer.on("click", () => selectVillageRef.current(matchedVillage));
+      }
+      layer.addTo(boundaryGroup);
     });
-    villages.forEach((village) => {
-      L.circleMarker([village.lat, village.lon], {
-        radius: 8,
-        color: "#fff",
-        weight: 2,
-        fillColor: riskColor(village.score),
-        fillOpacity: 0.9,
-      })
-        .bindTooltip(`${village.name} · ${village.risk} · ${village.score}/100`)
-        .on("click", () => selectVillageRef.current(village))
-        .addTo(villageGroup);
-    });
-  }, [ready, regionalRisk, regionalScore, villageBoundaries, villages]);
+  }, [ready, villageBoundaries, villages, visibleLayers.risk]);
 
   useEffect(() => {
     if (!ready) return;
     const map = mapRef.current;
+    const layers = layersRef.current;
+    const isDistrictView = zoom < VILLAGE_ZOOM;
 
-    Object.entries(groupsRef.current).forEach(([name, group]) => {
-      const shouldShow = Boolean(visibleLayers[name]);
-      if (shouldShow && !map.hasLayer(group)) group.addTo(map);
-      if (!shouldShow && map.hasLayer(group)) map.removeLayer(group);
-    });
-  }, [ready, visibleLayers]);
+    setLayerVisibility(map, layers.districts, isDistrictView && (visibleLayers.villages || visibleLayers.risk));
+    setLayerVisibility(map, layers.risk, !isDistrictView && visibleLayers.risk);
+    setLayerVisibility(map, layers.villages, !isDistrictView && visibleLayers.villages);
+    setLayerVisibility(map, layers.boundaries, zoom >= BOUNDARY_ZOOM && visibleLayers.villages);
+    setLayerVisibility(map, layers.catchments, visibleLayers.catchments);
+    setLayerVisibility(map, layers.precipitation, visibleLayers.precipitation);
+    setLayerVisibility(map, layers.clouds, visibleLayers.clouds);
+  }, [ready, visibleLayers, zoom]);
 
   useEffect(() => {
-    if (!ready || !selectedVillage) return;
+    if (!ready || !selectedVillage || !hasCoordinates(selectedVillage)) return;
     mapRef.current.flyTo(
-      [selectedVillage.lat, selectedVillage.lon],
-      12,
+      [Number(selectedVillage.lat), Number(selectedVillage.lon)],
+      BOUNDARY_ZOOM,
       { duration: 0.8 },
     );
   }, [ready, selectedVillage]);
 
   function fitRegion() {
-    const points = [
-      ...villages.map((village) => [village.lat, village.lon]),
-      ...catchments.map((catchment) => [catchment.centroid_lat, catchment.centroid_lon]),
-      ...villageBoundaries.map((boundary) => [boundary.lat, boundary.lon]),
-    ].filter(([lat, lon]) => Number.isFinite(Number(lat)) && Number.isFinite(Number(lon)));
-    if (points.length > 1) {
-      mapRef.current?.fitBounds(points, { padding: [35, 35], maxZoom: 12 });
-    } else if (points.length === 1) {
-      mapRef.current?.setView(points[0], 12);
-    } else {
-      mapRef.current?.setView(REGION_CENTER, 10);
-    }
+    const bounds = L.latLngBounds([]);
+    villages.filter(hasCoordinates).forEach((village) => bounds.extend([village.lat, village.lon]));
+    catchments.forEach((catchment) => {
+      const geometry = geometryFrom(catchment);
+      if (geometry) bounds.extend(L.geoJSON(geometry).getBounds());
+      else if (Number.isFinite(Number(catchment.centroid_lat)) && Number.isFinite(Number(catchment.centroid_lon))) {
+        bounds.extend([catchment.centroid_lat, catchment.centroid_lon]);
+      }
+    });
+    villageBoundaries.forEach((boundary) => {
+      const geometry = geometryFrom(boundary);
+      if (geometry) bounds.extend(L.geoJSON(geometry).getBounds());
+    });
+
+    if (bounds.isValid()) mapRef.current?.fitBounds(bounds, { padding: [35, 35], maxZoom: 12 });
+    else mapRef.current?.setView(REGION_CENTER, 10);
   }
 
   function locateUser() {
     mapRef.current?.locate({ setView: true, maxZoom: 12 });
   }
 
+  const liveStatus = !backendOnline
+    ? "Backend unavailable"
+    : weatherReady
+      ? "Live OpenWeather via backend · refreshes every 5 min"
+      : "Risk loaded · OpenWeather provider unavailable";
+
   return (
     <>
-      <div id="map" ref={containerRef} aria-label="Interactive flood risk map" />
+      <div id="map" ref={containerRef} aria-label="Interactive live weather and flood risk map" />
 
       <div className="map-toolbar">
-        <button className="tool-btn active" type="button" onClick={fitRegion}>
-          ⌖ Fit Region
-        </button>
-        <button className="tool-btn" type="button" onClick={locateUser}>
-          ◎ My Location
-        </button>
+        <button className="tool-btn active" type="button" onClick={fitRegion}>⌖ Fit Region</button>
+        <button className="tool-btn" type="button" onClick={locateUser}>◎ My Location</button>
         <button className="tool-btn" type="button" onClick={onRefresh} disabled={refreshing}>
           ↻ {refreshing ? "Refreshing…" : "Refresh"}
         </button>
@@ -257,15 +395,19 @@ export default function RiskMap({
       <div className="map-title-card">
         <div className="eyebrow">{periodLabel?.toUpperCase()} RISK OVERVIEW</div>
         <h1>{district}, {state}</h1>
-        <p>Sub-catchment hazard mapped to village-level preparedness.</p>
+        <p>Zoom in for villages at level 11 and verified boundaries at level 14.</p>
       </div>
 
-      <div className={`map-scale-note ${backendOnline ? "" : "offline"}`}>
-        <span className="pulse" /> {backendOnline ? "Backend assessment loaded" : "Backend unavailable"}
+      <div className={`map-scale-note ${backendOnline && weatherReady ? "" : "offline"}`} role="status">
+        <span className="pulse" /> {liveStatus}
       </div>
 
       <span className="sr-only" aria-live="polite">
-        Select a village from the priority list to focus it on the map.
+        {zoom < VILLAGE_ZOOM
+          ? "District aggregate markers are visible. Zoom in to level 11 for villages."
+          : zoom < BOUNDARY_ZOOM
+            ? "Village markers are visible. Zoom in to level 14 for boundaries."
+            : "Village markers and available backend boundaries are visible."}
       </span>
     </>
   );

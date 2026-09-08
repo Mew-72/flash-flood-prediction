@@ -50,8 +50,9 @@ async def assess_risk_batch(request: Request, payload: RiskBatchRequest):
                 villages.append(village)
         requested = len(seen)
     else:
-        villages = store.villages()
-        requested = len(villages)
+        selected_villages = store.villages()
+        requested = len(selected_villages)
+        villages = selected_villages
 
     if payload.catchment_ids is not None:
         selected_catchments = set(payload.catchment_ids)
@@ -101,6 +102,7 @@ async def get_risk_snapshots(
     district: str | None = None,
     catchment_id: str | None = None,
     include_forecast: bool = False,
+    summarize_provisional: bool = False,
     offset: int = Query(default=0, ge=0),
     limit: int = Query(default=500, ge=1, le=500),
 ):
@@ -113,6 +115,22 @@ async def get_risk_snapshots(
         offset=offset,
         limit=limit,
     )
+    if summarize_provisional and store.data_mode == "production":
+        candidates, _ = store.catalog_villages(
+            district=district,
+            catchment_id=catchment_id,
+            offset=0,
+            limit=len(store.villages()),
+        )
+        representatives: dict[str, dict] = {}
+        for village in candidates:
+            key = (
+                village["catchment_id"]
+                if catchment_id is not None
+                else str(village.get("district") or village["catchment_id"])
+            )
+            representatives.setdefault(key, village)
+        villages = list(representatives.values())
     try:
         snapshots = await _service(request).snapshots_for_villages(
             villages, include_forecast=include_forecast
@@ -143,7 +161,8 @@ async def get_risk_snapshots(
 
 @router.get("/{village_id}", response_model=RiskOut)
 async def get_village_risk(request: Request, village_id: str):
-    village = request.app.state.data_store.village(village_id)
+    store = request.app.state.data_store
+    village = store.village(village_id)
     if village is None:
         raise HTTPException(status_code=404, detail="Village not found")
     try:
@@ -166,7 +185,8 @@ async def get_village_risk(request: Request, village_id: str):
 
 @v1_router.get("/{village_id}", response_model=RiskSnapshot)
 async def get_village_risk_v1(request: Request, village_id: str):
-    village = request.app.state.data_store.village(village_id)
+    store = request.app.state.data_store
+    village = store.village(village_id)
     if village is None:
         raise HTTPException(status_code=404, detail="Village not found")
     try:

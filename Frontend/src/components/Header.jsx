@@ -2,12 +2,14 @@ import { Link } from "react-router-dom";
 
 export default function Header({ admin = false, health, lastUpdated }) {
   const backendOnline = health?.status === "ok";
-  const weatherReady = health?.weather_configured !== false;
+  const provider = health?.provider ?? health?.weather_provider ?? health?.weather?.provider;
+  const providerIsOpenWeather = !provider || String(provider).toLowerCase() === "openweather";
+  const weatherReady = health?.weather_configured !== false && providerIsOpenWeather;
   const operational = backendOnline && weatherReady;
   const statusText = backendOnline
     ? weatherReady
-      ? `${health.data_mode === "demo" ? "Demo" : "Production"} backend · IMD ready`
-      : "Backend online · IMD token missing"
+      ? `${health.data_mode === "demo" ? "Demo" : "Production"} backend · OpenWeather live`
+      : "Backend online · OpenWeather unavailable"
     : health === null
       ? "Backend unavailable"
       : "Checking backend…";

@@ -1,0 +1,5182 @@
+[
+  {
+    "id": "bhuvan:block:2:24:60412",
+    "name": "Bhawarna block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Kangra",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "24",
+        "name": "Kangra",
+        "source_code": "24"
+      },
+      "block": {
+        "id": "60412",
+        "name": "Bhawarna",
+        "source_code": "60412"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.030574,
+    "centroid_lon": 76.4870373,
+    "area_km2": 533.863,
+    "village_count": 676,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:24:60404",
+    "name": "Dadasiba block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Kangra",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "24",
+        "name": "Kangra",
+        "source_code": "24"
+      },
+      "block": {
+        "id": "60404",
+        "name": "Dadasiba",
+        "source_code": "60404"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 31.831519,
+    "centroid_lon": 76.1207969,
+    "area_km2": 420.015,
+    "village_count": 268,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:24:60403",
+    "name": "Dehra block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Kangra",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "24",
+        "name": "Kangra",
+        "source_code": "24"
+      },
+      "block": {
+        "id": "60403",
+        "name": "Dehra",
+        "source_code": "60403"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 31.9016675,
+    "centroid_lon": 76.367934,
+    "area_km2": 378.59,
+    "village_count": 492,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:24:60405",
+    "name": "Fatehpur block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Kangra",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "24",
+        "name": "Kangra",
+        "source_code": "24"
+      },
+      "block": {
+        "id": "60405",
+        "name": "Fatehpur",
+        "source_code": "60405"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.1045675,
+    "centroid_lon": 75.9559165,
+    "area_km2": 355.96,
+    "village_count": 292,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:24:60409",
+    "name": "Gangth block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Kangra",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "24",
+        "name": "Kangra",
+        "source_code": "24"
+      },
+      "block": {
+        "id": "60409",
+        "name": "Gangth",
+        "source_code": "60409"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.2753717,
+    "centroid_lon": 75.8378854,
+    "area_km2": 320.456,
+    "village_count": 280,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:24:60406",
+    "name": "Indora block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Kangra",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "24",
+        "name": "Kangra",
+        "source_code": "24"
+      },
+      "block": {
+        "id": "60406",
+        "name": "Indora",
+        "source_code": "60406"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.1600665,
+    "centroid_lon": 75.7438809,
+    "area_km2": 351.989,
+    "village_count": 192,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:24:60411",
+    "name": "Mahakal block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Kangra",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "24",
+        "name": "Kangra",
+        "source_code": "24"
+      },
+      "block": {
+        "id": "60411",
+        "name": "Mahakal",
+        "source_code": "60411"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.0890381,
+    "centroid_lon": 76.6746692,
+    "area_km2": 428.943,
+    "village_count": 196,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:24:60407",
+    "name": "Nagrota Bagwan block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Kangra",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "24",
+        "name": "Kangra",
+        "source_code": "24"
+      },
+      "block": {
+        "id": "60407",
+        "name": "Nagrota Bagwan",
+        "source_code": "60407"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.0561597,
+    "centroid_lon": 76.3698052,
+    "area_km2": 178.269,
+    "village_count": 244,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:24:60410",
+    "name": "Nagrota Surian block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Kangra",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "24",
+        "name": "Kangra",
+        "source_code": "24"
+      },
+      "block": {
+        "id": "60410",
+        "name": "Nagrota Surian",
+        "source_code": "60410"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.1179432,
+    "centroid_lon": 75.9909327,
+    "area_km2": 225.108,
+    "village_count": 177,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:24:60402",
+    "name": "Rait block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Kangra",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "24",
+        "name": "Kangra",
+        "source_code": "24"
+      },
+      "block": {
+        "id": "60402",
+        "name": "Rait",
+        "source_code": "60402"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.2125707,
+    "centroid_lon": 76.3533161,
+    "area_km2": 348.56,
+    "village_count": 344,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:24:60408",
+    "name": "Thural block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Kangra",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "24",
+        "name": "Kangra",
+        "source_code": "24"
+      },
+      "block": {
+        "id": "60408",
+        "name": "Thural",
+        "source_code": "60408"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.0207558,
+    "centroid_lon": 76.5776202,
+    "area_km2": 96.943,
+    "village_count": 130,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:34:60502",
+    "name": "Kalpa block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Kinnaur",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "34",
+        "name": "Kinnaur",
+        "source_code": "34"
+      },
+      "block": {
+        "id": "60502",
+        "name": "Kalpa",
+        "source_code": "60502"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.0163801,
+    "centroid_lon": 75.8416606,
+    "area_km2": 3.433,
+    "village_count": 64,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:34:60503",
+    "name": "Nichar block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Kinnaur",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "34",
+        "name": "Kinnaur",
+        "source_code": "34"
+      },
+      "block": {
+        "id": "60503",
+        "name": "Nichar",
+        "source_code": "60503"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 31.9990567,
+    "centroid_lon": 75.8724304,
+    "area_km2": 3.784,
+    "village_count": 82,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:34:60501",
+    "name": "Pooh block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Kinnaur",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "34",
+        "name": "Kinnaur",
+        "source_code": "34"
+      },
+      "block": {
+        "id": "60501",
+        "name": "Pooh",
+        "source_code": "60501"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.0420572,
+    "centroid_lon": 75.8971405,
+    "area_km2": 5.653,
+    "village_count": 69,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:26:60604",
+    "name": "Ani block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Kullu",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "26",
+        "name": "Kullu",
+        "source_code": "26"
+      },
+      "block": {
+        "id": "60604",
+        "name": "Ani",
+        "source_code": "60604"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 31.3625378,
+    "centroid_lon": 77.4089071,
+    "area_km2": 18.657,
+    "village_count": 33,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:26:60602",
+    "name": "Banjar block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Kullu",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "26",
+        "name": "Kullu",
+        "source_code": "26"
+      },
+      "block": {
+        "id": "60602",
+        "name": "Banjar",
+        "source_code": "60602"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.1531023,
+    "centroid_lon": 75.9522134,
+    "area_km2": 11.038,
+    "village_count": 46,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:26:60605",
+    "name": "Jarri Block block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Kullu",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "26",
+        "name": "Kullu",
+        "source_code": "26"
+      },
+      "block": {
+        "id": "60605",
+        "name": "Jarri Block",
+        "source_code": "60605"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.258001,
+    "centroid_lon": 75.9871935,
+    "area_km2": 25.035,
+    "village_count": 75,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:26:60601",
+    "name": "Naggar block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Kullu",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "26",
+        "name": "Kullu",
+        "source_code": "26"
+      },
+      "block": {
+        "id": "60601",
+        "name": "Naggar",
+        "source_code": "60601"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.1753985,
+    "centroid_lon": 75.9482373,
+    "area_km2": 17.153,
+    "village_count": 39,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:26:60603",
+    "name": "Nirmand block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Kullu",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "26",
+        "name": "Kullu",
+        "source_code": "26"
+      },
+      "block": {
+        "id": "60603",
+        "name": "Nirmand",
+        "source_code": "60603"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 31.5460655,
+    "centroid_lon": 77.5310217,
+    "area_km2": 5.013,
+    "village_count": 30,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:25:61201",
+    "name": "Lahaul block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Lahul&spiti",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "25",
+        "name": "Lahul&spiti",
+        "source_code": "25"
+      },
+      "block": {
+        "id": "61201",
+        "name": "Lahaul",
+        "source_code": "61201"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.1779781,
+    "centroid_lon": 75.9959751,
+    "area_km2": 13.665,
+    "village_count": 162,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:25:61202",
+    "name": "Spiti block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Lahul&spiti",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "25",
+        "name": "Lahul&spiti",
+        "source_code": "25"
+      },
+      "block": {
+        "id": "61202",
+        "name": "Spiti",
+        "source_code": "61202"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.1220601,
+    "centroid_lon": 75.9670068,
+    "area_km2": 8.095,
+    "village_count": 78,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:27:60704",
+    "name": "Chachiot block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Mandi",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "27",
+        "name": "Mandi",
+        "source_code": "27"
+      },
+      "block": {
+        "id": "60704",
+        "name": "Chachiot",
+        "source_code": "60704"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.1622261,
+    "centroid_lon": 76.0427084,
+    "area_km2": 21.638,
+    "village_count": 211,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:27:60708",
+    "name": "Chauntra block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Mandi",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "27",
+        "name": "Mandi",
+        "source_code": "27"
+      },
+      "block": {
+        "id": "60708",
+        "name": "Chauntra",
+        "source_code": "60708"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.1590732,
+    "centroid_lon": 76.1181216,
+    "area_km2": 14.707,
+    "village_count": 267,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:27:60707",
+    "name": "Drang block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Mandi",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "27",
+        "name": "Mandi",
+        "source_code": "27"
+      },
+      "block": {
+        "id": "60707",
+        "name": "Drang",
+        "source_code": "60707"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.2943706,
+    "centroid_lon": 76.1954786,
+    "area_km2": 15.802,
+    "village_count": 266,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:27:60706",
+    "name": "Karsog block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Mandi",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "27",
+        "name": "Mandi",
+        "source_code": "27"
+      },
+      "block": {
+        "id": "60706",
+        "name": "Karsog",
+        "source_code": "60706"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.1998754,
+    "centroid_lon": 76.1648872,
+    "area_km2": 25.426,
+    "village_count": 434,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:27:60710",
+    "name": "Rewalsar block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Mandi",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "27",
+        "name": "Mandi",
+        "source_code": "27"
+      },
+      "block": {
+        "id": "60710",
+        "name": "Rewalsar",
+        "source_code": "60710"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.2742042,
+    "centroid_lon": 76.2491935,
+    "area_km2": 18.498,
+    "village_count": 287,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:27:60705",
+    "name": "Rohanda block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Mandi",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "27",
+        "name": "Mandi",
+        "source_code": "27"
+      },
+      "block": {
+        "id": "60705",
+        "name": "Rohanda",
+        "source_code": "60705"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.2064633,
+    "centroid_lon": 76.3351632,
+    "area_km2": 15.446,
+    "village_count": 217,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:27:60702",
+    "name": "Sadar block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Mandi",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "27",
+        "name": "Mandi",
+        "source_code": "27"
+      },
+      "block": {
+        "id": "60702",
+        "name": "Sadar",
+        "source_code": "60702"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.1138362,
+    "centroid_lon": 75.9942317,
+    "area_km2": 19.886,
+    "village_count": 179,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:27:60703",
+    "name": "Seraj block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Mandi",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "27",
+        "name": "Mandi",
+        "source_code": "27"
+      },
+      "block": {
+        "id": "60703",
+        "name": "Seraj",
+        "source_code": "60703"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.2052499,
+    "centroid_lon": 76.2830708,
+    "area_km2": 12.142,
+    "village_count": 225,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:33:60808",
+    "name": "Chopal block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Shimla",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "33",
+        "name": "Shimla",
+        "source_code": "33"
+      },
+      "block": {
+        "id": "60808",
+        "name": "Chopal",
+        "source_code": "60808"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.2196095,
+    "centroid_lon": 76.4069171,
+    "area_km2": 46.658,
+    "village_count": 232,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:33:60806",
+    "name": "Jubbal block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Shimla",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "33",
+        "name": "Shimla",
+        "source_code": "33"
+      },
+      "block": {
+        "id": "60806",
+        "name": "Jubbal",
+        "source_code": "60806"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.1128121,
+    "centroid_lon": 76.3177359,
+    "area_km2": 6.714,
+    "village_count": 122,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:33:60805",
+    "name": "Rohru block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Shimla",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "33",
+        "name": "Shimla",
+        "source_code": "33"
+      },
+      "block": {
+        "id": "60805",
+        "name": "Rohru",
+        "source_code": "60805"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 31.2474097,
+    "centroid_lon": 77.6206961,
+    "area_km2": 29.372,
+    "village_count": 179,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:33:60803",
+    "name": "Shimla block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Shimla",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "33",
+        "name": "Shimla",
+        "source_code": "33"
+      },
+      "block": {
+        "id": "60803",
+        "name": "Shimla",
+        "source_code": "60803"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 31.11733,
+    "centroid_lon": 77.3590742,
+    "area_km2": 494.382,
+    "village_count": 585,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:32:60905",
+    "name": "Dhagera block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Sirmaur",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "32",
+        "name": "Sirmaur",
+        "source_code": "32"
+      },
+      "block": {
+        "id": "60905",
+        "name": "Dhagera",
+        "source_code": "60905"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.101646,
+    "centroid_lon": 76.4075537,
+    "area_km2": 28.739,
+    "village_count": 207,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:32:60903",
+    "name": "Pachhad block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Sirmaur",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "32",
+        "name": "Sirmaur",
+        "source_code": "32"
+      },
+      "block": {
+        "id": "60903",
+        "name": "Pachhad",
+        "source_code": "60903"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.7776115,
+    "centroid_lon": 77.2815367,
+    "area_km2": 547.294,
+    "village_count": 393,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:32:60901",
+    "name": "Rajpur block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Sirmaur",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "32",
+        "name": "Sirmaur",
+        "source_code": "32"
+      },
+      "block": {
+        "id": "60901",
+        "name": "Rajpur",
+        "source_code": "60901"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.5675555,
+    "centroid_lon": 77.6833608,
+    "area_km2": 409.493,
+    "village_count": 187,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:32:60904",
+    "name": "Shillai block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Sirmaur",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "32",
+        "name": "Sirmaur",
+        "source_code": "32"
+      },
+      "block": {
+        "id": "60904",
+        "name": "Shillai",
+        "source_code": "60904"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.7062537,
+    "centroid_lon": 77.7320544,
+    "area_km2": 9.527,
+    "village_count": 52,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:31:61001",
+    "name": "Arki block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Solan",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "31",
+        "name": "Solan",
+        "source_code": "31"
+      },
+      "block": {
+        "id": "61001",
+        "name": "Arki",
+        "source_code": "61001"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 31.2084667,
+    "centroid_lon": 76.8863501,
+    "area_km2": 395.605,
+    "village_count": 472,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:31:61005",
+    "name": "Dharampur block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Solan",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "31",
+        "name": "Solan",
+        "source_code": "31"
+      },
+      "block": {
+        "id": "61005",
+        "name": "Dharampur",
+        "source_code": "61005"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.900137,
+    "centroid_lon": 76.8580446,
+    "area_km2": 56.364,
+    "village_count": 922,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:31:61002",
+    "name": "Nalagarh block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Solan",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "31",
+        "name": "Solan",
+        "source_code": "31"
+      },
+      "block": {
+        "id": "61002",
+        "name": "Nalagarh",
+        "source_code": "61002"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 31.8552308,
+    "centroid_lon": 76.1327926,
+    "area_km2": 36.256,
+    "village_count": 601,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:31:61003",
+    "name": "Syri block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Solan",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "31",
+        "name": "Solan",
+        "source_code": "31"
+      },
+      "block": {
+        "id": "61003",
+        "name": "Syri",
+        "source_code": "61003"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 32.0534047,
+    "centroid_lon": 76.1499058,
+    "area_km2": 16.531,
+    "village_count": 216,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:29:61101",
+    "name": "Amb block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Una",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "29",
+        "name": "Una",
+        "source_code": "29"
+      },
+      "block": {
+        "id": "61101",
+        "name": "Amb",
+        "source_code": "61101"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 31.9858579,
+    "centroid_lon": 76.1597328,
+    "area_km2": 17.277,
+    "village_count": 136,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:29:61102",
+    "name": "Dhundla block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Una",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "29",
+        "name": "Una",
+        "source_code": "29"
+      },
+      "block": {
+        "id": "61102",
+        "name": "Dhundla",
+        "source_code": "61102"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 31.9588701,
+    "centroid_lon": 76.224638,
+    "area_km2": 30.149,
+    "village_count": 259,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:29:61104",
+    "name": "Gagret block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Una",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "29",
+        "name": "Una",
+        "source_code": "29"
+      },
+      "block": {
+        "id": "61104",
+        "name": "Gagret",
+        "source_code": "61104"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 31.8809692,
+    "centroid_lon": 76.2453197,
+    "area_km2": 10.206,
+    "village_count": 45,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:2:29:61103",
+    "name": "Una block (administrative proxy)",
+    "state": "Himachal Pradesh",
+    "district": "Una",
+    "admin": {
+      "state": {
+        "id": "2",
+        "name": "Himachal Pradesh",
+        "source_code": "2"
+      },
+      "district": {
+        "id": "29",
+        "name": "Una",
+        "source_code": "29"
+      },
+      "block": {
+        "id": "61103",
+        "name": "Una",
+        "source_code": "61103"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 31.8165495,
+    "centroid_lon": 76.2985269,
+    "area_km2": 12.889,
+    "village_count": 103,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:64:936",
+    "name": "Bhikyasain block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Almora",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "64",
+        "name": "Almora",
+        "source_code": "64"
+      },
+      "block": {
+        "id": "936",
+        "name": "Bhikyasain",
+        "source_code": "936"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.7544075,
+    "centroid_lon": 79.3141971,
+    "area_km2": 114.122,
+    "village_count": 113,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:64:935",
+    "name": "Bhisiyachana block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Almora",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "64",
+        "name": "Almora",
+        "source_code": "64"
+      },
+      "block": {
+        "id": "935",
+        "name": "Bhisiyachana",
+        "source_code": "935"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.6566424,
+    "centroid_lon": 79.7161905,
+    "area_km2": 46.96,
+    "village_count": 59,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:64:937",
+    "name": "Chaukhutia block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Almora",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "64",
+        "name": "Almora",
+        "source_code": "64"
+      },
+      "block": {
+        "id": "937",
+        "name": "Chaukhutia",
+        "source_code": "937"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.9187776,
+    "centroid_lon": 79.3956541,
+    "area_km2": 104.32,
+    "village_count": 100,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:64:938",
+    "name": "Dhauladevi block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Almora",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "64",
+        "name": "Almora",
+        "source_code": "64"
+      },
+      "block": {
+        "id": "938",
+        "name": "Dhauladevi",
+        "source_code": "938"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.5933734,
+    "centroid_lon": 79.8011393,
+    "area_km2": 147.878,
+    "village_count": 130,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:64:939",
+    "name": "Dwarahat block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Almora",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "64",
+        "name": "Almora",
+        "source_code": "64"
+      },
+      "block": {
+        "id": "939",
+        "name": "Dwarahat",
+        "source_code": "939"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.7803804,
+    "centroid_lon": 79.4416051,
+    "area_km2": 158.865,
+    "village_count": 137,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:64:940",
+    "name": "Hawalbag block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Almora",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "64",
+        "name": "Almora",
+        "source_code": "64"
+      },
+      "block": {
+        "id": "940",
+        "name": "Hawalbag",
+        "source_code": "940"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.5801565,
+    "centroid_lon": 79.6169978,
+    "area_km2": 134.379,
+    "village_count": 140,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:64:941",
+    "name": "Lamgara block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Almora",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "64",
+        "name": "Almora",
+        "source_code": "64"
+      },
+      "block": {
+        "id": "941",
+        "name": "Lamgara",
+        "source_code": "941"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.4663424,
+    "centroid_lon": 79.7337192,
+    "area_km2": 149.394,
+    "village_count": 128,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:64:942",
+    "name": "Salt block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Almora",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "64",
+        "name": "Almora",
+        "source_code": "64"
+      },
+      "block": {
+        "id": "942",
+        "name": "Salt",
+        "source_code": "942"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.8667596,
+    "centroid_lon": 79.2155529,
+    "area_km2": 207.515,
+    "village_count": 160,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:64:943",
+    "name": "Syaldeh block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Almora",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "64",
+        "name": "Almora",
+        "source_code": "64"
+      },
+      "block": {
+        "id": "943",
+        "name": "Syaldeh",
+        "source_code": "943"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.8448902,
+    "centroid_lon": 79.1788834,
+    "area_km2": 171.291,
+    "village_count": 148,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:64:944",
+    "name": "Takula block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Almora",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "64",
+        "name": "Almora",
+        "source_code": "64"
+      },
+      "block": {
+        "id": "944",
+        "name": "Takula",
+        "source_code": "944"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.4985346,
+    "centroid_lon": 79.7851084,
+    "area_km2": 54.876,
+    "village_count": 79,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:64:945",
+    "name": "Tarikhet block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Almora",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "64",
+        "name": "Almora",
+        "source_code": "64"
+      },
+      "block": {
+        "id": "945",
+        "name": "Tarikhet",
+        "source_code": "945"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.5564291,
+    "centroid_lon": 79.4509634,
+    "area_km2": 155.255,
+    "village_count": 162,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:63:946",
+    "name": "Bageshwar block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Bageshwar",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "63",
+        "name": "Bageshwar",
+        "source_code": "63"
+      },
+      "block": {
+        "id": "946",
+        "name": "Bageshwar",
+        "source_code": "946"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.8745591,
+    "centroid_lon": 79.8079543,
+    "area_km2": 233.889,
+    "village_count": 314,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:63:947",
+    "name": "Garur block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Bageshwar",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "63",
+        "name": "Bageshwar",
+        "source_code": "63"
+      },
+      "block": {
+        "id": "947",
+        "name": "Garur",
+        "source_code": "947"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.7385893,
+    "centroid_lon": 79.8581918,
+    "area_km2": 117.194,
+    "village_count": 145,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:63:948",
+    "name": "Kapkot block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Bageshwar",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "63",
+        "name": "Bageshwar",
+        "source_code": "63"
+      },
+      "block": {
+        "id": "948",
+        "name": "Kapkot",
+        "source_code": "948"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.1121033,
+    "centroid_lon": 79.8241899,
+    "area_km2": 473.137,
+    "village_count": 156,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:57:949",
+    "name": "Dasholi block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Chamoli",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "57",
+        "name": "Chamoli",
+        "source_code": "57"
+      },
+      "block": {
+        "id": "949",
+        "name": "Dasholi",
+        "source_code": "949"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.3896361,
+    "centroid_lon": 79.3390683,
+    "area_km2": 99.886,
+    "village_count": 84,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:57:950",
+    "name": "Dewal block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Chamoli",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "57",
+        "name": "Chamoli",
+        "source_code": "57"
+      },
+      "block": {
+        "id": "950",
+        "name": "Dewal",
+        "source_code": "950"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.1200189,
+    "centroid_lon": 79.6276161,
+    "area_km2": 71.293,
+    "village_count": 56,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:57:951",
+    "name": "Gairsain block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Chamoli",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "57",
+        "name": "Chamoli",
+        "source_code": "57"
+      },
+      "block": {
+        "id": "951",
+        "name": "Gairsain",
+        "source_code": "951"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.0135037,
+    "centroid_lon": 79.2895183,
+    "area_km2": 176.948,
+    "village_count": 166,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:57:952",
+    "name": "Ghat block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Chamoli",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "57",
+        "name": "Chamoli",
+        "source_code": "57"
+      },
+      "block": {
+        "id": "952",
+        "name": "Ghat",
+        "source_code": "952"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.2847049,
+    "centroid_lon": 79.5828129,
+    "area_km2": 107.767,
+    "village_count": 67,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:57:953",
+    "name": "Joshimath block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Chamoli",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "57",
+        "name": "Chamoli",
+        "source_code": "57"
+      },
+      "block": {
+        "id": "953",
+        "name": "Joshimath",
+        "source_code": "953"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.8373943,
+    "centroid_lon": 79.646465,
+    "area_km2": 2755.203,
+    "village_count": 79,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:57:954",
+    "name": "Karanprayag block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Chamoli",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "57",
+        "name": "Chamoli",
+        "source_code": "57"
+      },
+      "block": {
+        "id": "954",
+        "name": "Karanprayag",
+        "source_code": "954"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.5047726,
+    "centroid_lon": 79.3001568,
+    "area_km2": 345.198,
+    "village_count": 158,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:57:955",
+    "name": "Narayan Bagad block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Chamoli",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "57",
+        "name": "Chamoli",
+        "source_code": "57"
+      },
+      "block": {
+        "id": "955",
+        "name": "Narayan Bagad",
+        "source_code": "955"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.0939114,
+    "centroid_lon": 79.3785536,
+    "area_km2": 66.574,
+    "village_count": 107,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:57:956",
+    "name": "Pokhri block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Chamoli",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "57",
+        "name": "Chamoli",
+        "source_code": "57"
+      },
+      "block": {
+        "id": "956",
+        "name": "Pokhri",
+        "source_code": "956"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.5162465,
+    "centroid_lon": 79.1577778,
+    "area_km2": 158.289,
+    "village_count": 109,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:57:957",
+    "name": "Tharali block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Chamoli",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "57",
+        "name": "Chamoli",
+        "source_code": "57"
+      },
+      "block": {
+        "id": "957",
+        "name": "Tharali",
+        "source_code": "957"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.136369,
+    "centroid_lon": 79.5194514,
+    "area_km2": 67.026,
+    "village_count": 61,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:65:958",
+    "name": "Barkot block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Champawat",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "65",
+        "name": "Champawat",
+        "source_code": "65"
+      },
+      "block": {
+        "id": "958",
+        "name": "Barkot",
+        "source_code": "958"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.4809439,
+    "centroid_lon": 80.0883681,
+    "area_km2": 80.443,
+    "village_count": 62,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:65:959",
+    "name": "Champawat block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Champawat",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "65",
+        "name": "Champawat",
+        "source_code": "65"
+      },
+      "block": {
+        "id": "959",
+        "name": "Champawat",
+        "source_code": "959"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.2672006,
+    "centroid_lon": 80.245829,
+    "area_km2": 275.705,
+    "village_count": 155,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:65:960",
+    "name": "Lohaghat block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Champawat",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "65",
+        "name": "Champawat",
+        "source_code": "65"
+      },
+      "block": {
+        "id": "960",
+        "name": "Lohaghat",
+        "source_code": "960"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.392666,
+    "centroid_lon": 80.2435679,
+    "area_km2": 145.748,
+    "village_count": 105,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:65:961",
+    "name": "Pati block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Champawat",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "65",
+        "name": "Champawat",
+        "source_code": "65"
+      },
+      "block": {
+        "id": "961",
+        "name": "Pati",
+        "source_code": "961"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.4263467,
+    "centroid_lon": 79.98888,
+    "area_km2": 171.377,
+    "village_count": 126,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:60:962",
+    "name": "Chakrata block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Dehradun",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "60",
+        "name": "Dehradun",
+        "source_code": "60"
+      },
+      "block": {
+        "id": "962",
+        "name": "Chakrata",
+        "source_code": "962"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.8114789,
+    "centroid_lon": 77.8743926,
+    "area_km2": 445.167,
+    "village_count": 123,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:60:963",
+    "name": "Doiwala block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Dehradun",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "60",
+        "name": "Dehradun",
+        "source_code": "60"
+      },
+      "block": {
+        "id": "963",
+        "name": "Doiwala",
+        "source_code": "963"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.2634374,
+    "centroid_lon": 78.1081438,
+    "area_km2": 136.897,
+    "village_count": 71,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:60:964",
+    "name": "Kalsi block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Dehradun",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "60",
+        "name": "Dehradun",
+        "source_code": "60"
+      },
+      "block": {
+        "id": "964",
+        "name": "Kalsi",
+        "source_code": "964"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.610417,
+    "centroid_lon": 77.8780172,
+    "area_km2": 270.147,
+    "village_count": 123,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:60:965",
+    "name": "Raipur block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Dehradun",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "60",
+        "name": "Dehradun",
+        "source_code": "60"
+      },
+      "block": {
+        "id": "965",
+        "name": "Raipur",
+        "source_code": "965"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.4499822,
+    "centroid_lon": 78.1176303,
+    "area_km2": 163.795,
+    "village_count": 100,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:60:966",
+    "name": "Sahaspur block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Dehradun",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "60",
+        "name": "Dehradun",
+        "source_code": "60"
+      },
+      "block": {
+        "id": "966",
+        "name": "Sahaspur",
+        "source_code": "966"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.371884,
+    "centroid_lon": 77.9824372,
+    "area_km2": 278.902,
+    "village_count": 101,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:60:967",
+    "name": "Vikasnagar block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Dehradun",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "60",
+        "name": "Dehradun",
+        "source_code": "60"
+      },
+      "block": {
+        "id": "967",
+        "name": "Vikasnagar",
+        "source_code": "967"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.4562593,
+    "centroid_lon": 77.8158401,
+    "area_km2": 160.862,
+    "village_count": 55,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:68:968",
+    "name": "Bahadrabad block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Haridwar",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "68",
+        "name": "Haridwar",
+        "source_code": "68"
+      },
+      "block": {
+        "id": "968",
+        "name": "Bahadrabad",
+        "source_code": "968"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.9082657,
+    "centroid_lon": 78.036063,
+    "area_km2": 283.221,
+    "village_count": 96,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:68:969",
+    "name": "Bhagwanpur block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Haridwar",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "68",
+        "name": "Haridwar",
+        "source_code": "68"
+      },
+      "block": {
+        "id": "969",
+        "name": "Bhagwanpur",
+        "source_code": "969"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.0035823,
+    "centroid_lon": 77.8602887,
+    "area_km2": 249.489,
+    "village_count": 72,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:68:970",
+    "name": "Khanpur block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Haridwar",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "68",
+        "name": "Haridwar",
+        "source_code": "68"
+      },
+      "block": {
+        "id": "970",
+        "name": "Khanpur",
+        "source_code": "970"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.6610996,
+    "centroid_lon": 78.0515805,
+    "area_km2": 127.053,
+    "village_count": 45,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:68:971",
+    "name": "Laksar block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Haridwar",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "68",
+        "name": "Haridwar",
+        "source_code": "68"
+      },
+      "block": {
+        "id": "971",
+        "name": "Laksar",
+        "source_code": "971"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.758648,
+    "centroid_lon": 77.9839881,
+    "area_km2": 236.847,
+    "village_count": 86,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:68:972",
+    "name": "Narsan block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Haridwar",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "68",
+        "name": "Haridwar",
+        "source_code": "68"
+      },
+      "block": {
+        "id": "972",
+        "name": "Narsan",
+        "source_code": "972"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.7674531,
+    "centroid_lon": 77.8141155,
+    "area_km2": 238.242,
+    "village_count": 95,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:68:973",
+    "name": "Roorkee block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Haridwar",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "68",
+        "name": "Haridwar",
+        "source_code": "68"
+      },
+      "block": {
+        "id": "973",
+        "name": "Roorkee",
+        "source_code": "973"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.8825267,
+    "centroid_lon": 77.8575484,
+    "area_km2": 192.166,
+    "village_count": 94,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:66:974",
+    "name": "Betalghat block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Nainital",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "66",
+        "name": "Nainital",
+        "source_code": "66"
+      },
+      "block": {
+        "id": "974",
+        "name": "Betalghat",
+        "source_code": "974"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.516154,
+    "centroid_lon": 79.4426386,
+    "area_km2": 145.204,
+    "village_count": 111,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:66:975",
+    "name": "Bhimtal block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Nainital",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "66",
+        "name": "Nainital",
+        "source_code": "66"
+      },
+      "block": {
+        "id": "975",
+        "name": "Bhimtal",
+        "source_code": "975"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.2807031,
+    "centroid_lon": 79.6273907,
+    "area_km2": 96.791,
+    "village_count": 84,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:66:976",
+    "name": "Dhari block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Nainital",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "66",
+        "name": "Nainital",
+        "source_code": "66"
+      },
+      "block": {
+        "id": "976",
+        "name": "Dhari",
+        "source_code": "976"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.2996628,
+    "centroid_lon": 79.6757316,
+    "area_km2": 76.335,
+    "village_count": 42,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:66:977",
+    "name": "Haldwani block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Nainital",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "66",
+        "name": "Nainital",
+        "source_code": "66"
+      },
+      "block": {
+        "id": "977",
+        "name": "Haldwani",
+        "source_code": "977"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.228792,
+    "centroid_lon": 79.4237986,
+    "area_km2": 137.041,
+    "village_count": 192,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:66:978",
+    "name": "Kotabagh block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Nainital",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "66",
+        "name": "Nainital",
+        "source_code": "66"
+      },
+      "block": {
+        "id": "978",
+        "name": "Kotabagh",
+        "source_code": "978"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.1411048,
+    "centroid_lon": 79.3262385,
+    "area_km2": 240.841,
+    "village_count": 93,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:66:979",
+    "name": "Okhalkanda block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Nainital",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "66",
+        "name": "Nainital",
+        "source_code": "66"
+      },
+      "block": {
+        "id": "979",
+        "name": "Okhalkanda",
+        "source_code": "979"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.3371781,
+    "centroid_lon": 79.7607526,
+    "area_km2": 116.577,
+    "village_count": 99,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:66:980",
+    "name": "Ramgarh block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Nainital",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "66",
+        "name": "Nainital",
+        "source_code": "66"
+      },
+      "block": {
+        "id": "980",
+        "name": "Ramgarh",
+        "source_code": "980"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.4522876,
+    "centroid_lon": 79.3775273,
+    "area_km2": 100.375,
+    "village_count": 85,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:66:981",
+    "name": "Ramnagar block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Nainital",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "66",
+        "name": "Nainital",
+        "source_code": "66"
+      },
+      "block": {
+        "id": "981",
+        "name": "Ramnagar",
+        "source_code": "981"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.3317566,
+    "centroid_lon": 78.9821305,
+    "area_km2": 143.638,
+    "village_count": 159,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:61:982",
+    "name": "Bironkhal block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Pauri garhwal",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "61",
+        "name": "Pauri garhwal",
+        "source_code": "61"
+      },
+      "block": {
+        "id": "982",
+        "name": "Bironkhal",
+        "source_code": "982"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.9120608,
+    "centroid_lon": 78.9889616,
+    "area_km2": 206.104,
+    "village_count": 162,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:61:983",
+    "name": "Duggada block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Pauri garhwal",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "61",
+        "name": "Pauri garhwal",
+        "source_code": "61"
+      },
+      "block": {
+        "id": "983",
+        "name": "Duggada",
+        "source_code": "983"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.7491177,
+    "centroid_lon": 78.5087025,
+    "area_km2": 136.242,
+    "village_count": 135,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:61:984",
+    "name": "Dwarikhal block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Pauri garhwal",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "61",
+        "name": "Pauri garhwal",
+        "source_code": "61"
+      },
+      "block": {
+        "id": "984",
+        "name": "Dwarikhal",
+        "source_code": "984"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.9759488,
+    "centroid_lon": 78.6305984,
+    "area_km2": 210.311,
+    "village_count": 139,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:61:985",
+    "name": "Ekeshwar block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Pauri garhwal",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "61",
+        "name": "Pauri garhwal",
+        "source_code": "61"
+      },
+      "block": {
+        "id": "985",
+        "name": "Ekeshwar",
+        "source_code": "985"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.8875659,
+    "centroid_lon": 78.8708215,
+    "area_km2": 116.088,
+    "village_count": 138,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:61:996",
+    "name": "Jaiharikhal block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Pauri garhwal",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "61",
+        "name": "Pauri garhwal",
+        "source_code": "61"
+      },
+      "block": {
+        "id": "996",
+        "name": "Jaiharikhal",
+        "source_code": "996"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.8756271,
+    "centroid_lon": 78.803776,
+    "area_km2": 128.591,
+    "village_count": 141,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:61:986",
+    "name": "Khaljikhal block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Pauri garhwal",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "61",
+        "name": "Pauri garhwal",
+        "source_code": "61"
+      },
+      "block": {
+        "id": "986",
+        "name": "Khaljikhal",
+        "source_code": "986"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.010005,
+    "centroid_lon": 78.6991384,
+    "area_km2": 143.22,
+    "village_count": 176,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:61:987",
+    "name": "Khirsu block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Pauri garhwal",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "61",
+        "name": "Pauri garhwal",
+        "source_code": "61"
+      },
+      "block": {
+        "id": "987",
+        "name": "Khirsu",
+        "source_code": "987"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.2134153,
+    "centroid_lon": 78.8296244,
+    "area_km2": 43.374,
+    "village_count": 67,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:61:988",
+    "name": "Kot block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Pauri garhwal",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "61",
+        "name": "Pauri garhwal",
+        "source_code": "61"
+      },
+      "block": {
+        "id": "988",
+        "name": "Kot",
+        "source_code": "988"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.2134083,
+    "centroid_lon": 78.6600807,
+    "area_km2": 112.48,
+    "village_count": 159,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:61:989",
+    "name": "Nanidanda block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Pauri garhwal",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "61",
+        "name": "Pauri garhwal",
+        "source_code": "61"
+      },
+      "block": {
+        "id": "989",
+        "name": "Nanidanda",
+        "source_code": "989"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.7016731,
+    "centroid_lon": 79.0587207,
+    "area_km2": 143.862,
+    "village_count": 187,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:61:990",
+    "name": "Pabo block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Pauri garhwal",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "61",
+        "name": "Pauri garhwal",
+        "source_code": "61"
+      },
+      "block": {
+        "id": "990",
+        "name": "Pabo",
+        "source_code": "990"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.0360529,
+    "centroid_lon": 78.8963593,
+    "area_km2": 107.223,
+    "village_count": 111,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:61:991",
+    "name": "Pauri block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Pauri garhwal",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "61",
+        "name": "Pauri garhwal",
+        "source_code": "61"
+      },
+      "block": {
+        "id": "991",
+        "name": "Pauri",
+        "source_code": "991"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.1125572,
+    "centroid_lon": 78.7949748,
+    "area_km2": 104.719,
+    "village_count": 142,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:61:992",
+    "name": "Pokhra block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Pauri garhwal",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "61",
+        "name": "Pauri garhwal",
+        "source_code": "61"
+      },
+      "block": {
+        "id": "992",
+        "name": "Pokhra",
+        "source_code": "992"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.9336389,
+    "centroid_lon": 78.9091889,
+    "area_km2": 121.827,
+    "village_count": 81,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:61:993",
+    "name": "Rikhanikhal block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Pauri garhwal",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "61",
+        "name": "Pauri garhwal",
+        "source_code": "61"
+      },
+      "block": {
+        "id": "993",
+        "name": "Rikhanikhal",
+        "source_code": "993"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.7329766,
+    "centroid_lon": 78.8959407,
+    "area_km2": 154.271,
+    "village_count": 121,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:61:994",
+    "name": "Thalisain block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Pauri garhwal",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "61",
+        "name": "Pauri garhwal",
+        "source_code": "61"
+      },
+      "block": {
+        "id": "994",
+        "name": "Thalisain",
+        "source_code": "994"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.0817215,
+    "centroid_lon": 79.1397207,
+    "area_km2": 415.841,
+    "village_count": 155,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:61:995",
+    "name": "Yamkeshwar block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Pauri garhwal",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "61",
+        "name": "Pauri garhwal",
+        "source_code": "61"
+      },
+      "block": {
+        "id": "995",
+        "name": "Yamkeshwar",
+        "source_code": "995"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.0039923,
+    "centroid_lon": 78.3991307,
+    "area_km2": 220.823,
+    "village_count": 160,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:62:997",
+    "name": "Berinag block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Pithoragarh",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "62",
+        "name": "Pithoragarh",
+        "source_code": "62"
+      },
+      "block": {
+        "id": "997",
+        "name": "Berinag",
+        "source_code": "997"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.6889272,
+    "centroid_lon": 80.0954732,
+    "area_km2": 160.514,
+    "village_count": 206,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:62:998",
+    "name": "Darchula block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Pithoragarh",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "62",
+        "name": "Pithoragarh",
+        "source_code": "62"
+      },
+      "block": {
+        "id": "998",
+        "name": "Darchula",
+        "source_code": "998"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.9438876,
+    "centroid_lon": 80.508985,
+    "area_km2": 341.858,
+    "village_count": 59,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:62:999",
+    "name": "Didihat block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Pithoragarh",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "62",
+        "name": "Pithoragarh",
+        "source_code": "62"
+      },
+      "block": {
+        "id": "999",
+        "name": "Didihat",
+        "source_code": "999"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.8118397,
+    "centroid_lon": 80.2713619,
+    "area_km2": 150.582,
+    "village_count": 126,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:62:1000",
+    "name": "Gangolihat block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Pithoragarh",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "62",
+        "name": "Pithoragarh",
+        "source_code": "62"
+      },
+      "block": {
+        "id": "1000",
+        "name": "Gangolihat",
+        "source_code": "1000"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.7095507,
+    "centroid_lon": 79.9799565,
+    "area_km2": 245.297,
+    "village_count": 242,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:62:1001",
+    "name": "Kanalichina block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Pithoragarh",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "62",
+        "name": "Pithoragarh",
+        "source_code": "62"
+      },
+      "block": {
+        "id": "1001",
+        "name": "Kanalichina",
+        "source_code": "1001"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.6995275,
+    "centroid_lon": 80.3515674,
+    "area_km2": 179.11,
+    "village_count": 133,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:62:1002",
+    "name": "Munakot block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Pithoragarh",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "62",
+        "name": "Pithoragarh",
+        "source_code": "62"
+      },
+      "block": {
+        "id": "1002",
+        "name": "Munakot",
+        "source_code": "1002"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.5554394,
+    "centroid_lon": 80.3172708,
+    "area_km2": 233.316,
+    "village_count": 89,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:62:1003",
+    "name": "Munsyari block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Pithoragarh",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "62",
+        "name": "Pithoragarh",
+        "source_code": "62"
+      },
+      "block": {
+        "id": "1003",
+        "name": "Munsyari",
+        "source_code": "1003"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.0612887,
+    "centroid_lon": 80.2935375,
+    "area_km2": 310.527,
+    "village_count": 182,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:62:1004",
+    "name": "Pithoragarh block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Pithoragarh",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "62",
+        "name": "Pithoragarh",
+        "source_code": "62"
+      },
+      "block": {
+        "id": "1004",
+        "name": "Pithoragarh",
+        "source_code": "1004"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.5634629,
+    "centroid_lon": 80.1710381,
+    "area_km2": 178.062,
+    "village_count": 113,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:58:1005",
+    "name": "Agustmuni block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Rudraprayag",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "58",
+        "name": "Rudraprayag",
+        "source_code": "58"
+      },
+      "block": {
+        "id": "1005",
+        "name": "Agustmuni",
+        "source_code": "1005"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.3872472,
+    "centroid_lon": 79.0571754,
+    "area_km2": 224.132,
+    "village_count": 239,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:58:1006",
+    "name": "Jakholi block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Rudraprayag",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "58",
+        "name": "Rudraprayag",
+        "source_code": "58"
+      },
+      "block": {
+        "id": "1006",
+        "name": "Jakholi",
+        "source_code": "1006"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.4055412,
+    "centroid_lon": 78.9689894,
+    "area_km2": 82.548,
+    "village_count": 109,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:58:1007",
+    "name": "Ukhimath block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Rudraprayag",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "58",
+        "name": "Rudraprayag",
+        "source_code": "58"
+      },
+      "block": {
+        "id": "1007",
+        "name": "Ukhimath",
+        "source_code": "1007"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.5596575,
+    "centroid_lon": 79.0541793,
+    "area_km2": 95.016,
+    "village_count": 99,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:59:1008",
+    "name": "Bhilingana block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Tehri garhwal",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "59",
+        "name": "Tehri garhwal",
+        "source_code": "59"
+      },
+      "block": {
+        "id": "1008",
+        "name": "Bhilingana",
+        "source_code": "1008"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.3807639,
+    "centroid_lon": 78.7747922,
+    "area_km2": 123.8,
+    "village_count": 166,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:59:1009",
+    "name": "Chamba block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Tehri garhwal",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "59",
+        "name": "Tehri garhwal",
+        "source_code": "59"
+      },
+      "block": {
+        "id": "1009",
+        "name": "Chamba",
+        "source_code": "1009"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.3741309,
+    "centroid_lon": 78.3593942,
+    "area_km2": 108.491,
+    "village_count": 133,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:59:1010",
+    "name": "Deoprayag block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Tehri garhwal",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "59",
+        "name": "Tehri garhwal",
+        "source_code": "59"
+      },
+      "block": {
+        "id": "1010",
+        "name": "Deoprayag",
+        "source_code": "1010"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.2511081,
+    "centroid_lon": 78.5636275,
+    "area_km2": 165.393,
+    "village_count": 186,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:59:1011",
+    "name": "Jakhinidhar block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Tehri garhwal",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "59",
+        "name": "Tehri garhwal",
+        "source_code": "59"
+      },
+      "block": {
+        "id": "1011",
+        "name": "Jakhinidhar",
+        "source_code": "1011"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.3223773,
+    "centroid_lon": 78.5134757,
+    "area_km2": 85.639,
+    "village_count": 93,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:59:1012",
+    "name": "Jaunpur block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Tehri garhwal",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "59",
+        "name": "Tehri garhwal",
+        "source_code": "59"
+      },
+      "block": {
+        "id": "1012",
+        "name": "Jaunpur",
+        "source_code": "1012"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.5013151,
+    "centroid_lon": 78.2397871,
+    "area_km2": 168.752,
+    "village_count": 174,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:59:1013",
+    "name": "Kirtinagar block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Tehri garhwal",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "59",
+        "name": "Tehri garhwal",
+        "source_code": "59"
+      },
+      "block": {
+        "id": "1013",
+        "name": "Kirtinagar",
+        "source_code": "1013"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.2345496,
+    "centroid_lon": 78.8009671,
+    "area_km2": 69.733,
+    "village_count": 103,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:59:1014",
+    "name": "Narendranagar block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Tehri garhwal",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "59",
+        "name": "Tehri garhwal",
+        "source_code": "59"
+      },
+      "block": {
+        "id": "1014",
+        "name": "Narendranagar",
+        "source_code": "1014"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.2629969,
+    "centroid_lon": 78.4697231,
+    "area_km2": 135.578,
+    "village_count": 173,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:59:1015",
+    "name": "Pratapnagar block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Tehri garhwal",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "59",
+        "name": "Tehri garhwal",
+        "source_code": "59"
+      },
+      "block": {
+        "id": "1015",
+        "name": "Pratapnagar",
+        "source_code": "1015"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.4992845,
+    "centroid_lon": 78.4813139,
+    "area_km2": 51.792,
+    "village_count": 67,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:59:1016",
+    "name": "Thaludhar block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Tehri garhwal",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "59",
+        "name": "Tehri garhwal",
+        "source_code": "59"
+      },
+      "block": {
+        "id": "1016",
+        "name": "Thaludhar",
+        "source_code": "1016"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.3023008,
+    "centroid_lon": 78.4281653,
+    "area_km2": 106.507,
+    "village_count": 108,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:67:1017",
+    "name": "Bajpur block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Udham singh nagar",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "67",
+        "name": "Udham singh nagar",
+        "source_code": "67"
+      },
+      "block": {
+        "id": "1017",
+        "name": "Bajpur",
+        "source_code": "1017"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.0204075,
+    "centroid_lon": 79.4049049,
+    "area_km2": 187.136,
+    "village_count": 68,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:67:1018",
+    "name": "Gadarpur block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Udham singh nagar",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "67",
+        "name": "Udham singh nagar",
+        "source_code": "67"
+      },
+      "block": {
+        "id": "1018",
+        "name": "Gadarpur",
+        "source_code": "1018"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.0495303,
+    "centroid_lon": 79.3247952,
+    "area_km2": 170.752,
+    "village_count": 47,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:67:1019",
+    "name": "Jaspur block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Udham singh nagar",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "67",
+        "name": "Udham singh nagar",
+        "source_code": "67"
+      },
+      "block": {
+        "id": "1019",
+        "name": "Jaspur",
+        "source_code": "1019"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.3007647,
+    "centroid_lon": 78.9561002,
+    "area_km2": 127.328,
+    "village_count": 66,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:67:1020",
+    "name": "Kasipur block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Udham singh nagar",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "67",
+        "name": "Udham singh nagar",
+        "source_code": "67"
+      },
+      "block": {
+        "id": "1020",
+        "name": "Kasipur",
+        "source_code": "1020"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 29.2152935,
+    "centroid_lon": 79.0311699,
+    "area_km2": 174.988,
+    "village_count": 62,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:67:1021",
+    "name": "Khatima block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Udham singh nagar",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "67",
+        "name": "Udham singh nagar",
+        "source_code": "67"
+      },
+      "block": {
+        "id": "1021",
+        "name": "Khatima",
+        "source_code": "1021"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 28.9158406,
+    "centroid_lon": 79.9234872,
+    "area_km2": 251.911,
+    "village_count": 72,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:67:1022",
+    "name": "Rudrapur block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Udham singh nagar",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "67",
+        "name": "Udham singh nagar",
+        "source_code": "67"
+      },
+      "block": {
+        "id": "1022",
+        "name": "Rudrapur",
+        "source_code": "1022"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 28.9565358,
+    "centroid_lon": 79.4055187,
+    "area_km2": 228.318,
+    "village_count": 62,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:67:1023",
+    "name": "Sitarganj block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Udham singh nagar",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "67",
+        "name": "Udham singh nagar",
+        "source_code": "67"
+      },
+      "block": {
+        "id": "1023",
+        "name": "Sitarganj",
+        "source_code": "1023"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 28.9507442,
+    "centroid_lon": 79.7399974,
+    "area_km2": 232.546,
+    "village_count": 85,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:56:1024",
+    "name": "Bhatwari block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Uttarkashi",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "56",
+        "name": "Uttarkashi",
+        "source_code": "56"
+      },
+      "block": {
+        "id": "1024",
+        "name": "Bhatwari",
+        "source_code": "1024"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.8461629,
+    "centroid_lon": 78.4692674,
+    "area_km2": 114.31,
+    "village_count": 88,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:56:1025",
+    "name": "Chiniyalisaur block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Uttarkashi",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "56",
+        "name": "Uttarkashi",
+        "source_code": "56"
+      },
+      "block": {
+        "id": "1025",
+        "name": "Chiniyalisaur",
+        "source_code": "1025"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.6624099,
+    "centroid_lon": 78.2407866,
+    "area_km2": 97.484,
+    "village_count": 95,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:56:1026",
+    "name": "Dunda block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Uttarkashi",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "56",
+        "name": "Uttarkashi",
+        "source_code": "56"
+      },
+      "block": {
+        "id": "1026",
+        "name": "Dunda",
+        "source_code": "1026"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.5481689,
+    "centroid_lon": 78.5110282,
+    "area_km2": 91.37,
+    "village_count": 99,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:56:1027",
+    "name": "Mori block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Uttarkashi",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "56",
+        "name": "Uttarkashi",
+        "source_code": "56"
+      },
+      "block": {
+        "id": "1027",
+        "name": "Mori",
+        "source_code": "1027"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 31.1226505,
+    "centroid_lon": 78.2243969,
+    "area_km2": 129.815,
+    "village_count": 87,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:56:1028",
+    "name": "Naugaon block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Uttarkashi",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "56",
+        "name": "Uttarkashi",
+        "source_code": "56"
+      },
+      "block": {
+        "id": "1028",
+        "name": "Naugaon",
+        "source_code": "1028"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.7417836,
+    "centroid_lon": 78.1774613,
+    "area_km2": 207.343,
+    "village_count": 165,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  },
+  {
+    "id": "bhuvan:block:5:56:1029",
+    "name": "Purola block (administrative proxy)",
+    "state": "Uttarakhand",
+    "district": "Uttarkashi",
+    "admin": {
+      "state": {
+        "id": "5",
+        "name": "Uttarakhand",
+        "source_code": "5"
+      },
+      "district": {
+        "id": "56",
+        "name": "Uttarkashi",
+        "source_code": "56"
+      },
+      "block": {
+        "id": "1029",
+        "name": "Purola",
+        "source_code": "1029"
+      }
+    },
+    "unit_type": "administrative_block_proxy",
+    "model_ready": false,
+    "centroid_lat": 30.8767232,
+    "centroid_lon": 78.0735664,
+    "area_km2": 63.742,
+    "village_count": 67,
+    "land_use": null,
+    "hydrologic_soil_group": null,
+    "soil_texture": null,
+    "mean_slope_deg": null,
+    "flow_path_length_m": null,
+    "channel_slope_percent": null,
+    "base_rainfall_threshold_mm": null,
+    "limitation": "Union of Bhuvan village boundaries by administrative block; not a delineated watershed and not eligible for risk calculation."
+  }
+]

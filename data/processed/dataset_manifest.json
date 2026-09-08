@@ -1,0 +1,170 @@
+{
+  "dataset_name": "Bhuvan Uttarakhand and Himachal village boundaries catalog",
+  "generated_at": "2026-09-08T19:38:44.039571+00:00",
+  "source_files": [
+    "bhuvan_villages.parquet",
+    "villages.json",
+    "catchments.json"
+  ],
+  "source_crs": "OGC:CRS84",
+  "state": null,
+  "states": [
+    {
+      "id": "2",
+      "name": "Himachal Pradesh",
+      "source_code": "2"
+    },
+    {
+      "id": "5",
+      "name": "Uttarakhand",
+      "source_code": "5"
+    }
+  ],
+  "state_count": 2,
+  "district": null,
+  "districts": [
+    {
+      "id": "24",
+      "name": "Kangra",
+      "source_code": "24",
+      "state_code": "2"
+    },
+    {
+      "id": "34",
+      "name": "Kinnaur",
+      "source_code": "34",
+      "state_code": "2"
+    },
+    {
+      "id": "26",
+      "name": "Kullu",
+      "source_code": "26",
+      "state_code": "2"
+    },
+    {
+      "id": "25",
+      "name": "Lahul&spiti",
+      "source_code": "25",
+      "state_code": "2"
+    },
+    {
+      "id": "27",
+      "name": "Mandi",
+      "source_code": "27",
+      "state_code": "2"
+    },
+    {
+      "id": "33",
+      "name": "Shimla",
+      "source_code": "33",
+      "state_code": "2"
+    },
+    {
+      "id": "32",
+      "name": "Sirmaur",
+      "source_code": "32",
+      "state_code": "2"
+    },
+    {
+      "id": "31",
+      "name": "Solan",
+      "source_code": "31",
+      "state_code": "2"
+    },
+    {
+      "id": "29",
+      "name": "Una",
+      "source_code": "29",
+      "state_code": "2"
+    },
+    {
+      "id": "64",
+      "name": "Almora",
+      "source_code": "64",
+      "state_code": "5"
+    },
+    {
+      "id": "63",
+      "name": "Bageshwar",
+      "source_code": "63",
+      "state_code": "5"
+    },
+    {
+      "id": "57",
+      "name": "Chamoli",
+      "source_code": "57",
+      "state_code": "5"
+    },
+    {
+      "id": "65",
+      "name": "Champawat",
+      "source_code": "65",
+      "state_code": "5"
+    },
+    {
+      "id": "60",
+      "name": "Dehradun",
+      "source_code": "60",
+      "state_code": "5"
+    },
+    {
+      "id": "68",
+      "name": "Haridwar",
+      "source_code": "68",
+      "state_code": "5"
+    },
+    {
+      "id": "66",
+      "name": "Nainital",
+      "source_code": "66",
+      "state_code": "5"
+    },
+    {
+      "id": "61",
+      "name": "Pauri garhwal",
+      "source_code": "61",
+      "state_code": "5"
+    },
+    {
+      "id": "62",
+      "name": "Pithoragarh",
+      "source_code": "62",
+      "state_code": "5"
+    },
+    {
+      "id": "58",
+      "name": "Rudraprayag",
+      "source_code": "58",
+      "state_code": "5"
+    },
+    {
+      "id": "59",
+      "name": "Tehri garhwal",
+      "source_code": "59",
+      "state_code": "5"
+    },
+    {
+      "id": "67",
+      "name": "Udham singh nagar",
+      "source_code": "67",
+      "state_code": "5"
+    },
+    {
+      "id": "56",
+      "name": "Uttarkashi",
+      "source_code": "56",
+      "state_code": "5"
+    }
+  ],
+  "district_count": 22,
+  "village_count": 21935,
+  "geometry_repair_count": 6,
+  "analysis_unit_count": 140,
+  "analysis_unit_type": "administrative_block_proxy",
+  "model_ready": false,
+  "limitations": [
+    "The Bhuvan source contains village boundaries and administrative fields only.",
+    "Block aggregates are map/catalog proxies, not hydrological catchments.",
+    "DEM, drainage, land-use, soil, and calibrated rainfall-trigger inputs are still required before risk calculation."
+  ]
+}

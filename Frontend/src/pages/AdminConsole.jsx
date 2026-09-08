@@ -597,13 +597,13 @@ export default function AdminConsole() {
       healthOk ? "online" : healthState.phase === "loading" ? "ready" : "offline",
     ],
     [
-      "IMD weather provider",
+      "OpenWeather provider",
       healthOk
-        ? healthState.data.weather_configured
-          ? "Configured"
-          : "IMD_ACCESS_TOKEN required"
+        ? healthState.data.weather_configured !== false
+          ? "Configured through backend"
+          : "Backend OpenWeather configuration required"
         : "Unverified",
-      healthOk && healthState.data.weather_configured ? "online" : "offline",
+      healthOk && healthState.data.weather_configured !== false ? "online" : "offline",
     ],
     [
       "Data mode",

@@ -130,6 +130,15 @@ export function getHealth(options = {}) {
   return apiRequest("/health", options);
 }
 
+const WEATHER_TILE_LAYERS = new Set(["precipitation_new", "clouds_new"]);
+
+export function getWeatherTileUrl(layer) {
+  if (!WEATHER_TILE_LAYERS.has(layer)) {
+    throw new TypeError(`Unsupported weather tile layer: ${layer}`);
+  }
+  return `${API_BASE}/v1/weather/tiles/${layer}/{z}/{x}/{y}.png`;
+}
+
 export function getVillages(
   { district, catchment_id, q, offset, limit } = {},
   options = {},
@@ -172,12 +181,26 @@ export function getCatchment(catchmentId, options = {}) {
 }
 
 export function getRiskSnapshots(
-  { district, catchment_id, include_forecast, offset, limit } = {},
+  {
+    district,
+    catchment_id,
+    include_forecast,
+    summarize_provisional,
+    offset,
+    limit,
+  } = {},
   options = {},
 ) {
   return apiRequest("/v1/risk/snapshots", {
     ...options,
-    params: { district, catchment_id, include_forecast, offset, limit },
+    params: {
+      district,
+      catchment_id,
+      include_forecast,
+      summarize_provisional,
+      offset,
+      limit,
+    },
   });
 }
 
@@ -415,38 +438,78 @@ export function getPeakSnapshot(snapshots) {
   );
 }
 
+function formatMeasurement(value, suffix, digits = 0) {
+  const number = Number(value);
+  return Number.isFinite(number) ? `${number.toFixed(digits)}${suffix}` : undefined;
+}
+
+function windDirection(degrees) {
+  const value = Number(degrees);
+  if (!Number.isFinite(value)) return undefined;
+  const directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
+  return directions[Math.round((((value % 360) + 360) % 360) / 45) % directions.length];
+}
+
 export function getSnapshotConditions(snapshot) {
+  const hasOneHourRainfall = snapshot?.precipitation_1h_mm != null;
   const hasThreeHourRainfall = snapshot?.precipitation_3h_mm != null;
-  const rainValue =
-    snapshot?.precipitation_3h_mm ??
-    snapshot?.precipitation_24h_mm ??
-    snapshot?.details?.explain?.today_rainfall_mm ??
-    snapshot?.rainfall_3h ??
-    snapshot?.rainfall;
+  const hasSixHourRainfall = snapshot?.precipitation_6h_mm != null;
+  const hasTwentyFourHourRainfall = snapshot?.precipitation_24h_mm != null;
+  const rainValue = hasThreeHourRainfall
+    ? snapshot.precipitation_3h_mm
+    : hasOneHourRainfall
+      ? snapshot.precipitation_1h_mm
+      : hasSixHourRainfall
+        ? snapshot.precipitation_6h_mm
+        : hasTwentyFourHourRainfall
+          ? snapshot.precipitation_24h_mm
+          : snapshot?.details?.explain?.today_rainfall_mm
+            ?? snapshot?.rainfall_3h
+            ?? snapshot?.rainfall;
   const soilValue =
     snapshot?.details?.explain?.current_soil_moisture ??
     snapshot?.soil_moisture ??
     snapshot?.soil;
-
   const rainfall = rainValue == null
     ? undefined
     : typeof rainValue === "number"
-      ? `${Math.round(rainValue)} mm`
-      : rainValue;
-
+      ? `${rainValue.toFixed(1)} mm`
+      : String(rainValue);
   const soil = soilValue == null
     ? undefined
     : typeof soilValue === "number"
       ? `${Math.round(soilValue <= 1 ? soilValue * 100 : soilValue)}%`
-      : soilValue;
+      : String(soilValue);
+  const windSpeed = formatMeasurement(snapshot?.wind_speed_mps, " m/s", 1);
+  const windCompass = windDirection(snapshot?.wind_direction_deg);
+  const weatherDescription = snapshot?.weather_description ?? snapshot?.weather_condition;
 
   return {
     rainfall,
     rainfallLabel: hasThreeHourRainfall
       ? "3-hour accumulation"
-      : rainValue == null
-        ? "rainfall unavailable"
-        : "24-hour accumulation",
+      : hasOneHourRainfall
+        ? "1-hour accumulation"
+        : hasSixHourRainfall
+          ? "6-hour accumulation"
+          : rainValue == null
+            ? "rainfall unavailable"
+            : "24-hour accumulation",
     soil,
+    temperature: formatMeasurement(snapshot?.temperature_c, " °C", 1),
+    feelsLike: formatMeasurement(snapshot?.feels_like_c, " °C", 1),
+    humidity: formatMeasurement(snapshot?.humidity_percent, "%"),
+    pressure: formatMeasurement(snapshot?.pressure_hpa, " hPa"),
+    wind: windSpeed ? `${windSpeed}${windCompass ? ` ${windCompass}` : ""}` : undefined,
+    windSpeed,
+    windDirection: windCompass,
+    cloudCover: formatMeasurement(snapshot?.cloud_cover_percent, "%"),
+    visibility: Number.isFinite(Number(snapshot?.visibility_m))
+      ? Number(snapshot.visibility_m) >= 1000
+        ? `${(Number(snapshot.visibility_m) / 1000).toFixed(1)} km`
+        : `${Math.round(Number(snapshot.visibility_m))} m`
+      : undefined,
+    weatherCondition: weatherDescription ? String(weatherDescription) : undefined,
+    weatherIcon: snapshot?.weather_icon ? String(snapshot.weather_icon) : undefined,
   };
 }

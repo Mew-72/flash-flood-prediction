@@ -25,10 +25,11 @@ class VillageOut(BaseModel):
     admin: AdministrativeHierarchy | None = None
     lat: float
     lon: float
-    slope_deg: float
-    terrain_class: str
-    distance_to_stream_m: float
-    historical_event_count: int = 0
+    slope_deg: float | None = None
+    terrain_class: str | None = None
+    distance_to_stream_m: float | None = None
+    historical_event_count: int | None = None
+    model_ready: bool = True
 
 
 class CatchmentOut(BaseModel):
@@ -41,13 +42,14 @@ class CatchmentOut(BaseModel):
     centroid_lat: float
     centroid_lon: float
     area_km2: float = Field(gt=0)
-    land_use: str
-    hydrologic_soil_group: str
-    soil_texture: str
-    mean_slope_deg: float
-    flow_path_length_m: float = Field(gt=0)
-    channel_slope_percent: float = Field(gt=0)
-    base_rainfall_threshold_mm: float = Field(gt=0)
+    land_use: str | None = None
+    hydrologic_soil_group: str | None = None
+    soil_texture: str | None = None
+    mean_slope_deg: float | None = None
+    flow_path_length_m: float | None = Field(default=None, gt=0)
+    channel_slope_percent: float | None = Field(default=None, gt=0)
+    base_rainfall_threshold_mm: float | None = Field(default=None, gt=0)
+    model_ready: bool = True
 
 
 class VillageCatalog(BaseModel):

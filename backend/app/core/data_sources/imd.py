@@ -13,6 +13,7 @@ import httpx
 from pydantic import SecretStr
 
 from app.core.data_sources.cache import AsyncTTLCache
+from app.core.data_sources.provider import WeatherCapabilityError
 from app.schemas.weather import WeatherSnapshot, WeatherTimeline
 
 IST = timezone(timedelta(hours=5, minutes=30))
@@ -28,7 +29,7 @@ class ImdConfigurationError(ImdError):
     """Raised when required IMD gateway configuration is absent."""
 
 
-class ImdCapabilityError(ImdError):
+class ImdCapabilityError(ImdError, WeatherCapabilityError):
     """Raised when the public IMD API cannot provide a requested capability."""
 
 

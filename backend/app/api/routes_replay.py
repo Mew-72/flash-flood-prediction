@@ -2,7 +2,7 @@ from datetime import date
 
 from fastapi import APIRouter, HTTPException, Request
 
-from app.core.data_sources.imd import ImdCapabilityError
+from app.core.data_sources.provider import WeatherCapabilityError
 
 router = APIRouter(prefix="/replay", tags=["replay"])
 
@@ -30,7 +30,7 @@ async def replay_event(
             start_date.isoformat(),
             end_date.isoformat(),
         )
-    except ImdCapabilityError as exc:
+    except WeatherCapabilityError as exc:
         raise HTTPException(status_code=501, detail=str(exc)) from exc
 
     raise HTTPException(

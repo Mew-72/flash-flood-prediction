@@ -26,11 +26,16 @@ import {
   riskColor,
 } from "../data";
 
+const AUTO_REFRESH_MS = 5 * 60 * 1000;
+
 const EMPTY_SUMMARY = {
   score: 0,
-  risk: "LOW",
+  risk: "UNAVAILABLE",
   rainfall: "—",
   rainfallLabel: "rainfall unavailable",
+  temperature: "—",
+  humidity: "—",
+  wind: "—",
   soil: "—",
   responseTime: "—",
 };
@@ -42,6 +47,19 @@ function formatApiError(error) {
 
 function snapshotForVillage(snapshots, villageId) {
   return snapshots.find((snapshot) => snapshot.village_id === villageId);
+}
+
+function openWeatherReady(health) {
+  if (!health || health.weather_configured === false) return false;
+  const provider = health.provider ?? health.weather_provider ?? health.weather?.provider;
+  return !provider || String(provider).toLowerCase() === "openweather";
+}
+
+function formatUpdatedAt(value) {
+  const date = value ? new Date(value) : new Date();
+  return Number.isNaN(date.getTime())
+    ? "Live snapshot loaded"
+    : `Updated ${date.toLocaleString()} · auto-refresh 5 min`;
 }
 
 export default function Dashboard() {
@@ -122,17 +140,18 @@ export default function Dashboard() {
             {
               ...filters,
               include_forecast: true,
+              summarize_provisional: true,
               limit: 500,
             },
             { signal: controller.signal },
           );
           setSnapshotPayload(risks);
-          setLastUpdated(`Updated ${new Date(risks.generated_at).toLocaleString()}`);
+          setLastUpdated(formatUpdatedAt(risks.generated_at));
         } catch (error) {
           if (error.name !== "AbortError") {
             setSnapshotPayload(null);
             setApiError(formatApiError(error));
-            setLastUpdated("IMD risk data unavailable");
+            setLastUpdated("Live OpenWeather risk data unavailable");
           }
         }
       } catch (error) {
@@ -196,25 +215,34 @@ export default function Dashboard() {
     );
   }, [allSnapshots, forecastLead, viewPeriod]);
 
-  const villages = useMemo(
-    () => villageRecords.map((record) => {
-      const snapshot = snapshotForVillage(visibleSnapshots, record.id);
+  const villages = useMemo(() => {
+    const provisionalByDistrict = new Map();
+    visibleSnapshots.forEach((snapshot) => {
+      if (snapshot.assessment_mode === "provisional_defaults" && snapshot.district) {
+        provisionalByDistrict.set(snapshot.district, snapshot);
+      }
+    });
+
+    return villageRecords.map((record) => {
+      const exactSnapshot = snapshotForVillage(visibleSnapshots, record.id);
+      const snapshot = exactSnapshot ?? provisionalByDistrict.get(record.district);
       const score = snapshot ? getSnapshotScore(snapshot, 0) : 0;
       const conditions = snapshot ? getSnapshotConditions(snapshot) : {};
       return {
         ...toFrontendVillage(record, {
           score,
-          risk: snapshot ? getRiskLevel(snapshot, score) : "LOW",
+          risk: snapshot ? getRiskLevel(snapshot, score) : "UNAVAILABLE",
           rain: conditions.rainfall ?? "—",
           soil: conditions.soil ?? "—",
         }),
         district: record.district,
         record,
         snapshot,
+        assessmentScope: exactSnapshot ? "village" : snapshot ? "district proxy" : null,
+        weather: conditions,
       };
-    }),
-    [villageRecords, visibleSnapshots],
-  );
+    });
+  }, [villageRecords, visibleSnapshots]);
 
   const selectedVillage = useMemo(
     () => villages.find((village) => village.id === selectedVillageId) ?? null,
@@ -237,6 +265,9 @@ export default function Dashboard() {
       risk: getRiskLevel(peak, score),
       rainfall: conditions.rainfall ?? "—",
       rainfallLabel: conditions.rainfallLabel,
+      temperature: conditions.temperature ?? "—",
+      humidity: conditions.humidity ?? "—",
+      wind: conditions.wind ?? "—",
       soil: conditions.soil ?? "—",
       responseTime: Number.isFinite(Number(responseMinutes))
         ? `${Math.round(Number(responseMinutes))} min`
@@ -282,9 +313,14 @@ export default function Dashboard() {
 
   const refreshSnapshot = useCallback(() => {
     setRefreshing(true);
-    setLastUpdated("Refreshing…");
+    setLastUpdated("Refreshing live backend data…");
     setReloadToken((value) => value + 1);
   }, []);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(refreshSnapshot, AUTO_REFRESH_MS);
+    return () => window.clearInterval(intervalId);
+  }, [refreshSnapshot]);
 
   function toggleLayer(layerId) {
     setVisibleLayers((current) => ({
@@ -408,9 +444,9 @@ export default function Dashboard() {
 
           <div className="side-footer">
             <div className="data-badge">
-              {health?.data_mode === "demo" ? "SYNTHETIC DEMO DATA" : "PUBLIC DATA FIRST"}
+              {health?.data_mode === "demo" ? "SYNTHETIC DEMO DATA" : "LIVE OPENWEATHER + BACKEND RISK"}
             </div>
-            <p>Rainfall + antecedent wetness + terrain + historical evidence + optional IoT.</p>
+            <p>OpenWeather conditions are requested only by the backend; no provider key is exposed here.</p>
           </div>
         </aside>
 
@@ -422,13 +458,12 @@ export default function Dashboard() {
             catchments={catchments}
             villageBoundaries={villageBoundaries}
             selectedVillage={selectedVillage}
-            regionalScore={summary.score}
-            regionalRisk={summary.risk}
             visibleLayers={visibleLayers}
             onSelectVillage={(village) => setSelectedVillageId(village.id)}
             onRefresh={refreshSnapshot}
             refreshing={refreshing}
             backendOnline={Boolean(health && snapshotPayload)}
+            weatherReady={openWeatherReady(health)}
             periodLabel={viewPeriod === "forecast" ? `Forecast +${forecastLead}h` : "Current"}
           />
         </section>
@@ -447,6 +482,11 @@ export default function Dashboard() {
           {!loading && !apiError && villages.length === 0 && (
             <div className="api-message warning">No villages match the selected backend filters.</div>
           )}
+          {!loading && !apiError && villages.length > 0 && visibleSnapshots.length === 0 && (
+            <div className="api-message warning">
+              These catalog villages are not model-ready because hydrology or terrain features are missing. Live map weather remains available, but no risk score is calculated.
+            </div>
+          )}
 
           <div className="score-card">
             <div>
@@ -464,8 +504,10 @@ export default function Dashboard() {
 
           <div className="metric-grid">
             <MetricCard symbol="☔" name="Rainfall" value={summary.rainfall} detail={summary.rainfallLabel} />
-            <MetricCard symbol="◉" name="Soil Moisture" value={summary.soil} detail="current wetness" />
-            <MetricCard symbol="⌁" name="Slope" value={averageSlope} detail="village average" />
+            <MetricCard symbol="℃" name="Temperature" value={summary.temperature} detail="OpenWeather air temperature" />
+            <MetricCard symbol="◉" name="Humidity" value={summary.humidity} detail="OpenWeather relative humidity" />
+            <MetricCard symbol="↝" name="Wind" value={summary.wind} detail="speed and direction" />
+            <MetricCard symbol="⌁" name="Slope" value={averageSlope} detail={`terrain · soil ${summary.soil}`} />
             <MetricCard symbol="↘" name="Response time" value={summary.responseTime} detail="indicative catchment Tc" />
           </div>
 
@@ -481,11 +523,19 @@ export default function Dashboard() {
                 >
                   <span>
                     <span className="village-name">{village.name}</span>
-                    <span className="village-meta">{village.risk} · {village.catchment}</span>
+                    <span className="village-meta">
+                      {village.risk} · {village.catchment}
+                      {village.snapshot?.assessment_mode === "provisional_defaults" ? " · PROVISIONAL" : ""}
+                    </span>
                   </span>
                   <span className="village-score-wrap">
-                    <span className="village-score" style={{ color: riskColor(village.score) }}>{village.score}</span>
-                    <span className="village-meta">/100</span>
+                    <span
+                      className="village-score"
+                      style={{ color: village.snapshot ? riskColor(village.score) : "#64748b" }}
+                    >
+                      {village.snapshot ? village.score : "—"}
+                    </span>
+                    {village.snapshot && <span className="village-meta">/100</span>}
                   </span>
                 </button>
               ))}

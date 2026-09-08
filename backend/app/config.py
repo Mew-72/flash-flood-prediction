@@ -18,9 +18,11 @@ class Settings(BaseSettings):
     )
 
     data_mode: Literal["demo", "production"] = "demo"
-    imd_api_base_url: str = "https://api.imd.gov.in/api/v1"
-    imd_api_key: SecretStr | None = None
-    imd_access_token: SecretStr | None = None
+    weather_api: SecretStr | None = Field(
+        default=None, validation_alias="WEATHER_API"
+    )
+    openweather_api_base_url: str = "https://api.openweathermap.org"
+    openweather_tile_base_url: str = "https://tile.openweathermap.org"
     weather_timeout_seconds: float = Field(default=15.0, gt=0)
     weather_cache_ttl_seconds: float = Field(default=300.0, gt=0)
     weather_cache_max_entries: int = Field(default=128, gt=0)

@@ -70,7 +70,7 @@ backend/app/
 ├── main.py
 ├── api/                 villages, catchments, risk, replay, simulation
 ├── core/
-│   ├── data_sources/    indexed JSON store, async cached weather, IoT simulator
+│   ├── data_sources/    indexed JSON store, cached OpenWeather, IoT simulator
 │   ├── lookup_tables/   Curve Number and soil reference values
 │   ├── physics/         catchment hazard and village risk composition
 │   └── risk_service.py  grouped/bulk assessment orchestration
@@ -88,8 +88,8 @@ python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
 copy .env.example .env
-# Add IMD_API_KEY and the portal-issued IMD_ACCESS_TOKEN JWT to .env.
-# IMD_API_KEY alone is not accepted by the IMD gateway.
+# Add the OpenWeather API key as WEATHER_API in .env.
+# The key stays in FastAPI and must never be sent to the browser.
 uvicorn app.main:app --reload --port 8000
 ```
 
@@ -114,19 +114,44 @@ Useful endpoints:
 - `GET /v1/risk/{village_id}`
 - `POST /v1/risk/batch` — bounded bulk assessment grouped by catchment
 - `GET /v1/risk/snapshots?district=...` — grouped current/forecast snapshots
+- `GET /v1/weather/tiles/{layer}/{z}/{x}/{y}.png` — server-side proxy for the
+  allowlisted `precipitation_new` and `clouds_new` OpenWeather layers
 - `POST /simulate`
 - `GET /replay/{village_id}?start_date=YYYY-MM-DD&end_date=YYYY-MM-DD` —
-  returns `501` with the IMD provider until an official historical range product
-  is available
+  returns `501` because the free runtime endpoints do not support replay
 
-The IMD weather client is asynchronous, caches/coalesces identical requests,
-and bounds concurrent upstream calls. It uses exact 24-hour station rainfall
-from `cityforecastloc`. Live inspection confirms that `basinqpf` `Day1…Day5`
-values are category codes rather than millimetres, so they are not fed into the
-numerical risk engine. IMD's public reference does not expose soil moisture,
-quantitative 1/3/6-hour totals, or a historical date-range endpoint, so these
-values are not fabricated. Villages in one catchment share one weather
-request and one catchment-hazard computation.
+FastAPI is the only component that calls OpenWeather. The asynchronous runtime
+provider uses the free-compatible metric `/data/2.5/weather` and
+`/data/2.5/forecast` endpoints, caches/coalesces identical requests, fetches
+current and forecast data concurrently, and bounds upstream concurrency.
+Villages in one catchment share one weather timeline and one catchment-hazard
+computation. Risk snapshots also expose optional temperature, feels-like,
+humidity, pressure, wind, cloud, visibility, condition, description, and icon
+fields.
+
+Catalog-only production records that have `model_ready: false` still receive a
+screening score. The existing engine fills missing terrain and hydrology inputs
+with neutral, literature-based defaults and marks the snapshot and provenance
+as `assessment_mode: provisional_defaults`. The dashboard labels these scores
+as provisional; they must not be treated as calibrated watershed assessments.
+Use `summarize_provisional=true` on the grouped snapshots route to request one
+representative assessment per district for the national overview.
+
+OpenWeather does not provide a current 24-hour accumulation in this product.
+To retain the established risk-model input without inventing data,
+`precipitation_24h_mm` on the current snapshot contains `rain.3h` when present,
+otherwise `rain.1h`, otherwise zero. The snapshot `source` records the exact
+choice, and no value is scaled to a longer window. Forecast snapshots retain
+each exact `rain.3h` amount and sum available 3-hour bins into rolling 6-hour
+and 24-hour fields. A 6-hour total is omitted until two bins exist; the required
+model 24-hour field uses only the available bins until eight exist. The source
+records each rolling-window bin count so partial windows remain traceable.
+OpenWeather does not provide soil moisture through these endpoints, so it is
+left unset.
+
+The tile proxy validates zoom and tile indices, keeps `WEATHER_API` server-side,
+caches successful images, emits browser cache headers, and maps upstream errors
+to safe API responses.
 
 Run tests with `pytest tests -v` from `backend/`.
 

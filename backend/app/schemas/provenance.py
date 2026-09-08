@@ -13,6 +13,8 @@ class DataProvenance(BaseModel):
     static_sources: list[str]
     weather_source: str | None = None
     retrieved_at: datetime | None = None
+    risk_input_mode: Literal["canonical", "provisional_defaults"] = "canonical"
+    risk_input_note: str | None = None
 
 
 class HealthOut(BaseModel):
@@ -20,7 +22,7 @@ class HealthOut(BaseModel):
     storage: Literal["json+parquet"] = "json+parquet"
     model_unit: Literal["sub-catchment"] = "sub-catchment"
     data_mode: DataMode
-    weather_provider: Literal["imd"] = "imd"
+    weather_provider: Literal["openweather"] = "openweather"
     weather_configured: bool
     weather_capabilities: list[str]
     provenance: DataProvenance

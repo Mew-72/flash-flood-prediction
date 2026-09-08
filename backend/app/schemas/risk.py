@@ -9,9 +9,14 @@ from app.schemas.hazard import (
     RainfallTrigger,
 )
 from app.schemas.provenance import DataProvenance
-from app.schemas.weather import PrecipitationWindows, WeatherPeriod
+from app.schemas.weather import (
+    PrecipitationWindows,
+    WeatherConditions,
+    WeatherPeriod,
+)
 
 RiskLevel = Literal["low", "moderate", "high", "critical"]
+AssessmentMode = Literal["canonical", "provisional_defaults"]
 
 
 class VillageExposure(BaseModel):
@@ -54,6 +59,8 @@ class VillageRiskAssessment(BaseModel):
     supplemental_slope_stability: SlopeStabilityIndicator | None = None
     composite_score: float = Field(ge=0, le=1)
     overall_risk_level: RiskLevel
+    assessment_mode: AssessmentMode = "canonical"
+    assessment_note: str | None = None
     explain: RiskExplanation
 
 
@@ -67,13 +74,15 @@ class RiskOut(BaseModel):
     details: VillageRiskAssessment
 
 
-class RiskSnapshot(PrecipitationWindows):
+class RiskSnapshot(PrecipitationWindows, WeatherConditions):
     village_id: str
     village_name: str
     catchment_id: str
     district: str | None = None
     overall_risk_level: RiskLevel
     composite_score: float = Field(ge=0, le=1)
+    assessment_mode: AssessmentMode = "canonical"
+    assessment_note: str | None = None
     period: WeatherPeriod
     retrieved_at: datetime
     valid_at: datetime

@@ -5,7 +5,7 @@ import pytest
 
 from app.config import Settings
 from app.core.data_sources.data_store import DataStore, DataStoreError
-from app.schemas.admin import AdministrativeHierarchy, VillageOut
+from app.schemas.admin import AdministrativeHierarchy, CatchmentOut, VillageOut
 
 
 VILLAGES = [
@@ -88,6 +88,38 @@ def test_canonical_admin_hierarchy_accepts_lgd_identifiers():
     assert village.admin is not None
     assert village.admin.district.name == "Rudraprayag"
     assert village.lgd_village_code == "example-lgd-code"
+
+
+def test_catalog_schemas_accept_non_model_ready_production_rows():
+    village = VillageOut.model_validate(
+        {
+            **VILLAGES[0],
+            "slope_deg": None,
+            "terrain_class": None,
+            "distance_to_stream_m": None,
+            "historical_event_count": None,
+            "model_ready": False,
+        }
+    )
+    catchment = CatchmentOut.model_validate(
+        {
+            **CATCHMENTS[0],
+            "area_km2": 12.5,
+            "land_use": None,
+            "hydrologic_soil_group": None,
+            "soil_texture": None,
+            "mean_slope_deg": None,
+            "flow_path_length_m": None,
+            "channel_slope_percent": None,
+            "base_rainfall_threshold_mm": None,
+            "model_ready": False,
+        }
+    )
+
+    assert village.model_ready is False
+    assert village.slope_deg is None
+    assert catchment.model_ready is False
+    assert catchment.land_use is None
 
 
 def test_catalog_filters_and_paginates(tmp_path):

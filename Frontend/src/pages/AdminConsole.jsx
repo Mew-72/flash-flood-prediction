@@ -1,107 +1,453 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import {
-  fetchRiskSnapshots,
+  createAlert,
+  createRiskBatch,
   flattenSnapshots,
+  getAlerts,
+  getAllVillages,
+  getHealth,
   getPeakSnapshot,
+  getReplay,
   getRiskLevel,
+  getSnapshotConditions,
   getSnapshotScore,
-  postAlert,
+  simulate,
 } from "../api";
 import Header from "../components/Header";
 import { DISTRICTS, STATES } from "../data";
 
-const HISTORY_KEY = "flashguard_alert_history";
 const NAV_ITEMS = [
   { id: "send", label: "⚠ Send Alert" },
   { id: "history", label: "◷ Alert History" },
+  { id: "scenario", label: "◇ Scenario Lab" },
+  { id: "replay", label: "↶ Historical Replay" },
   { id: "monitor", label: "◉ Data Monitor" },
   { id: "system", label: "⚙ System Status" },
 ];
 
-const MONITORS = [
-  { symbol: "☔", name: "Rainfall", value: "72 mm", detail: "3-hour accumulation", status: "LIVE", tone: "online" },
-  { symbol: "◉", name: "Soil Moisture", value: "81%", detail: "Antecedent wetness", status: "LIVE", tone: "online" },
-  { symbol: "▱", name: "DEM / Slope", value: "Loaded", detail: "Terrain features", status: "READY", tone: "ready" },
-  { symbol: "⌁", name: "Streams", value: "Rising", detail: "Exposure indicator", status: "LIVE", tone: "online" },
-  { symbol: "◈", name: "Historical Events", value: "Indexed", detail: "Flood + landslide evidence", status: "READY", tone: "ready" },
-  { symbol: "◉", name: "IoT", value: "Optional", detail: "Sensor correction layer", status: "SIMULATED", tone: "offline" },
+const TARGET_OPTIONS = [
+  "All villages in district",
+  "Selected high-risk villages",
+  "Selected village",
 ];
 
-const SYSTEM_STATUSES = [
-  ["Frontend", "Operational", "online"],
-  ["FastAPI backend", "Ready for integration", "ready"],
-  ["Runtime storage", "JSON / processed", "ready"],
-  ["Risk engine", "SCS-CN + API + terrain", "ready"],
-  ["ML calibration", "Future RF / XGBoost", "offline"],
-  ["Alert API", "Connect backend endpoint", "offline"],
-];
+const MAX_BATCH_VILLAGES = 500;
 
-function loadHistory() {
-  try {
-    const value = JSON.parse(window.localStorage.getItem(HISTORY_KEY) ?? "[]");
-    return Array.isArray(value) ? value : [];
-  } catch {
-    return [];
-  }
+function errorMessage(error) {
+  const prefix = error?.status ? `Request failed (${error.status})` : "Request failed";
+  return `${prefix}: ${error?.message || "Unknown error"}`;
+}
+
+function isAbortError(error) {
+  return error?.name === "AbortError";
+}
+
+function villageLabel(village) {
+  return `${village?.name || "Unnamed village"} (${village?.id || "no id"})`;
+}
+
+function formatDateTime(value) {
+  if (!value) return "—";
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString();
+}
+
+function formatNumber(value, suffix = "") {
+  const number = Number(value);
+  return Number.isFinite(number) ? `${number.toFixed(2)}${suffix}` : "—";
+}
+
+function batchWarnings(payload) {
+  if (!Array.isArray(payload?.errors) || payload.errors.length === 0) return "";
+  return payload.errors
+    .map((item) => `${item.id}: ${item.error}`)
+    .join("; ");
+}
+
+function isValidDate(value) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const date = new Date(`${value}T00:00:00Z`);
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+}
+
+function addDays(dateString, amount) {
+  if (!isValidDate(dateString)) return `Day ${amount + 1}`;
+  const date = new Date(`${dateString}T00:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + amount);
+  return date.toISOString().slice(0, 10);
 }
 
 export default function AdminConsole() {
   const [activeSection, setActiveSection] = useState("send");
-  const [history, setHistory] = useState(loadHistory);
+  const [healthState, setHealthState] = useState({ phase: "loading", data: null, error: "" });
+  const [villages, setVillages] = useState([]);
+  const [villagesLoading, setVillagesLoading] = useState(false);
+  const [villagesError, setVillagesError] = useState("");
+  const [history, setHistory] = useState([]);
+  const [historyLoading, setHistoryLoading] = useState(true);
+  const [historyError, setHistoryError] = useState("");
   const [form, setForm] = useState({
     state: "Uttarakhand",
     district: "Rudraprayag",
     target: "All villages in district",
+    selectedVillageId: "",
     severity: "HIGH",
     message: "",
   });
-  const [riskSummary, setRiskSummary] = useState({ score: 74, risk: "HIGH" });
+  const [currentSnapshots, setCurrentSnapshots] = useState([]);
+  const [targetSnapshots, setTargetSnapshots] = useState([]);
+  const [targetVillageIds, setTargetVillageIds] = useState([]);
+  const [riskBatchMeta, setRiskBatchMeta] = useState(null);
+  const [riskLoading, setRiskLoading] = useState(false);
+  const [riskError, setRiskError] = useState("");
+  const [noTargetMessage, setNoTargetMessage] = useState("");
   const [sendResult, setSendResult] = useState(null);
   const [sending, setSending] = useState(false);
+  const [scenarioForm, setScenarioForm] = useState({
+    villageId: "",
+    rainfall: "",
+    soilMoisturePercent: "",
+    threshold: "",
+  });
+  const [scenarioResult, setScenarioResult] = useState(null);
+  const [scenarioError, setScenarioError] = useState("");
+  const [scenarioLoading, setScenarioLoading] = useState(false);
+  const [replayForm, setReplayForm] = useState({
+    villageId: "",
+    startDate: "",
+    endDate: "",
+  });
+  const [replayResult, setReplayResult] = useState(null);
+  const [replayError, setReplayError] = useState("");
+  const [replayLoading, setReplayLoading] = useState(false);
+
+  const alertControllerRef = useRef(null);
+  const historyControllerRef = useRef(null);
+  const scenarioControllerRef = useRef(null);
+  const replayControllerRef = useRef(null);
 
   useEffect(() => {
     const controller = new AbortController();
+    setHealthState({ phase: "loading", data: null, error: "" });
 
-    async function loadRisk() {
-      try {
-        const payload = await fetchRiskSnapshots(form.district, controller.signal);
-        const snapshots = flattenSnapshots(payload);
-        if (snapshots.length === 0) return;
-        const peak = getPeakSnapshot(snapshots);
-        const score = getSnapshotScore(peak);
-        setRiskSummary({ score, risk: getRiskLevel(peak, score) });
-      } catch (error) {
-        if (error.name !== "AbortError") {
-          console.info("Using demo admin risk snapshot; backend not reachable.", error.message);
+    getHealth({ signal: controller.signal })
+      .then((data) => setHealthState({ phase: "success", data, error: "" }))
+      .catch((error) => {
+        if (!isAbortError(error)) {
+          setHealthState({ phase: "error", data: null, error: errorMessage(error) });
         }
+      });
+
+    return () => controller.abort();
+  }, []);
+
+  useEffect(() => {
+    if (healthState.phase === "loading") return undefined;
+
+    const controller = new AbortController();
+    const isDemoMode = healthState.data?.data_mode === "demo";
+    const params = isDemoMode ? {} : { district: form.district };
+
+    setVillagesLoading(true);
+    setVillagesError("");
+    setVillages([]);
+
+    getAllVillages(params, { signal: controller.signal })
+      .then((catalog) => {
+        const items = Array.isArray(catalog?.items)
+          ? catalog.items.filter((item) => item?.id)
+          : [];
+        setVillages(items);
+
+        const chooseValidVillage = (currentId) => (
+          items.some((item) => item.id === currentId) ? currentId : items[0]?.id || ""
+        );
+        setForm((current) => ({
+          ...current,
+          selectedVillageId: chooseValidVillage(current.selectedVillageId),
+        }));
+        setScenarioForm((current) => ({
+          ...current,
+          villageId: chooseValidVillage(current.villageId),
+        }));
+        setReplayForm((current) => ({
+          ...current,
+          villageId: chooseValidVillage(current.villageId),
+        }));
+
+        if (items.length === 0) {
+          setVillagesError(
+            isDemoMode
+              ? "The backend returned no demo villages."
+              : `The backend returned no villages for ${form.district}.`,
+          );
+        }
+      })
+      .catch((error) => {
+        if (!isAbortError(error)) setVillagesError(errorMessage(error));
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setVillagesLoading(false);
+      });
+
+    return () => controller.abort();
+  }, [form.district, healthState.data?.data_mode, healthState.phase]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    historyControllerRef.current = controller;
+    setHistoryLoading(true);
+    setHistoryError("");
+
+    getAlerts({ limit: 50 }, { signal: controller.signal })
+      .then((payload) => {
+        setHistory(Array.isArray(payload?.items) ? payload.items : []);
+      })
+      .catch((error) => {
+        if (!isAbortError(error)) setHistoryError(errorMessage(error));
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setHistoryLoading(false);
+        if (historyControllerRef.current === controller) historyControllerRef.current = null;
+      });
+
+    return () => controller.abort();
+  }, []);
+
+  useEffect(() => {
+    if (villagesLoading) return undefined;
+
+    const controller = new AbortController();
+    const allVillageIds = [...new Set(villages.map((village) => village.id).filter(Boolean))];
+
+    setCurrentSnapshots([]);
+    setTargetSnapshots([]);
+    setTargetVillageIds([]);
+    setRiskBatchMeta(null);
+    setRiskError("");
+    setNoTargetMessage("");
+
+    if (allVillageIds.length === 0) {
+      setNoTargetMessage("No villages are available for an exact risk preview.");
+      return () => controller.abort();
+    }
+    if (allVillageIds.length > MAX_BATCH_VILLAGES) {
+      setRiskError(
+        `This selection contains ${allVillageIds.length} villages; the exact batch limit is ${MAX_BATCH_VILLAGES}. Select a narrower district.`,
+      );
+      return () => controller.abort();
+    }
+
+    async function loadRiskPreview() {
+      setRiskLoading(true);
+      try {
+        const currentBatch = await createRiskBatch(
+          { village_ids: allVillageIds, include_forecast: true },
+          { signal: controller.signal },
+        );
+        const snapshots = flattenSnapshots(currentBatch);
+        setCurrentSnapshots(snapshots);
+
+        let selectedIds = allVillageIds;
+        if (form.target === "Selected village") {
+          selectedIds = form.selectedVillageId ? [form.selectedVillageId] : [];
+        } else if (form.target === "Selected high-risk villages") {
+          selectedIds = [...new Set(
+            snapshots
+              .filter((snapshot) => {
+                const score = getSnapshotScore(snapshot, 0);
+                return ["HIGH", "CRITICAL"].includes(getRiskLevel(snapshot, score));
+              })
+              .map((snapshot) => snapshot?.village_id)
+              .filter(Boolean),
+          )];
+        }
+
+        if (selectedIds.length === 0) {
+          setNoTargetMessage(
+            form.target === "Selected high-risk villages"
+              ? "No current or forecast snapshot is classified high or critical. No alert target will be submitted."
+              : "Select a village before previewing or sending an alert.",
+          );
+          const warning = batchWarnings(currentBatch);
+          if (warning) setRiskError(`Risk batch warnings: ${warning}`);
+          return;
+        }
+
+        let targetBatch = currentBatch;
+        const isAllVillages = selectedIds.length === allVillageIds.length
+          && selectedIds.every((id, index) => id === allVillageIds[index]);
+        if (!isAllVillages) {
+          targetBatch = await createRiskBatch(
+            { village_ids: selectedIds, include_forecast: true },
+            { signal: controller.signal },
+          );
+        }
+
+        setTargetVillageIds(selectedIds);
+        setTargetSnapshots(flattenSnapshots(targetBatch));
+        setRiskBatchMeta(targetBatch);
+        const warnings = [batchWarnings(currentBatch), batchWarnings(targetBatch)]
+          .filter(Boolean);
+        if (warnings.length) setRiskError(`Risk batch warnings: ${[...new Set(warnings)].join("; ")}`);
+      } catch (error) {
+        if (!isAbortError(error)) setRiskError(errorMessage(error));
+      } finally {
+        if (!controller.signal.aborted) setRiskLoading(false);
       }
     }
 
-    loadRisk();
+    loadRiskPreview();
     return () => controller.abort();
-  }, [form.district]);
+  }, [form.selectedVillageId, form.target, villages, villagesLoading]);
+
+  useEffect(() => () => {
+    alertControllerRef.current?.abort();
+    historyControllerRef.current?.abort();
+    scenarioControllerRef.current?.abort();
+    replayControllerRef.current?.abort();
+  }, []);
+
+  const dataMode = healthState.data?.data_mode || riskBatchMeta?.data_mode;
+
+  const riskSummary = useMemo(() => {
+    const peak = getPeakSnapshot(targetSnapshots);
+    if (!peak) return null;
+    const score = getSnapshotScore(peak, 0);
+    return {
+      peak,
+      score,
+      risk: getRiskLevel(peak, score),
+      conditions: getSnapshotConditions(peak),
+    };
+  }, [targetSnapshots]);
+
+  const selectedTargetVillages = useMemo(() => {
+    const selectedIds = new Set(targetVillageIds);
+    return villages.filter((village) => selectedIds.has(village.id));
+  }, [targetVillageIds, villages]);
+
+  const serializedTarget = useMemo(() => {
+    if (selectedTargetVillages.length === 0) return "";
+    let description = form.target;
+    if (form.target === "All villages in district") {
+      description = dataMode === "demo"
+        ? "All villages in the demo dataset"
+        : `All villages in ${form.district}`;
+    } else if (form.target === "Selected high-risk villages") {
+      description = "Villages with HIGH or CRITICAL backend risk";
+    }
+    return `${description} (${selectedTargetVillages.length}): ${selectedTargetVillages.map(villageLabel).join(", ")}`;
+  }, [dataMode, form.district, form.target, selectedTargetVillages]);
+
+  const monitorSnapshot = useMemo(
+    () => getPeakSnapshot(currentSnapshots),
+    [currentSnapshots],
+  );
+
+  const monitors = useMemo(() => {
+    const conditions = getSnapshotConditions(monitorSnapshot);
+    const provenance = monitorSnapshot?.provenance || healthState.data?.provenance;
+    const exposure = monitorSnapshot?.details?.village_exposure;
+    const slope = monitorSnapshot?.details?.supplemental_slope_stability;
+    const monitoredVillage = villages.find(
+      (village) => village.id === monitorSnapshot?.village_id,
+    );
+    const hasSnapshot = Boolean(monitorSnapshot);
+    const sourceNames = Array.isArray(provenance?.static_sources)
+      ? provenance.static_sources.join(", ")
+      : "No source metadata returned";
+
+    return [
+      {
+        symbol: "☔",
+        name: "Rainfall",
+        value: conditions.rainfall || "Unavailable",
+        detail: hasSnapshot ? `Valid ${formatDateTime(monitorSnapshot.valid_at)}` : "No batch snapshot",
+        status: hasSnapshot ? "LIVE DATA" : "UNAVAILABLE",
+        tone: hasSnapshot ? "online" : "offline",
+      },
+      {
+        symbol: "◉",
+        name: "Soil Moisture",
+        value: conditions.soil || "Unavailable",
+        detail: hasSnapshot ? `For ${monitorSnapshot.village_name}` : "No batch snapshot",
+        status: hasSnapshot ? "LIVE DATA" : "UNAVAILABLE",
+        tone: hasSnapshot ? "online" : "offline",
+      },
+      {
+        symbol: "▱",
+        name: "DEM / Slope",
+        value: slope?.risk_class ? `${String(slope.risk_class).toUpperCase()} stability risk` : "Unavailable",
+        detail: `Static sources: ${sourceNames}`,
+        status: provenance ? "PROVENANCE" : "UNAVAILABLE",
+        tone: provenance ? "ready" : "offline",
+      },
+      {
+        symbol: "⌁",
+        name: "Streams",
+        value: Number.isFinite(Number(exposure?.distance_to_stream_m))
+          ? `${Math.round(Number(exposure.distance_to_stream_m))} m`
+          : "Unavailable",
+        detail: "Village distance to stream",
+        status: hasSnapshot ? "SNAPSHOT" : "UNAVAILABLE",
+        tone: hasSnapshot ? "ready" : "offline",
+      },
+      {
+        symbol: "◈",
+        name: "Historical Events",
+        value: Number.isFinite(Number(monitoredVillage?.historical_event_count))
+          ? String(monitoredVillage.historical_event_count)
+          : "Unavailable",
+        detail: monitoredVillage ? `Catalog record for ${monitoredVillage.name}` : sourceNames,
+        status: monitoredVillage ? "CATALOG" : "UNAVAILABLE",
+        tone: monitoredVillage ? "ready" : "offline",
+      },
+      {
+        symbol: "◉",
+        name: "Weather Source",
+        value: provenance?.weather_source || "Not reported",
+        detail: provenance?.retrieved_at
+          ? `Retrieved ${formatDateTime(provenance.retrieved_at)}`
+          : `Data mode: ${provenance?.data_mode || dataMode || "unknown"}`,
+        status: provenance?.weather_source ? "PROVENANCE" : "UNVERIFIED",
+        tone: provenance?.weather_source ? "online" : "offline",
+      },
+    ];
+  }, [dataMode, healthState.data?.provenance, monitorSnapshot, villages]);
+
+  const scenarioSummary = useMemo(() => {
+    const result = scenarioResult?.result;
+    if (!result) return null;
+    const score = getSnapshotScore(result, 0);
+    return { result, score, risk: getRiskLevel(result, score) };
+  }, [scenarioResult]);
 
   function updateField(event) {
     const { name, value } = event.target;
     setForm((current) => ({ ...current, [name]: value }));
-  }
-
-  function recordAlert(alert) {
-    setHistory((current) => {
-      const next = [alert, ...current].slice(0, 50);
-      window.localStorage.setItem(HISTORY_KEY, JSON.stringify(next));
-      return next;
-    });
+    setSendResult(null);
   }
 
   async function sendAlert(event) {
     event.preventDefault();
     const message = form.message.trim();
     if (!message || sending) return;
+    if (!serializedTarget) {
+      setSendResult({ text: noTargetMessage || "No valid alert target is available.", tone: "warning" });
+      return;
+    }
 
+    alertControllerRef.current?.abort();
+    historyControllerRef.current?.abort();
+    const controller = new AbortController();
+    alertControllerRef.current = controller;
     const payload = {
-      ...form,
+      state: form.state,
+      district: dataMode === "demo" ? "demo" : form.district,
+      target: serializedTarget,
+      severity: form.severity,
       message,
       issued_by: "administrator",
       issued_at: new Date().toISOString(),
@@ -111,28 +457,124 @@ export default function AdminConsole() {
     setSendResult({ text: "Sending…", tone: "sending" });
 
     try {
-      await postAlert(payload);
-      recordAlert({ ...payload, status: "Sent (Backend)" });
+      const createdAlert = await createAlert(payload, { signal: controller.signal });
+      setHistory((current) => [
+        createdAlert,
+        ...current.filter((alert) => alert.id !== createdAlert.id),
+      ].slice(0, 50));
+      setHistoryError("");
       setSendResult({
-        text: "Alert sent successfully through the backend.",
+        text: `Alert ${createdAlert.id} was accepted by the backend.`,
         tone: "success",
       });
+
+      setHistoryLoading(true);
+      try {
+        const refreshed = await getAlerts({ limit: 50 }, { signal: controller.signal });
+        setHistory(Array.isArray(refreshed?.items) ? refreshed.items : [createdAlert]);
+      } catch (refreshError) {
+        if (!isAbortError(refreshError)) {
+          setHistoryError(`Alert was sent, but history refresh failed. ${errorMessage(refreshError)}`);
+        }
+      } finally {
+        if (!controller.signal.aborted) setHistoryLoading(false);
+      }
     } catch (error) {
-      if (error.status) {
-        recordAlert({ ...payload, status: "Recorded locally (Backend pending)" });
-        setSendResult({
-          text: `Prototype alert recorded locally. Backend route POST /v1/admin/alerts returned ${error.status}.`,
-          tone: "warning",
-        });
-      } else {
-        recordAlert({ ...payload, status: "Recorded locally (Offline)" });
-        setSendResult({
-          text: "Prototype alert recorded locally in browser storage (backend offline).",
-          tone: "warning",
-        });
+      if (!isAbortError(error)) {
+        setSendResult({ text: errorMessage(error), tone: "warning" });
       }
     } finally {
-      setSending(false);
+      if (!controller.signal.aborted) setSending(false);
+      if (alertControllerRef.current === controller) alertControllerRef.current = null;
+    }
+  }
+
+  async function runScenario(event) {
+    event.preventDefault();
+    scenarioControllerRef.current?.abort();
+    setScenarioError("");
+    setScenarioResult(null);
+
+    const rainfallParts = scenarioForm.rainfall.split(",").map((item) => item.trim());
+    const rainfall = rainfallParts.map(Number);
+    if (
+      rainfallParts.length === 0
+      || rainfallParts.some((item) => item === "")
+      || rainfall.some((value) => !Number.isFinite(value) || value < 0)
+    ) {
+      setScenarioError("Rainfall must be a comma-separated list of nonnegative numbers.");
+      return;
+    }
+
+    const soilPercent = Number(scenarioForm.soilMoisturePercent);
+    if (!Number.isFinite(soilPercent) || soilPercent < 0 || soilPercent > 100) {
+      setScenarioError("Soil moisture must be a percentage from 0 to 100.");
+      return;
+    }
+    if (!scenarioForm.villageId) {
+      setScenarioError("Select a village for the scenario.");
+      return;
+    }
+
+    const thresholdText = scenarioForm.threshold.trim();
+    const threshold = thresholdText === "" ? null : Number(thresholdText);
+    if (threshold !== null && (!Number.isFinite(threshold) || threshold <= 0)) {
+      setScenarioError("The optional threshold must be greater than zero.");
+      return;
+    }
+
+    const controller = new AbortController();
+    scenarioControllerRef.current = controller;
+    setScenarioLoading(true);
+    try {
+      const payload = {
+        village_id: scenarioForm.villageId,
+        daily_rainfall_mm: rainfall,
+        current_soil_moisture: soilPercent / 100,
+        ...(threshold === null ? {} : { base_threshold_override_mm: threshold }),
+      };
+      setScenarioResult(await simulate(payload, { signal: controller.signal }));
+    } catch (error) {
+      if (!isAbortError(error)) setScenarioError(errorMessage(error));
+    } finally {
+      if (!controller.signal.aborted) setScenarioLoading(false);
+      if (scenarioControllerRef.current === controller) scenarioControllerRef.current = null;
+    }
+  }
+
+  async function runReplay(event) {
+    event.preventDefault();
+    replayControllerRef.current?.abort();
+    setReplayError("");
+    setReplayResult(null);
+
+    if (!replayForm.villageId) {
+      setReplayError("Select a village to replay.");
+      return;
+    }
+    if (!isValidDate(replayForm.startDate) || !isValidDate(replayForm.endDate)) {
+      setReplayError("Enter valid start and end dates.");
+      return;
+    }
+    if (replayForm.startDate > replayForm.endDate) {
+      setReplayError("Start date must be on or before end date.");
+      return;
+    }
+
+    const controller = new AbortController();
+    replayControllerRef.current = controller;
+    setReplayLoading(true);
+    try {
+      setReplayResult(await getReplay(
+        replayForm.villageId,
+        { start_date: replayForm.startDate, end_date: replayForm.endDate },
+        { signal: controller.signal },
+      ));
+    } catch (error) {
+      if (!isAbortError(error)) setReplayError(errorMessage(error));
+    } finally {
+      if (!controller.signal.aborted) setReplayLoading(false);
+      if (replayControllerRef.current === controller) replayControllerRef.current = null;
     }
   }
 
@@ -142,14 +584,58 @@ export default function AdminConsole() {
       ? "moderate-preview"
       : "high-preview";
 
+  const healthOk = healthState.phase === "success" && healthState.data?.status === "ok";
+  const systemStatuses = [
+    ["Frontend", "Operational", "online"],
+    [
+      "FastAPI backend",
+      healthOk
+        ? "Online — /health succeeded"
+        : healthState.phase === "loading"
+          ? "Checking /health…"
+          : "Offline or unverified — /health failed",
+      healthOk ? "online" : healthState.phase === "loading" ? "ready" : "offline",
+    ],
+    [
+      "Data mode",
+      healthOk ? String(healthState.data.data_mode).toUpperCase() : "Unknown until /health succeeds",
+      healthOk ? "ready" : "offline",
+    ],
+    [
+      "Runtime storage",
+      healthOk ? String(healthState.data.storage).toUpperCase() : "Unverified",
+      healthOk ? "ready" : "offline",
+    ],
+    [
+      "Risk engine",
+      currentSnapshots.length > 0
+        ? `${currentSnapshots.length} forecast-inclusive snapshots loaded`
+        : riskLoading
+          ? "Batch request in progress"
+          : "No successful batch snapshot",
+      currentSnapshots.length > 0 ? "ready" : "offline",
+    ],
+    [
+      "Alert API",
+      historyError
+        ? "Prototype/in-memory — currently unreachable"
+        : "Prototype/in-memory — resets on backend restart",
+      historyError ? "offline" : "ready",
+    ],
+    ["Admin authentication", "Not implemented", "offline"],
+  ];
+
   return (
     <>
-      <Header admin />
+      <Header
+        admin
+        health={healthState.phase === "success" ? healthState.data : healthState.phase === "error" ? null : undefined}
+      />
       <main className="admin-layout">
         <aside className="admin-sidebar">
           <div className="admin-user">
             <div className="avatar">A</div>
-            <div><strong>System Administrator</strong><span>Authorized operator</span></div>
+            <div><strong>System Administrator</strong><span>Operator console (no backend auth)</span></div>
           </div>
           <nav aria-label="Administrator sections">
             {NAV_ITEMS.map((item) => (
@@ -164,7 +650,7 @@ export default function AdminConsole() {
             ))}
           </nav>
           <div className="admin-warning">
-            Alerts sent here are intended for authorized disaster-management personnel.
+            Alerts are held in backend process memory and administrator authentication is not implemented.
           </div>
         </aside>
 
@@ -175,10 +661,21 @@ export default function AdminConsole() {
                 <div>
                   <div className="eyebrow">ADMINISTRATOR</div>
                   <h1>Send Early Warning Alert</h1>
-                  <p>Create and issue a preparedness message to selected locations.</p>
+                  <p>Create, risk-check, and issue a preparedness message to exact backend village IDs.</p>
                 </div>
                 <div className="admin-status-pill">Manual approval required</div>
               </div>
+
+              <div className="bootstrap-status" aria-live="polite">
+                <strong>Backend data:</strong>{" "}
+                {healthOk
+                  ? `${String(dataMode).toUpperCase()} mode; ${villages.length} villages loaded.`
+                  : healthState.phase === "loading"
+                    ? "Checking /health before loading villages…"
+                    : "Health check failed; backend online status is unverified."}
+              </div>
+              {healthState.error && <div className="form-result warning">{healthState.error}</div>}
+              {villagesError && <div className="form-result warning">{villagesError}</div>}
 
               <div className="admin-grid">
                 <form className="form-card" onSubmit={sendAlert}>
@@ -191,8 +688,25 @@ export default function AdminConsole() {
                     name="target"
                     value={form.target}
                     onChange={updateField}
-                    options={["All villages in district", "Selected high-risk villages", "Selected village"]}
+                    options={TARGET_OPTIONS}
                   />
+                  {form.target === "Selected village" && (
+                    <label>
+                      Selected village
+                      <select
+                        name="selectedVillageId"
+                        value={form.selectedVillageId}
+                        onChange={updateField}
+                        required
+                        disabled={villagesLoading || villages.length === 0}
+                      >
+                        {villages.length === 0 && <option value="">No villages available</option>}
+                        {villages.map((village) => (
+                          <option value={village.id} key={village.id}>{villageLabel(village)}</option>
+                        ))}
+                      </select>
+                    </label>
+                  )}
                   <label>
                     Alert severity
                     <select name="severity" value={form.severity} onChange={updateField} required>
@@ -209,6 +723,7 @@ export default function AdminConsole() {
                       name="message"
                       rows="5"
                       required
+                      maxLength="1000"
                       value={form.message}
                       onChange={updateField}
                       placeholder="Enter clear instructions for the affected community..."
@@ -220,11 +735,18 @@ export default function AdminConsole() {
                     <div>
                       <strong>{form.severity} Alert Preview</strong>
                       <p>{form.message || "Your message will appear here."}</p>
+                      <small>{serializedTarget || noTargetMessage || "Resolving exact backend targets…"}</small>
                     </div>
                   </div>
 
-                  <button className="primary-btn" type="submit" disabled={sending}>
-                    {sending ? "Sending…" : "Send Alert"}
+                  {riskError && <div className="form-result warning">{riskError}</div>}
+                  {noTargetMessage && <div className="form-result warning">{noTargetMessage}</div>}
+                  <button
+                    className="primary-btn"
+                    type="submit"
+                    disabled={sending || riskLoading || !serializedTarget}
+                  >
+                    {sending ? "Sending…" : riskLoading ? "Loading risk preview…" : "Send Alert"}
                   </button>
                   <div className={`form-result ${sendResult?.tone ?? ""}`} aria-live="polite">
                     {sendResult?.text}
@@ -233,21 +755,32 @@ export default function AdminConsole() {
 
                 <div className="info-stack">
                   <div className="info-card">
-                    <div className="section-heading">CURRENT RISK</div>
-                    <div className="big-risk"><span>{riskSummary.score}</span><small>/100</small></div>
-                    <div className={`risk-badge ${riskSummary.risk.toLowerCase()}`}>{riskSummary.risk}</div>
-                    <p>
-                      {form.district} regional risk is currently {riskSummary.risk.toLowerCase()} based on the active forecast snapshot.
-                    </p>
+                    <div className="section-heading">CURRENT TARGET RISK</div>
+                    {riskSummary ? (
+                      <>
+                        <div className="big-risk"><span>{riskSummary.score}</span><small>/100</small></div>
+                        <div className={`risk-badge ${riskSummary.risk.toLowerCase()}`}>{riskSummary.risk}</div>
+                        <p>
+                          Peak across {targetVillageIds.length} exact target village ID(s), including forecast snapshots.
+                          {riskSummary.conditions.rainfall ? ` Rainfall: ${riskSummary.conditions.rainfall}.` : ""}
+                          {riskSummary.conditions.soil ? ` Soil moisture: ${riskSummary.conditions.soil}.` : ""}
+                        </p>
+                        <small>
+                          Batch returned {riskBatchMeta?.returned ?? targetSnapshots.length} current/forecast snapshots for {riskBatchMeta?.requested ?? targetVillageIds.length} requested village(s).
+                        </small>
+                      </>
+                    ) : (
+                      <p>{riskLoading ? "Loading exact risk batch…" : "No target risk snapshot is available."}</p>
+                    )}
                   </div>
                   <div className="info-card">
                     <div className="section-heading">BEFORE SENDING</div>
                     <ul className="check-list">
-                      <li>Verify target location.</li>
-                      <li>Check current risk snapshot.</li>
+                      <li>Verify the serialized village names and IDs.</li>
+                      <li>Check the forecast-inclusive risk snapshot.</li>
                       <li>Use short, actionable instructions.</li>
                       <li>Confirm alert severity.</li>
-                      <li>Record the operational reason.</li>
+                      <li>Remember that alerts reset when the backend restarts.</li>
                     </ul>
                   </div>
                 </div>
@@ -257,21 +790,24 @@ export default function AdminConsole() {
 
           {activeSection === "history" && (
             <section className="admin-section active">
-              <PageHeading title="Alert History" description="Previously issued alerts stored in this browser for the prototype." />
+              <PageHeading title="Alert History" description="Alerts returned by GET /v1/admin/alerts (prototype process-memory storage)." />
+              {historyError && <div className="form-result warning">{historyError}</div>}
               <div className="table-card">
                 <table>
                   <thead><tr><th>Time</th><th>Location</th><th>Severity</th><th>Target</th><th>Message</th><th>Status</th></tr></thead>
                   <tbody>
-                    {history.length === 0 ? (
-                      <tr><td className="empty-history" colSpan="6">No alerts have been issued from this browser yet.</td></tr>
+                    {historyLoading && history.length === 0 ? (
+                      <tr><td className="empty-history" colSpan="6">Loading backend alert history…</td></tr>
+                    ) : history.length === 0 ? (
+                      <tr><td className="empty-history" colSpan="6">The backend has no alert records.</td></tr>
                     ) : history.map((alert, index) => (
-                      <tr key={`${alert.issued_at}-${index}`}>
-                        <td>{new Date(alert.issued_at).toLocaleString()}</td>
+                      <tr key={alert.id || `${alert.issued_at}-${index}`}>
+                        <td>{formatDateTime(alert.issued_at)}</td>
                         <td>{alert.state} / {alert.district}</td>
-                        <td><span className={`risk-badge ${alert.severity.toLowerCase()}`}>{alert.severity}</span></td>
+                        <td><span className={`risk-badge ${String(alert.severity).toLowerCase()}`}>{alert.severity}</span></td>
                         <td>{alert.target}</td>
                         <td>{alert.message}</td>
-                        <td>{alert.status}</td>
+                        <td>{alert.status || "—"}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -280,11 +816,183 @@ export default function AdminConsole() {
             </section>
           )}
 
+          {activeSection === "scenario" && (
+            <section className="admin-section active">
+              <PageHeading title="Scenario Lab" description="Run operator-supplied rainfall and soil conditions through POST /simulate." />
+              <div className="admin-grid">
+                <form className="form-card" onSubmit={runScenario}>
+                  <div className="form-title">Scenario inputs</div>
+                  <label>
+                    Village
+                    <select
+                      value={scenarioForm.villageId}
+                      onChange={(event) => setScenarioForm((current) => ({ ...current, villageId: event.target.value }))}
+                      required
+                      disabled={villagesLoading || villages.length === 0}
+                    >
+                      {villages.length === 0 && <option value="">No villages available</option>}
+                      {villages.map((village) => (
+                        <option value={village.id} key={village.id}>{villageLabel(village)}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    Daily rainfall (mm, comma-separated)
+                    <input
+                      type="text"
+                      value={scenarioForm.rainfall}
+                      onChange={(event) => setScenarioForm((current) => ({ ...current, rainfall: event.target.value }))}
+                      placeholder="12, 35.5, 80"
+                      required
+                    />
+                  </label>
+                  <label>
+                    Current soil moisture (%)
+                    <input
+                      type="number"
+                      min="0"
+                      max="100"
+                      step="any"
+                      value={scenarioForm.soilMoisturePercent}
+                      onChange={(event) => setScenarioForm((current) => ({ ...current, soilMoisturePercent: event.target.value }))}
+                      placeholder="65"
+                      required
+                    />
+                  </label>
+                  <label>
+                    Base rainfall threshold override (mm, optional)
+                    <input
+                      type="number"
+                      min="0.01"
+                      step="any"
+                      value={scenarioForm.threshold}
+                      onChange={(event) => setScenarioForm((current) => ({ ...current, threshold: event.target.value }))}
+                      placeholder="Use catchment default"
+                    />
+                  </label>
+                  <button className="primary-btn" type="submit" disabled={scenarioLoading || villages.length === 0}>
+                    {scenarioLoading ? "Running scenario…" : "Run Scenario"}
+                  </button>
+                  {scenarioError && <div className="form-result warning" aria-live="polite">{scenarioError}</div>}
+                </form>
+
+                <div className="info-stack">
+                  <div className="info-card scenario-result-card">
+                    <div className="section-heading">SCENARIO RESULT</div>
+                    {scenarioSummary ? (
+                      <>
+                        <div className="big-risk"><span>{scenarioSummary.score}</span><small>/100</small></div>
+                        <div className={`risk-badge ${scenarioSummary.risk.toLowerCase()}`}>{scenarioSummary.risk}</div>
+                        <dl className="result-details">
+                          <div><dt>Village ID</dt><dd>{scenarioResult.village_id}</dd></div>
+                          <div><dt>Catchment</dt><dd>{scenarioSummary.result.catchment_id || "—"}</dd></div>
+                          <div><dt>Direct runoff</dt><dd>{formatNumber(scenarioSummary.result.catchment_hydrology?.runoff_mm, " mm")}</dd></div>
+                          <div><dt>Effective threshold</dt><dd>{formatNumber(scenarioSummary.result.rainfall_trigger?.effective_threshold_mm, " mm")}</dd></div>
+                          <div>
+                            <dt>Threshold exceeded</dt>
+                            <dd>
+                              {Number.isFinite(Number(scenarioSummary.result.explain?.today_rainfall_mm)) && Number.isFinite(Number(scenarioSummary.result.rainfall_trigger?.effective_threshold_mm))
+                                ? Number(scenarioSummary.result.explain.today_rainfall_mm) >= Number(scenarioSummary.result.rainfall_trigger.effective_threshold_mm) ? "Yes" : "No"
+                                : "—"}
+                            </dd>
+                          </div>
+                          <div><dt>3-day antecedent rain</dt><dd>{formatNumber(scenarioSummary.result.explain?.antecedent_3day_mm, " mm")}</dd></div>
+                          <div><dt>Slope stability</dt><dd>{scenarioSummary.result.supplemental_slope_stability?.risk_class || "—"}</dd></div>
+                        </dl>
+                        {scenarioSummary.result.explain?.method_note && <p>{scenarioSummary.result.explain.method_note}</p>}
+                      </>
+                    ) : (
+                      <p>Submit valid scenario inputs to view overall risk, score, and model details.</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {activeSection === "replay" && (
+            <section className="admin-section active">
+              <PageHeading title="Historical Replay" description="Replay an inclusive historical weather window through GET /replay/{id}." />
+              <form className="form-card replay-form" onSubmit={runReplay}>
+                <div className="form-title">Replay inputs</div>
+                <label>
+                  Village
+                  <select
+                    value={replayForm.villageId}
+                    onChange={(event) => setReplayForm((current) => ({ ...current, villageId: event.target.value }))}
+                    required
+                    disabled={villagesLoading || villages.length === 0}
+                  >
+                    {villages.length === 0 && <option value="">No villages available</option>}
+                    {villages.map((village) => (
+                      <option value={village.id} key={village.id}>{villageLabel(village)}</option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Start date
+                  <input
+                    type="date"
+                    value={replayForm.startDate}
+                    max={replayForm.endDate || undefined}
+                    onChange={(event) => setReplayForm((current) => ({ ...current, startDate: event.target.value }))}
+                    required
+                  />
+                </label>
+                <label>
+                  End date
+                  <input
+                    type="date"
+                    value={replayForm.endDate}
+                    min={replayForm.startDate || undefined}
+                    onChange={(event) => setReplayForm((current) => ({ ...current, endDate: event.target.value }))}
+                    required
+                  />
+                </label>
+                <button className="primary-btn" type="submit" disabled={replayLoading || villages.length === 0}>
+                  {replayLoading ? "Loading replay…" : "Run Historical Replay"}
+                </button>
+                {replayError && <div className="form-result warning" aria-live="polite">{replayError}</div>}
+              </form>
+
+              {replayResult && (
+                <div className="table-card replay-table">
+                  <div className="form-title">
+                    {replayResult.village_id} / {replayResult.catchment_id} — {replayResult.start_date} to {replayResult.end_date}
+                  </div>
+                  <table>
+                    <thead><tr><th>Day</th><th>Date</th><th>Rainfall</th><th>Risk</th><th>Score</th></tr></thead>
+                    <tbody>
+                      {Array.isArray(replayResult.timeline) && replayResult.timeline.length > 0 ? (
+                        replayResult.timeline.map((entry, index) => {
+                          const score = getSnapshotScore(entry, 0);
+                          const risk = getRiskLevel(entry, score);
+                          return (
+                            <tr key={`${entry.day_index}-${index}`}>
+                              <td>{entry.day_index ?? index + 1}</td>
+                              <td>{addDays(replayResult.start_date, Number(entry.day_index ?? index + 1) - 1)}</td>
+                              <td>{formatNumber(entry.rainfall_mm, " mm")}</td>
+                              <td><span className={`risk-badge ${risk.toLowerCase()}`}>{risk}</span></td>
+                              <td>{score}/100</td>
+                            </tr>
+                          );
+                        })
+                      ) : (
+                        <tr><td className="empty-history" colSpan="5">The replay returned an empty timeline.</td></tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </section>
+          )}
+
           {activeSection === "monitor" && (
             <section className="admin-section active">
-              <PageHeading title="Data Monitor" description="Overview of the inputs feeding the flood-risk engine." />
+              <PageHeading title="Data Monitor" description="Conditions and provenance from the latest exact backend risk batch." />
+              {riskError && <div className="form-result warning">{riskError}</div>}
               <div className="monitor-grid">
-                {MONITORS.map((monitor) => (
+                {monitors.map((monitor) => (
                   <div className="monitor-card" key={monitor.name}>
                     <span>{monitor.symbol}</span><strong>{monitor.name}</strong><b>{monitor.value}</b>
                     <small>{monitor.detail}</small><i className={monitor.tone}>{monitor.status}</i>
@@ -296,11 +1004,15 @@ export default function AdminConsole() {
 
           {activeSection === "system" && (
             <section className="admin-section active">
-              <PageHeading title="System Status" description="Prototype health and integration status." />
+              <PageHeading title="System Status" description="Status based on /health and this session's API requests." />
+              {healthState.error && <div className="form-result warning">{healthState.error}</div>}
               <div className="status-table">
-                {SYSTEM_STATUSES.map(([name, status, tone]) => (
+                {systemStatuses.map(([name, status, tone]) => (
                   <div key={name}><span>{name}</span><b className={tone}>{status}</b></div>
                 ))}
+              </div>
+              <div className="admin-warning system-disclaimer">
+                The alert API is a prototype backed only by process memory, and administrator authentication/authorization is not implemented. Do not use this console as a production dispatch authority.
               </div>
             </section>
           )}

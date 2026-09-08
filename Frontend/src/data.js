@@ -49,8 +49,8 @@ export const DEFAULT_VISIBLE_LAYERS = Object.fromEntries(
 );
 
 export function riskColor(score) {
-  if (score >= 80) return "#dc2626";
-  if (score >= 60) return "#f97316";
-  if (score >= 30) return "#eab308";
+  if (score >= 75) return "#dc2626";
+  if (score >= 50) return "#f97316";
+  if (score >= 25) return "#eab308";
   return "#22c55e";
 }

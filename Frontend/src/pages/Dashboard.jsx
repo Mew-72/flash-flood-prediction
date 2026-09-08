@@ -1,41 +1,193 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
-  fetchRiskSnapshots,
   flattenSnapshots,
+  getAllCatchments,
+  getAllVillages,
+  getCatchment,
+  getHealth,
   getPeakSnapshot,
+  getRisk,
   getRiskLevel,
+  getRiskSnapshots,
   getSnapshotConditions,
   getSnapshotScore,
+  getVillage,
+  toFrontendVillage,
 } from "../api";
 import Header from "../components/Header";
 import RiskMap from "../components/RiskMap";
 import VillageModal from "../components/VillageModal";
 import {
-  DEFAULT_VILLAGES,
   DEFAULT_VISIBLE_LAYERS,
-  DISTRICTS,
   MAP_LAYERS,
   STATES,
   riskColor,
 } from "../data";
 
-const DEFAULT_SUMMARY = {
-  score: 74,
-  risk: "HIGH",
-  rainfall: "72 mm",
-  soil: "81%",
+const EMPTY_SUMMARY = {
+  score: 0,
+  risk: "LOW",
+  rainfall: "—",
+  soil: "—",
+  responseTime: "—",
 };
+
+function formatApiError(error) {
+  if (error?.name === "AbortError") return "";
+  return error?.message || "The backend request failed.";
+}
+
+function snapshotForVillage(snapshots, villageId) {
+  return snapshots.find((snapshot) => snapshot.village_id === villageId);
+}
 
 export default function Dashboard() {
   const [state, setState] = useState("Uttarakhand");
-  const [district, setDistrict] = useState("Rudraprayag");
+  const [district, setDistrict] = useState("");
+  const [catchmentId, setCatchmentId] = useState("");
   const [visibleLayers, setVisibleLayers] = useState(DEFAULT_VISIBLE_LAYERS);
-  const [summary, setSummary] = useState(DEFAULT_SUMMARY);
-  const [villages, setVillages] = useState(() => DEFAULT_VILLAGES.map((village) => ({ ...village })));
+  const [health, setHealth] = useState(undefined);
+  const [villageRecords, setVillageRecords] = useState([]);
+  const [catchments, setCatchments] = useState([]);
+  const [availableDistricts, setAvailableDistricts] = useState([]);
+  const [snapshotPayload, setSnapshotPayload] = useState(null);
+  const [viewPeriod, setViewPeriod] = useState("current");
+  const [forecastLead, setForecastLead] = useState(24);
   const [selectedVillageId, setSelectedVillageId] = useState(null);
+  const [detailState, setDetailState] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [lastUpdated, setLastUpdated] = useState("Updated just now");
+  const [apiError, setApiError] = useState("");
+  const [lastUpdated, setLastUpdated] = useState("Connecting to backend…");
+  const [reloadToken, setReloadToken] = useState(0);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function loadDashboard() {
+      setApiError("");
+      setLoading(true);
+      try {
+        const filters = {
+          district: district || undefined,
+          catchment_id: catchmentId || undefined,
+        };
+        const [healthPayload, villageCatalog, catchmentCatalog, risks] = await Promise.all([
+          getHealth({ signal: controller.signal }),
+          getAllVillages(filters, { signal: controller.signal }),
+          getAllCatchments(
+            { district: district || undefined },
+            { signal: controller.signal },
+          ),
+          getRiskSnapshots(
+            {
+              ...filters,
+              include_forecast: true,
+              limit: 500,
+            },
+            { signal: controller.signal },
+          ),
+        ]);
+
+        setHealth(healthPayload);
+        setVillageRecords(villageCatalog.items);
+        setCatchments(catchmentCatalog.items);
+        setSnapshotPayload(risks);
+        setLastUpdated(`Updated ${new Date(risks.generated_at).toLocaleString()}`);
+
+        if (!district) {
+          const districts = new Set(
+            [...villageCatalog.items, ...catchmentCatalog.items]
+              .map((item) => item.district)
+              .filter(Boolean),
+          );
+          setAvailableDistricts([...districts].sort((left, right) => left.localeCompare(right)));
+        }
+
+        const stateName = villageCatalog.items
+          .map((item) => item.admin?.state?.name)
+          .find(Boolean);
+        if (stateName) setState(stateName);
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          setHealth(null);
+          setVillageRecords([]);
+          setCatchments([]);
+          setSnapshotPayload(null);
+          setApiError(formatApiError(error));
+          setLastUpdated("Backend unavailable");
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+          setRefreshing(false);
+        }
+      }
+    }
+
+    loadDashboard();
+    return () => controller.abort();
+  }, [catchmentId, district, reloadToken]);
+
+  const allSnapshots = useMemo(
+    () => flattenSnapshots(snapshotPayload),
+    [snapshotPayload],
+  );
+
+  const forecastLeads = useMemo(
+    () => [...new Set(
+      allSnapshots
+        .filter((snapshot) => snapshot.period === "forecast")
+        .map((snapshot) => Math.round(Number(snapshot.lead_time_hours)))
+        .filter(Number.isFinite),
+    )].sort((left, right) => left - right),
+    [allSnapshots],
+  );
+
+  useEffect(() => {
+    if (forecastLeads.length === 0) {
+      if (viewPeriod === "forecast") setViewPeriod("current");
+      return;
+    }
+    if (!forecastLeads.includes(forecastLead)) {
+      const preferred = forecastLeads.includes(24)
+        ? 24
+        : forecastLeads[0];
+      setForecastLead(preferred);
+    }
+  }, [forecastLead, forecastLeads, viewPeriod]);
+
+  const visibleSnapshots = useMemo(() => {
+    if (viewPeriod === "current") {
+      return allSnapshots.filter((snapshot) => snapshot.period === "current");
+    }
+    return allSnapshots.filter(
+      (snapshot) =>
+        snapshot.period === "forecast" &&
+        Math.round(Number(snapshot.lead_time_hours)) === forecastLead,
+    );
+  }, [allSnapshots, forecastLead, viewPeriod]);
+
+  const villages = useMemo(
+    () => villageRecords.map((record) => {
+      const snapshot = snapshotForVillage(visibleSnapshots, record.id);
+      const score = snapshot ? getSnapshotScore(snapshot, 0) : 0;
+      const conditions = snapshot ? getSnapshotConditions(snapshot) : {};
+      return {
+        ...toFrontendVillage(record, {
+          score,
+          risk: snapshot ? getRiskLevel(snapshot, score) : "LOW",
+          rain: conditions.rainfall ?? "—",
+          soil: conditions.soil ?? "—",
+        }),
+        district: record.district,
+        record,
+        snapshot,
+      };
+    }),
+    [villageRecords, visibleSnapshots],
+  );
 
   const selectedVillage = useMemo(
     () => villages.find((village) => village.id === selectedVillageId) ?? null,
@@ -47,64 +199,64 @@ export default function Dashboard() {
     [villages],
   );
 
-  const applySnapshots = useCallback((payload) => {
-    const snapshots = flattenSnapshots(payload);
-    if (snapshots.length === 0) return;
-
-    const peak = getPeakSnapshot(snapshots);
-    const score = getSnapshotScore(peak);
-    const risk = getRiskLevel(peak, score);
+  const summary = useMemo(() => {
+    const peak = getPeakSnapshot(visibleSnapshots);
+    if (!peak) return EMPTY_SUMMARY;
+    const score = getSnapshotScore(peak, 0);
     const conditions = getSnapshotConditions(peak);
+    const responseMinutes = peak.hazard?.catchment_hydrology?.estimated_response_time_minutes;
+    return {
+      score,
+      risk: getRiskLevel(peak, score),
+      rainfall: conditions.rainfall ?? "—",
+      soil: conditions.soil ?? "—",
+      responseTime: Number.isFinite(Number(responseMinutes))
+        ? `${Math.round(Number(responseMinutes))} min`
+        : "—",
+    };
+  }, [visibleSnapshots]);
 
-    setSummary((current) => ({ ...current, score, risk, ...conditions }));
-    setVillages((currentVillages) =>
-      currentVillages.map((village) => {
-        const snapshot = snapshots.find(
-          (item) =>
-            item.village_id === village.id ||
-            item.village_name?.toLowerCase() === village.name.toLowerCase(),
-        );
-        if (!snapshot) return village;
-
-        const villageScore = getSnapshotScore(snapshot, village.score);
-        const villageConditions = getSnapshotConditions(snapshot);
-        return {
-          ...village,
-          score: villageScore,
-          risk: getRiskLevel(snapshot, villageScore),
-          rain: villageConditions.rainfall ?? village.rain,
-          soil: villageConditions.soil ?? village.soil,
-        };
-      }),
-    );
-  }, []);
-
-  const loadSnapshot = useCallback(async (signal) => {
-    try {
-      const payload = await fetchRiskSnapshots(district, signal);
-      applySnapshots(payload);
-      return true;
-    } catch (error) {
-      if (error.name !== "AbortError") {
-        console.info("Using demo snapshot; backend not reachable.", error.message);
-      }
-      return false;
-    }
-  }, [applySnapshots, district]);
+  const averageSlope = useMemo(() => {
+    const values = villageRecords
+      .map((village) => Number(village.slope_deg))
+      .filter(Number.isFinite);
+    if (values.length === 0) return "—";
+    return `${Math.round(values.reduce((sum, value) => sum + value, 0) / values.length)}°`;
+  }, [villageRecords]);
 
   useEffect(() => {
-    const controller = new AbortController();
-    loadSnapshot(controller.signal);
-    return () => controller.abort();
-  }, [loadSnapshot]);
+    if (!selectedVillage) {
+      setDetailState(null);
+      return undefined;
+    }
 
-  async function refreshSnapshot() {
+    const controller = new AbortController();
+    setDetailState({ loading: true, error: "" });
+
+    async function loadDetails() {
+      try {
+        const [village, risk, catchment] = await Promise.all([
+          getVillage(selectedVillage.id, { signal: controller.signal }),
+          getRisk(selectedVillage.id, { signal: controller.signal }),
+          getCatchment(selectedVillage.catchment, { signal: controller.signal }),
+        ]);
+        setDetailState({ loading: false, error: "", village, risk, catchment });
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          setDetailState({ loading: false, error: formatApiError(error) });
+        }
+      }
+    }
+
+    loadDetails();
+    return () => controller.abort();
+  }, [selectedVillage]);
+
+  const refreshSnapshot = useCallback(() => {
     setRefreshing(true);
     setLastUpdated("Refreshing…");
-    await loadSnapshot();
-    setLastUpdated("Updated just now");
-    setRefreshing(false);
-  }
+    setReloadToken((value) => value + 1);
+  }, []);
 
   function toggleLayer(layerId) {
     setVisibleLayers((current) => ({
@@ -113,13 +265,15 @@ export default function Dashboard() {
     }));
   }
 
-  function selectVillage(village) {
-    setSelectedVillageId(village.id);
+  function changeDistrict(event) {
+    setDistrict(event.target.value);
+    setCatchmentId("");
+    setSelectedVillageId(null);
   }
 
   return (
     <div className="app-shell">
-      <Header lastUpdated={lastUpdated} />
+      <Header health={health} lastUpdated={lastUpdated} />
 
       <main className="dashboard">
         <aside className="sidebar">
@@ -131,8 +285,10 @@ export default function Dashboard() {
               className="select"
               value={state}
               onChange={(event) => setState(event.target.value)}
+              disabled
+              title="The backend currently exposes district and catchment filters; state is catalog metadata."
             >
-              {STATES.map((item) => <option key={item}>{item}</option>)}
+              {[...new Set([state, ...STATES])].map((item) => <option key={item}>{item}</option>)}
             </select>
 
             <label className="field-label" htmlFor="district-select">District</label>
@@ -140,10 +296,63 @@ export default function Dashboard() {
               id="district-select"
               className="select"
               value={district}
-              onChange={(event) => setDistrict(event.target.value)}
+              onChange={changeDistrict}
             >
-              {DISTRICTS.map((item) => <option key={item}>{item}</option>)}
+              <option value="">All available districts</option>
+              {availableDistricts.map((item) => <option key={item}>{item}</option>)}
             </select>
+
+            <label className="field-label" htmlFor="catchment-select">Sub-catchment</label>
+            <select
+              id="catchment-select"
+              className="select"
+              value={catchmentId}
+              onChange={(event) => {
+                setCatchmentId(event.target.value);
+                setSelectedVillageId(null);
+              }}
+            >
+              <option value="">All sub-catchments</option>
+              {catchments.map((item) => (
+                <option key={item.id} value={item.id}>{item.name}</option>
+              ))}
+            </select>
+          </section>
+
+          <section className="side-section">
+            <div className="section-heading">ASSESSMENT TIME</div>
+            <div className="period-switch" role="group" aria-label="Assessment period">
+              <button
+                type="button"
+                className={viewPeriod === "current" ? "active" : ""}
+                onClick={() => setViewPeriod("current")}
+              >
+                Current
+              </button>
+              <button
+                type="button"
+                className={viewPeriod === "forecast" ? "active" : ""}
+                onClick={() => setViewPeriod("forecast")}
+                disabled={forecastLeads.length === 0}
+              >
+                Forecast
+              </button>
+            </div>
+            {viewPeriod === "forecast" && (
+              <>
+                <label className="field-label" htmlFor="forecast-lead">Lead time</label>
+                <select
+                  id="forecast-lead"
+                  className="select"
+                  value={forecastLead}
+                  onChange={(event) => setForecastLead(Number(event.target.value))}
+                >
+                  {forecastLeads.map((hours) => (
+                    <option key={hours} value={hours}>+{hours} hours</option>
+                  ))}
+                </select>
+              </>
+            )}
           </section>
 
           <section className="side-section">
@@ -163,14 +372,16 @@ export default function Dashboard() {
 
           <section className="side-section">
             <div className="section-heading">RISK LEGEND</div>
-            <div className="legend-item"><span className="legend-box low" />Low <span>0–29</span></div>
-            <div className="legend-item"><span className="legend-box moderate" />Moderate <span>30–59</span></div>
-            <div className="legend-item"><span className="legend-box high" />High <span>60–79</span></div>
-            <div className="legend-item"><span className="legend-box critical" />Critical <span>80–100</span></div>
+            <div className="legend-item"><span className="legend-box low" />Low <span>0–24</span></div>
+            <div className="legend-item"><span className="legend-box moderate" />Moderate <span>25–49</span></div>
+            <div className="legend-item"><span className="legend-box high" />High <span>50–74</span></div>
+            <div className="legend-item"><span className="legend-box critical" />Critical <span>75–100</span></div>
           </section>
 
           <div className="side-footer">
-            <div className="data-badge">PUBLIC DATA FIRST</div>
+            <div className="data-badge">
+              {health?.data_mode === "demo" ? "SYNTHETIC DEMO DATA" : "PUBLIC DATA FIRST"}
+            </div>
             <p>Rainfall + antecedent wetness + terrain + historical evidence + optional IoT.</p>
           </div>
         </aside>
@@ -178,34 +389,43 @@ export default function Dashboard() {
         <section className="map-area">
           <RiskMap
             state={state}
-            district={district}
+            district={district || "All available districts"}
             villages={villages}
+            catchments={catchments}
             selectedVillage={selectedVillage}
             regionalScore={summary.score}
             regionalRisk={summary.risk}
             visibleLayers={visibleLayers}
-            onSelectVillage={selectVillage}
+            onSelectVillage={(village) => setSelectedVillageId(village.id)}
             onRefresh={refreshSnapshot}
             refreshing={refreshing}
+            backendOnline={Boolean(health)}
+            periodLabel={viewPeriod === "forecast" ? `Forecast +${forecastLead}h` : "Current"}
           />
         </section>
 
         <aside className="right-panel">
           <div className="panel-header">
             <div>
-              <div className="eyebrow">CURRENT CONDITIONS</div>
+              <div className="eyebrow">{viewPeriod === "forecast" ? `FORECAST +${forecastLead}H` : "CURRENT CONDITIONS"}</div>
               <h2>Risk Summary</h2>
             </div>
             <div className={`risk-badge ${summary.risk.toLowerCase()}`}>{summary.risk}</div>
           </div>
 
+          {apiError && <div className="api-message error" role="alert">{apiError}</div>}
+          {!apiError && loading && <div className="api-message">Loading backend data…</div>}
+          {!loading && !apiError && villages.length === 0 && (
+            <div className="api-message warning">No villages match the selected backend filters.</div>
+          )}
+
           <div className="score-card">
             <div>
-              <div className="small-label">REGIONAL RISK SCORE</div>
+              <div className="small-label">REGIONAL PEAK RISK SCORE</div>
               <div className="score">{summary.score}</div>
               <div className="score-caption">out of 100</div>
             </div>
-            <div className="gauge" role="meter" aria-label="Regional risk score" aria-valuemin="0" aria-valuemax="100" aria-valuenow={summary.score}>
+            <div className="gauge" role="meter" aria-label="Regional peak risk score" aria-valuemin="0" aria-valuemax="100" aria-valuenow={summary.score}>
               <div
                 className="gauge-fill"
                 style={{ width: `${summary.score}%`, background: riskColor(summary.score) }}
@@ -214,10 +434,10 @@ export default function Dashboard() {
           </div>
 
           <div className="metric-grid">
-            <MetricCard symbol="☔" name="Rainfall" value={summary.rainfall} detail="last 3 hours" />
-            <MetricCard symbol="◉" name="Soil Moisture" value={summary.soil} detail="antecedent wetness" />
-            <MetricCard symbol="⌁" name="Slope" value="31°" detail="terrain average" />
-            <MetricCard symbol="↘" name="Stream Response" value="Rising" detail="catchment response" />
+            <MetricCard symbol="☔" name="Rainfall" value={summary.rainfall} detail="3-hour accumulation" />
+            <MetricCard symbol="◉" name="Soil Moisture" value={summary.soil} detail="current wetness" />
+            <MetricCard symbol="⌁" name="Slope" value={averageSlope} detail="village average" />
+            <MetricCard symbol="↘" name="Response time" value={summary.responseTime} detail="indicative catchment Tc" />
           </div>
 
           <div className="panel-section">
@@ -228,7 +448,7 @@ export default function Dashboard() {
                   className="village-item"
                   type="button"
                   key={village.id}
-                  onClick={() => selectVillage(village)}
+                  onClick={() => setSelectedVillageId(village.id)}
                 >
                   <span>
                     <span className="village-name">{village.name}</span>
@@ -247,13 +467,17 @@ export default function Dashboard() {
             <div className="alert-symbol">!</div>
             <div>
               <strong>Administrator alerts</strong>
-              <p>Public warnings are issued from the separate Administrator page.</p>
+              <p>Review batch risk and issue prototype warnings from the Administrator page.</p>
             </div>
           </div>
         </aside>
       </main>
 
-      <VillageModal village={selectedVillage} onClose={() => setSelectedVillageId(null)} />
+      <VillageModal
+        village={selectedVillage}
+        details={detailState}
+        onClose={() => setSelectedVillageId(null)}
+      />
     </div>
   );
 }

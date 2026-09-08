@@ -16,20 +16,6 @@ function addStaticOverlays(groups) {
     { color: "#0284c7", weight: 4, opacity: 0.75 },
   ).addTo(groups.streams);
 
-  [
-    [[30.76, 78.98], [30.76, 79.10], [30.66, 79.12], [30.62, 79.01]],
-    [[30.62, 78.94], [30.62, 79.01], [30.52, 79.05], [30.47, 78.95]],
-    [[30.52, 78.95], [30.52, 79.05], [30.42, 79.07], [30.38, 78.96]],
-  ].forEach((polygon, index) => {
-    L.polygon(polygon, {
-      color: "#7c3aed",
-      weight: 1.5,
-      fillColor: "#a78bfa",
-      fillOpacity: 0.08,
-    })
-      .bindTooltip(`Sub-catchment ${index + 1}`)
-      .addTo(groups.catchments);
-  });
 
   [
     { lat: 30.69, lon: 79.06, radius: 19000, value: "90+ mm" },
@@ -93,6 +79,7 @@ export default function RiskMap({
   state,
   district,
   villages,
+  catchments,
   selectedVillage,
   regionalScore,
   regionalRisk,
@@ -100,6 +87,8 @@ export default function RiskMap({
   onSelectVillage,
   onRefresh,
   refreshing,
+  backendOnline,
+  periodLabel,
 }) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
@@ -139,6 +128,26 @@ export default function RiskMap({
       groupsRef.current = {};
     };
   }, []);
+
+  useEffect(() => {
+    if (!ready) return;
+
+    const catchmentGroup = groupsRef.current.catchments;
+    catchmentGroup.clearLayers();
+    catchments.forEach((catchment) => {
+      L.circleMarker([catchment.centroid_lat, catchment.centroid_lon], {
+        radius: 12,
+        color: "#7c3aed",
+        weight: 2,
+        fillColor: "#a78bfa",
+        fillOpacity: 0.18,
+      })
+        .bindTooltip(
+          `${catchment.name} · ${catchment.area_km2} km² · ${catchment.land_use}`,
+        )
+        .addTo(catchmentGroup);
+    });
+  }, [catchments, ready]);
 
   useEffect(() => {
     if (!ready) return;
@@ -198,7 +207,17 @@ export default function RiskMap({
   }, [ready, selectedVillage]);
 
   function fitRegion() {
-    mapRef.current?.setView(REGION_CENTER, 10);
+    const points = [
+      ...villages.map((village) => [village.lat, village.lon]),
+      ...catchments.map((catchment) => [catchment.centroid_lat, catchment.centroid_lon]),
+    ].filter(([lat, lon]) => Number.isFinite(Number(lat)) && Number.isFinite(Number(lon)));
+    if (points.length > 1) {
+      mapRef.current?.fitBounds(points, { padding: [35, 35], maxZoom: 12 });
+    } else if (points.length === 1) {
+      mapRef.current?.setView(points[0], 12);
+    } else {
+      mapRef.current?.setView(REGION_CENTER, 10);
+    }
   }
 
   function locateUser() {
@@ -222,13 +241,13 @@ export default function RiskMap({
       </div>
 
       <div className="map-title-card">
-        <div className="eyebrow">LIVE RISK OVERVIEW</div>
+        <div className="eyebrow">{periodLabel?.toUpperCase()} RISK OVERVIEW</div>
         <h1>{district}, {state}</h1>
         <p>Sub-catchment hazard mapped to village-level preparedness.</p>
       </div>
 
-      <div className="map-scale-note">
-        <span className="pulse" /> Forecast engine active
+      <div className={`map-scale-note ${backendOnline ? "" : "offline"}`}>
+        <span className="pulse" /> {backendOnline ? "Backend assessment loaded" : "Backend unavailable"}
       </div>
 
       <span className="sr-only" aria-live="polite">

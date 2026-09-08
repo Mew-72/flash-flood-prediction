@@ -7,6 +7,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api import (
+    routes_admin,
     routes_catchments,
     routes_replay,
     routes_risk,
@@ -32,6 +33,7 @@ def create_app(http_client_factory: HttpClientFactory | None = None) -> FastAPI:
                 "to require canonical processed data"
             )
         application.state.data_store = get_data_store()
+        application.state.alerts = []
         client = (
             http_client_factory()
             if http_client_factory is not None
@@ -66,6 +68,7 @@ def create_app(http_client_factory: HttpClientFactory | None = None) -> FastAPI:
     application.include_router(routes_risk.v1_router)
     application.include_router(routes_simulate.router)
     application.include_router(routes_replay.router)
+    application.include_router(routes_admin.router)
 
     @application.get("/health", response_model=HealthOut)
     def health_check(request: Request):

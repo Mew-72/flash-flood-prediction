@@ -49,7 +49,7 @@ export default function Dashboard() {
   const [district, setDistrict] = useState("");
   const [catchmentId, setCatchmentId] = useState("");
   const [visibleLayers, setVisibleLayers] = useState(DEFAULT_VISIBLE_LAYERS);
-  const [activeLayer, setActiveLayer] = useState("risk");
+  const [activeLayer, setActiveLayer] = useState(null);
   const [health, setHealth] = useState(undefined);
   const [villageRecords, setVillageRecords] = useState([]);
   const [catchments, setCatchments] = useState([]);

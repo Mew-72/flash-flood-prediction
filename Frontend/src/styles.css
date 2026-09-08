@@ -314,11 +314,9 @@ textarea {
 .insight-row { display: flex; gap: 7px; align-items: center; color: #a6b2ac; font-size: 9px; margin-top: 6px; }
 .insight-row b { margin-left: auto; color: #e9efec; font-weight: 700; }
 .mini-swatch { width: 8px; height: 8px; border-radius: 2px; }
-.mini-swatch.very-high { background: #dc2626; }
-.mini-swatch.high { background: #f97316; }
-.mini-swatch.moderate { background: #facc15; }
-.mini-swatch.low { background: #84cc16; }
-.mini-swatch.very-low { background: #16a34a; }
+.mini-swatch.high { background: #ff0000; }
+.mini-swatch.moderate { background: #ffff00; }
+.mini-swatch.low { background: #008000; }
 .peak-location-chip {
     position: absolute;
     left: 20px;

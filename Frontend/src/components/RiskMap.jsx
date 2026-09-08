@@ -58,11 +58,11 @@ function createContinuousHeatOverlay(maps, points) {
         const x = pixel.x - southWest.x;
         const y = pixel.y - northEast.y;
         const radius = Math.max(20, Math.min(65, width / 14));
-        const hue = 120 - point.weight * 120;
+        const color = point.weight >= 0.75 ? "255, 0, 0" : point.weight >= 0.5 ? "255, 255, 0" : "0, 128, 0";
         const gradient = context.createRadialGradient(x, y, 0, x, y, radius);
-        gradient.addColorStop(0, `hsla(${hue}, 88%, 48%, 0.8)`);
-        gradient.addColorStop(0.5, `hsla(${hue}, 88%, 48%, 0.42)`);
-        gradient.addColorStop(1, `hsla(${hue}, 88%, 48%, 0)`);
+        gradient.addColorStop(0, `rgba(${color}, 0.8)`);
+        gradient.addColorStop(0.5, `rgba(${color}, 0.42)`);
+        gradient.addColorStop(1, `rgba(${color}, 0)`);
         context.fillStyle = gradient;
         context.fillRect(x - radius, y - radius, radius * 2, radius * 2);
       });
@@ -241,7 +241,7 @@ export default function RiskMap({
   const selectVillageRef = useRef(onSelectVillage);
   const [ready, setReady] = useState(false);
   const [mapError, setMapError] = useState("");
-  const layer = MAP_LAYERS.find((item) => item.id === activeLayer) ?? MAP_LAYERS[0];
+  const layer = MAP_LAYERS.find((item) => item.id === activeLayer);
 
   useEffect(() => { selectVillageRef.current = onSelectVillage; }, [onSelectVillage]);
 
@@ -256,13 +256,7 @@ export default function RiskMap({
           mapTypeControl: true,
           fullscreenControl: true,
           streetViewControl: false,
-          styles: [
-            { elementType: "geometry", stylers: [{ color: "#17211d" }] },
-            { elementType: "labels.text.fill", stylers: [{ color: "#9daaa4" }] },
-            { elementType: "labels.text.stroke", stylers: [{ color: "#17211d" }] },
-            { featureType: "road", elementType: "geometry", stylers: [{ color: "#38443f" }] },
-            { featureType: "water", elementType: "geometry", stylers: [{ color: "#102d38" }] },
-          ],
+
         });
         mapsRef.current = maps;
         mapRef.current = map;
@@ -293,7 +287,7 @@ export default function RiskMap({
     const map = mapRef.current;
     const group = groupsRef.current.thematic;
     clearGroup(group);
-    if (!district || district === "Select a district") return;
+    if (!activeLayer || !district || district === "Select a district") return;
     const coverage = districtCoverage(villages, catchments, district);
     if (!coverage) return;
     try {
@@ -304,10 +298,10 @@ export default function RiskMap({
 
       const boundary = new maps.Polygon({
         paths: coverage.map(toLatLng),
-        strokeColor: "#f8fafc",
+        strokeColor: "#ffff00",
         strokeOpacity: 0.9,
         strokeWeight: 2,
-        fillColor: "#22c55e",
+        fillColor: "#008000",
         fillOpacity: 0.04,
         map,
       });
@@ -319,7 +313,7 @@ export default function RiskMap({
     } catch (error) {
       setMapError(error?.message || "The continuous heatmap could not be rendered.");
     }
-  }, [activeLayer, catchments, district, layer.label, ready, villages]);
+  }, [activeLayer, catchments, district, ready, villages]);
 
   useEffect(() => {
     if (!ready) return;
@@ -330,9 +324,9 @@ export default function RiskMap({
       const marker = new maps.Circle({
         center: { lat: Number(catchment.centroid_lat), lng: Number(catchment.centroid_lon) },
         radius: 300,
-        strokeColor: "#a78bfa",
+        strokeColor: "#ffff00",
         strokeWeight: 2,
-        fillColor: "#7c3aed",
+        fillColor: "#008000",
         fillOpacity: 0.25,
         map: visibleLayers.catchments ? map : null,
       });
@@ -347,7 +341,7 @@ export default function RiskMap({
     clearGroup(groupsRef.current.streams);
     const stream = new maps.Polyline({
       path: [[30.77, 79.03], [30.7, 79.04], [30.63, 79.02], [30.56, 79.01], [30.49, 78.99], [30.41, 79.0]].map(toLatLng),
-      strokeColor: "#38bdf8",
+      strokeColor: "#ffff00",
       strokeWeight: 4,
       strokeOpacity: 0.8,
       map: visibleLayers.streams ? map : null,
@@ -364,7 +358,7 @@ export default function RiskMap({
       const marker = new maps.Circle({
         center: { lat: Number(village.lat), lng: Number(village.lon) },
         radius: 240,
-        strokeColor: "#ffffff",
+        strokeColor: "#ffff00",
         strokeWeight: 2,
         fillColor: riskColor(village.score),
         fillOpacity: 0.95,
@@ -416,7 +410,7 @@ export default function RiskMap({
 
   return (
     <>
-      <div id="map" ref={containerRef} aria-label={`Google Map showing ${layer.label}`}>
+      <div id="map" ref={containerRef} aria-label={layer ? `Google Map showing ${layer.label}` : "Google Map"}>
         {mapError && <div className="map-error">{mapError}</div>}
       </div>
       <div className="map-toolbar">
@@ -425,15 +419,15 @@ export default function RiskMap({
         <button className="tool-btn" type="button" onClick={onRefresh} disabled={refreshing}>↻ {refreshing ? "Refreshing…" : "Refresh"}</button>
       </div>
 
-      <div className="map-insight-card google-map-legend">
-        <span className="insight-kicker"><span className="update-pulse" /> MAP UPDATED</span>
-        <strong>{layer.label} layer</strong>
-        <div className="insight-row"><span className="mini-swatch very-high" />Very high <b>{layer.high}</b></div>
-        <div className="insight-row"><span className="mini-swatch high" />High</div>
-        <div className="insight-row"><span className="mini-swatch moderate" />Moderate <b>{layer.moderate}</b></div>
-        <div className="insight-row"><span className="mini-swatch low" />Low</div>
-        <div className="insight-row"><span className="mini-swatch very-low" />Very low <b>{layer.low}</b></div>
-      </div>
+      {layer && (
+        <div className="map-insight-card google-map-legend">
+          <span className="insight-kicker"><span className="update-pulse" /> MAP UPDATED</span>
+          <strong>{layer.label} layer</strong>
+          <div className="insight-row"><span className="mini-swatch high" />High <b>{layer.high}</b></div>
+          <div className="insight-row"><span className="mini-swatch moderate" />Moderate <b>{layer.moderate}</b></div>
+          <div className="insight-row"><span className="mini-swatch low" />Low <b>{layer.low}</b></div>
+        </div>
+      )}
       <div className={`map-scale-note ${backendOnline ? "" : "offline"}`}>
         <span className="pulse" /> {backendOnline ? "Google Maps assessment loaded" : "Backend unavailable"}
       </div>

@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function Header({ admin = false, lastUpdated }) {
   return (
     <header className="topbar">
@@ -17,9 +19,9 @@ export default function Header({ admin = false, lastUpdated }) {
           <span className="status-dot" /> {admin ? "Admin Console" : "System Online"}
         </div>
         {!admin && <div className="last-updated">{lastUpdated}</div>}
-        <a className="admin-link" href={admin ? "index.html" : "admin.html"}>
+        <Link className="admin-link" to={admin ? "/" : "/admin"}>
           {admin ? "← Public Dashboard" : "Administrator ↗"}
-        </a>
+        </Link>
       </div>
     </header>
   );

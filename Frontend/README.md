@@ -1,13 +1,15 @@
 # FlashGuard React Frontend
 
-React frontend for the SIH Village-Level Flash-Flood Risk Forecasting project. It uses Vite for local development and production builds and Leaflet for the interactive map.
+React frontend for the SIH Village-Level Flash-Flood Risk Forecasting project. It uses Vite, React Router, and Leaflet.
 
-## Pages
+The frontend is a single-page React application. `index.html` is only Vite's application shell; all screens and content are implemented as React components under `src/`.
 
-- `index.html` — public monitoring dashboard
-- `admin.html` — administrator console
+## Routes
 
-Both pages mount the React entry point in `src/main.jsx`, so the existing URLs continue to work with static hosting.
+- `/` — public monitoring dashboard
+- `/admin` — administrator console
+
+Navigation uses React Router and does not reload separate HTML pages.
 
 ## Development
 
@@ -18,7 +20,7 @@ npm install
 npm run dev
 ```
 
-Vite prints the local URL, which is normally `http://localhost:5173`. Start the FastAPI backend on `http://localhost:8000` for live risk snapshots. If it is unavailable, the UI retains its demonstration values and alert history remains available in browser storage.
+Vite prints the local URL, normally `http://localhost:5173`. Start the FastAPI backend on `http://localhost:8000` for live risk snapshots. If it is unavailable, the UI retains its demonstration values and alert history remains available in browser storage.
 
 ## Production build
 
@@ -27,7 +29,7 @@ npm run build
 npm run preview
 ```
 
-The static output is written to `dist/` and contains both `index.html` and `admin.html`.
+The static output is written to `dist/`. Production servers must route unknown frontend paths, including `/admin`, back to `index.html` so React Router can resolve them.
 
 ## API configuration
 
@@ -46,7 +48,7 @@ src/
 ├── pages/            public dashboard and administrator console
 ├── api.js            backend client and snapshot normalization
 ├── data.js           demonstration map and village data
-├── App.jsx           page selection
-├── main.jsx          React entry point
+├── App.jsx           component routes
+├── main.jsx          React application entry point
 └── styles.css        shared dashboard styles
 ```

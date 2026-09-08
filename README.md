@@ -101,7 +101,7 @@ npm run dev
 ```
 
 Open the Vite URL (normally `http://localhost:5173`). The public dashboard is
-served from `index.html` and the administrator console from `admin.html`.
+available at `/` and the React administrator route at `/admin`.
 
 Useful endpoints:
 

@@ -1,12 +1,12 @@
 import { createRoot } from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
 import "leaflet/dist/leaflet.css";
 
 import App from "./App";
 import "./styles.css";
 
-const page = window.location.pathname.toLowerCase().endsWith("admin.html")
-  ? "admin"
-  : "dashboard";
-
-document.body.classList.toggle("admin-body", page === "admin");
-createRoot(document.getElementById("root")).render(<App page={page} />);
+createRoot(document.getElementById("root")).render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>,
+);

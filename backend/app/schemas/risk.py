@@ -39,7 +39,7 @@ class RiskExplanation(BaseModel):
     antecedent_3day_mm: float = Field(ge=0)
     antecedent_5day_mm: float = Field(ge=0)
     antecedent_precipitation_index: float = Field(ge=0)
-    current_soil_moisture: float = Field(ge=0, le=1)
+    current_soil_moisture: float | None = Field(default=None, ge=0, le=1)
     score_components: ScoreComponents
     method_note: str
 
@@ -51,7 +51,7 @@ class VillageRiskAssessment(BaseModel):
     catchment_hydrology: CatchmentHydrology
     rainfall_trigger: RainfallTrigger
     village_exposure: VillageExposure
-    supplemental_slope_stability: SlopeStabilityIndicator
+    supplemental_slope_stability: SlopeStabilityIndicator | None = None
     composite_score: float = Field(ge=0, le=1)
     overall_risk_level: RiskLevel
     explain: RiskExplanation

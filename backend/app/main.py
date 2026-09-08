@@ -16,7 +16,7 @@ from app.api import (
 )
 from app.config import get_settings
 from app.core.data_sources.data_store import get_data_store
-from app.core.data_sources.open_meteo import OpenMeteoClient
+from app.core.data_sources.imd import ImdClient
 from app.schemas.provenance import HealthOut
 
 HttpClientFactory = Callable[[], httpx.AsyncClient]
@@ -41,7 +41,7 @@ def create_app(http_client_factory: HttpClientFactory | None = None) -> FastAPI:
         )
         async with client:
             application.state.http_client = client
-            application.state.weather_client = OpenMeteoClient(client, settings)
+            application.state.weather_client = ImdClient(client, settings)
             yield
 
     application = FastAPI(
@@ -73,11 +73,22 @@ def create_app(http_client_factory: HttpClientFactory | None = None) -> FastAPI:
     @application.get("/health", response_model=HealthOut)
     def health_check(request: Request):
         store = request.app.state.data_store
+        settings = get_settings()
         return {
             "status": "ok",
-            "storage": "json",
+            "storage": "json+parquet",
             "model_unit": "sub-catchment",
             "data_mode": store.data_mode,
+            "weather_provider": "imd",
+            "weather_configured": bool(
+                settings.imd_api_key and settings.imd_access_token
+            ),
+            "weather_capabilities": [
+                "observed_24h_rainfall",
+                "qualitative_forecast_not_used_as_millimetres",
+                "no_historical_date_range",
+                "no_soil_moisture",
+            ],
             "provenance": store.provenance,
         }
 

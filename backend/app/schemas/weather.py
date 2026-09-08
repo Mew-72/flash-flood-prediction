@@ -9,9 +9,9 @@ WeatherPeriod = Literal["past", "current", "forecast"]
 class PrecipitationWindows(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    precipitation_1h_mm: float = Field(ge=0)
-    precipitation_3h_mm: float = Field(ge=0)
-    precipitation_6h_mm: float = Field(ge=0)
+    precipitation_1h_mm: float | None = Field(default=None, ge=0)
+    precipitation_3h_mm: float | None = Field(default=None, ge=0)
+    precipitation_6h_mm: float | None = Field(default=None, ge=0)
     precipitation_24h_mm: float = Field(ge=0)
 
 
@@ -20,9 +20,9 @@ class WeatherSnapshot(PrecipitationWindows):
     retrieved_at: datetime
     valid_at: datetime
     lead_time_hours: float = Field(ge=0)
-    soil_moisture: float = Field(ge=0, le=1)
+    soil_moisture: float | None = Field(default=None, ge=0, le=1)
     antecedent_daily_rainfall_mm: list[float] = Field(default_factory=list)
-    source: str = "open-meteo"
+    source: str = "imd"
 
 
 class WeatherTimeline(BaseModel):

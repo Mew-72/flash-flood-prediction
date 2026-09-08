@@ -59,7 +59,7 @@ export default function VillageModal({ village, details, onClose }) {
 
         <div className="detail-grid">
           <div><span>Current risk score</span><strong>{score}/100</strong></div>
-          <div><span>3-hour rainfall</span><strong>{conditions.rainfall ?? village.rain}</strong></div>
+          <div><span>{conditions.rainfallLabel ?? "Rainfall"}</span><strong>{conditions.rainfall ?? village.rain}</strong></div>
           <div><span>Soil moisture</span><strong>{conditions.soil ?? village.soil}</strong></div>
           <div><span>Stream distance</span><strong>{formatNumber(record?.distance_to_stream_m, " m")}</strong></div>
           <div><span>Village slope</span><strong>{formatNumber(record?.slope_deg, "°", 1)}</strong></div>

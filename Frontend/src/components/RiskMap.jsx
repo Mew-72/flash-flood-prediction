@@ -80,6 +80,7 @@ export default function RiskMap({
   district,
   villages,
   catchments,
+  villageBoundaries,
   selectedVillage,
   regionalScore,
   regionalRisk,
@@ -172,6 +173,18 @@ export default function RiskMap({
     });
 
     villageGroup.clearLayers();
+    villageBoundaries.forEach((boundary) => {
+      L.geoJSON(boundary.geometry, {
+        style: {
+          color: "#334155",
+          weight: 1,
+          fillColor: "#cbd5e1",
+          fillOpacity: 0.08,
+        },
+      })
+        .bindTooltip(`${boundary.name} · LGD ${boundary.lgd_village_code}`)
+        .addTo(villageGroup);
+    });
     villages.forEach((village) => {
       L.circleMarker([village.lat, village.lon], {
         radius: 8,
@@ -184,7 +197,7 @@ export default function RiskMap({
         .on("click", () => selectVillageRef.current(village))
         .addTo(villageGroup);
     });
-  }, [ready, regionalRisk, regionalScore, villages]);
+  }, [ready, regionalRisk, regionalScore, villageBoundaries, villages]);
 
   useEffect(() => {
     if (!ready) return;
@@ -210,6 +223,7 @@ export default function RiskMap({
     const points = [
       ...villages.map((village) => [village.lat, village.lon]),
       ...catchments.map((catchment) => [catchment.centroid_lat, catchment.centroid_lon]),
+      ...villageBoundaries.map((boundary) => [boundary.lat, boundary.lon]),
     ].filter(([lat, lon]) => Number.isFinite(Number(lat)) && Number.isFinite(Number(lon)));
     if (points.length > 1) {
       mapRef.current?.fitBounds(points, { padding: [35, 35], maxZoom: 12 });

@@ -4,6 +4,7 @@ import {
   flattenSnapshots,
   getAllCatchments,
   getAllVillages,
+  getAllVillageBoundaries,
   getCatchment,
   getHealth,
   getPeakSnapshot,
@@ -29,6 +30,7 @@ const EMPTY_SUMMARY = {
   score: 0,
   risk: "LOW",
   rainfall: "—",
+  rainfallLabel: "rainfall unavailable",
   soil: "—",
   responseTime: "—",
 };
@@ -50,6 +52,7 @@ export default function Dashboard() {
   const [health, setHealth] = useState(undefined);
   const [villageRecords, setVillageRecords] = useState([]);
   const [catchments, setCatchments] = useState([]);
+  const [villageBoundaries, setVillageBoundaries] = useState([]);
   const [availableDistricts, setAvailableDistricts] = useState([]);
   const [snapshotPayload, setSnapshotPayload] = useState(null);
   const [viewPeriod, setViewPeriod] = useState("current");
@@ -73,28 +76,32 @@ export default function Dashboard() {
           district: district || undefined,
           catchment_id: catchmentId || undefined,
         };
-        const [healthPayload, villageCatalog, catchmentCatalog, risks] = await Promise.all([
-          getHealth({ signal: controller.signal }),
+        const healthPayload = await getHealth({ signal: controller.signal });
+        setHealth(healthPayload);
+
+        const [villageCatalog, catchmentCatalog] = await Promise.all([
           getAllVillages(filters, { signal: controller.signal }),
           getAllCatchments(
             { district: district || undefined },
             { signal: controller.signal },
           ),
-          getRiskSnapshots(
-            {
-              ...filters,
-              include_forecast: true,
-              limit: 500,
-            },
-            { signal: controller.signal },
-          ),
         ]);
-
-        setHealth(healthPayload);
         setVillageRecords(villageCatalog.items);
         setCatchments(catchmentCatalog.items);
-        setSnapshotPayload(risks);
-        setLastUpdated(`Updated ${new Date(risks.generated_at).toLocaleString()}`);
+
+        if (healthPayload.data_mode === "production" && district) {
+          try {
+            const boundaryCatalog = await getAllVillageBoundaries(
+              { district_name: district, limit: 500 },
+              { signal: controller.signal },
+            );
+            setVillageBoundaries(boundaryCatalog.items);
+          } catch (error) {
+            if (error.name !== "AbortError") setVillageBoundaries([]);
+          }
+        } else {
+          setVillageBoundaries([]);
+        }
 
         if (!district) {
           const districts = new Set(
@@ -109,11 +116,31 @@ export default function Dashboard() {
           .map((item) => item.admin?.state?.name)
           .find(Boolean);
         if (stateName) setState(stateName);
+
+        try {
+          const risks = await getRiskSnapshots(
+            {
+              ...filters,
+              include_forecast: true,
+              limit: 500,
+            },
+            { signal: controller.signal },
+          );
+          setSnapshotPayload(risks);
+          setLastUpdated(`Updated ${new Date(risks.generated_at).toLocaleString()}`);
+        } catch (error) {
+          if (error.name !== "AbortError") {
+            setSnapshotPayload(null);
+            setApiError(formatApiError(error));
+            setLastUpdated("IMD risk data unavailable");
+          }
+        }
       } catch (error) {
         if (error.name !== "AbortError") {
           setHealth(null);
           setVillageRecords([]);
           setCatchments([]);
+          setVillageBoundaries([]);
           setSnapshotPayload(null);
           setApiError(formatApiError(error));
           setLastUpdated("Backend unavailable");
@@ -209,6 +236,7 @@ export default function Dashboard() {
       score,
       risk: getRiskLevel(peak, score),
       rainfall: conditions.rainfall ?? "—",
+      rainfallLabel: conditions.rainfallLabel,
       soil: conditions.soil ?? "—",
       responseTime: Number.isFinite(Number(responseMinutes))
         ? `${Math.round(Number(responseMinutes))} min`
@@ -392,6 +420,7 @@ export default function Dashboard() {
             district={district || "All available districts"}
             villages={villages}
             catchments={catchments}
+            villageBoundaries={villageBoundaries}
             selectedVillage={selectedVillage}
             regionalScore={summary.score}
             regionalRisk={summary.risk}
@@ -399,7 +428,7 @@ export default function Dashboard() {
             onSelectVillage={(village) => setSelectedVillageId(village.id)}
             onRefresh={refreshSnapshot}
             refreshing={refreshing}
-            backendOnline={Boolean(health)}
+            backendOnline={Boolean(health && snapshotPayload)}
             periodLabel={viewPeriod === "forecast" ? `Forecast +${forecastLead}h` : "Current"}
           />
         </section>
@@ -434,7 +463,7 @@ export default function Dashboard() {
           </div>
 
           <div className="metric-grid">
-            <MetricCard symbol="☔" name="Rainfall" value={summary.rainfall} detail="3-hour accumulation" />
+            <MetricCard symbol="☔" name="Rainfall" value={summary.rainfall} detail={summary.rainfallLabel} />
             <MetricCard symbol="◉" name="Soil Moisture" value={summary.soil} detail="current wetness" />
             <MetricCard symbol="⌁" name="Slope" value={averageSlope} detail="village average" />
             <MetricCard symbol="↘" name="Response time" value={summary.responseTime} detail="indicative catchment Tc" />

@@ -2,8 +2,12 @@ import { Link } from "react-router-dom";
 
 export default function Header({ admin = false, health, lastUpdated }) {
   const backendOnline = health?.status === "ok";
+  const weatherReady = health?.weather_configured !== false;
+  const operational = backendOnline && weatherReady;
   const statusText = backendOnline
-    ? `${health.data_mode === "demo" ? "Demo" : "Production"} backend online`
+    ? weatherReady
+      ? `${health.data_mode === "demo" ? "Demo" : "Production"} backend · IMD ready`
+      : "Backend online · IMD token missing"
     : health === null
       ? "Backend unavailable"
       : "Checking backend…";
@@ -22,7 +26,7 @@ export default function Header({ admin = false, health, lastUpdated }) {
         </div>
       </div>
       <div className="top-actions">
-        <div className={`system-status ${backendOnline ? "online" : "offline"}`}>
+        <div className={`system-status ${operational ? "online" : "offline"}`}>
           <span className="status-dot" /> {statusText}
         </div>
         {!admin && <div className="last-updated">{lastUpdated}</div>}

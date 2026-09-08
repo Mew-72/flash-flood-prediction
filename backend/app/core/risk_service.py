@@ -4,11 +4,7 @@ import asyncio
 from collections.abc import Iterable
 
 from app.core.data_sources.data_store import DataStore
-from app.core.data_sources.open_meteo import (
-    OpenMeteoClient,
-    extract_weather_timeline,
-    risk_rainfall_series,
-)
+from app.core.data_sources.imd import ImdClient
 from app.core.physics.risk_engine import (
     assess_catchment_hazard,
     compose_village_risk,
@@ -19,7 +15,7 @@ from app.schemas.weather import WeatherSnapshot, WeatherTimeline
 
 
 class RiskService:
-    def __init__(self, store: DataStore, weather_client: OpenMeteoClient):
+    def __init__(self, store: DataStore, weather_client: ImdClient):
         self.store = store
         self.weather_client = weather_client
 
@@ -30,17 +26,14 @@ class RiskService:
         *,
         include_forecast: bool,
     ) -> list[RiskSnapshot]:
-        payload = await self.weather_client.get_forecast(
-            catchment["centroid_lat"], catchment["centroid_lon"]
-        )
-        timeline = extract_weather_timeline(payload)
+        timeline = await self.weather_client.get_timeline(catchment)
         weather_snapshots = select_assessment_horizons(
             timeline, include_forecast=include_forecast
         )
         snapshots: list[RiskSnapshot] = []
         for weather in weather_snapshots:
             hazard_data = assess_catchment_hazard(
-                catchment, risk_rainfall_series(weather)
+                catchment, _risk_rainfall_series(weather)
             )
             hazard = CatchmentHazard.model_validate(hazard_data)
             for village in villages:
@@ -109,6 +102,10 @@ def select_assessment_horizons(
     if not include_forecast or not timeline.forecast:
         return selected
 
+    if timeline.forecast[0].lead_time_hours >= 24:
+        selected.extend(timeline.forecast)
+        return selected
+
     chosen_valid_times = set()
     for target_hours in (1, 3, 6, 24):
         candidate = next(
@@ -126,3 +123,8 @@ def select_assessment_horizons(
     if furthest.valid_at not in chosen_valid_times:
         selected.append(furthest)
     return selected
+
+
+def _risk_rainfall_series(snapshot: WeatherSnapshot) -> list[float]:
+    antecedent = snapshot.antecedent_daily_rainfall_mm[-5:]
+    return [*antecedent, snapshot.precipitation_24h_mm]

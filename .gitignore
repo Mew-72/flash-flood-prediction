@@ -12,4 +12,6 @@ ml/models/*.joblib
 .pytest_cache/
 .vscode/
 .idea/
+node_modules/
+dist/
 *.log

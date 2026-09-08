@@ -92,6 +92,17 @@ uvicorn app.main:app --reload --port 8000
 
 Open `http://localhost:8000/docs`.
 
+In a second terminal, start the React frontend:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open the Vite URL (normally `http://localhost:5173`). The public dashboard is
+available at `/` and the React administrator route at `/admin`.
+
 Useful endpoints:
 
 - `GET /v1/catchments?district=...&offset=0&limit=100`

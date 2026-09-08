@@ -52,6 +52,11 @@ body {
     color: var(--text);
 }
 
+#root,
+.app-shell {
+    min-height: 100vh;
+}
+
 button,
 input,
 select,
@@ -799,9 +804,16 @@ textarea {
 }
 
 .village-item {
+    width: 100%;
+
     padding: 11px 0;
 
+    border: 0;
     border-bottom: 1px solid #edf0f4;
+
+    background: transparent;
+    color: inherit;
+    text-align: left;
 
     display: flex;
 
@@ -817,12 +829,16 @@ textarea {
 }
 
 .village-name {
+    display: block;
+
     font-weight: 800;
 
     font-size: 12px;
 }
 
 .village-meta {
+    display: block;
+
     font-size: 9px;
 
     color: #8a95a5;
@@ -831,9 +847,15 @@ textarea {
 }
 
 .village-score {
+    display: block;
+
     font-size: 12px;
 
     font-weight: 900;
+}
+
+.village-score-wrap {
+    text-align: right;
 }
 
 
@@ -1313,6 +1335,21 @@ textarea {
     margin: 15px 0;
 }
 
+.preview-alert.critical-preview {
+    background: #fee2e2;
+    border-color: #fecaca;
+}
+
+.preview-alert.moderate-preview {
+    background: #fffbeb;
+    border-color: #fde68a;
+}
+
+.preview-alert.high-preview {
+    background: #fff7ed;
+    border-color: #fed7aa;
+}
+
 .alert-preview-icon {
     width: 26px;
     height: 26px;
@@ -1365,14 +1402,34 @@ textarea {
     cursor: pointer;
 }
 
-.primary-btn:hover {
+.primary-btn:hover:not(:disabled) {
     background: #19365f;
 }
 
+.primary-btn:disabled,
+.tool-btn:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
 .form-result {
+    min-height: 15px;
+
     font-size: 10px;
 
     margin-top: 10px;
+}
+
+.form-result.sending {
+    color: #2563eb;
+}
+
+.form-result.success {
+    color: #15803d;
+}
+
+.form-result.warning {
+    color: #a16207;
 }
 
 
@@ -1453,6 +1510,12 @@ textarea {
     text-align: left;
 
     white-space: nowrap;
+}
+
+.table-card .empty-history {
+    color: #94a3b8;
+    text-align: center;
+    padding: 30px;
 }
 
 .table-card th {
@@ -1568,6 +1631,23 @@ textarea {
     font-size: 10px;
 }
 
+
+.risk-badge.info {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
 
 /* =========================================================
    35. RESPONSIVE DESIGN

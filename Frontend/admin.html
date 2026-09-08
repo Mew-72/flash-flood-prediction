@@ -1,123 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FlashGuard — Administrator</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body class="admin-body">
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-mark">🌧</div>
-      <div>
-        <div class="brand-title">FLASHGUARD</div>
-        <div class="brand-subtitle">Administrator Console</div>
-      </div>
-    </div>
-    <div class="top-actions">
-      <div class="system-status"><span class="status-dot"></span> Admin Console</div>
-      <a class="admin-link" href="index.html">← Public Dashboard</a>
-    </div>
-  </header>
-
-  <main class="admin-layout">
-    <aside class="admin-sidebar">
-      <div class="admin-user">
-        <div class="avatar">A</div>
-        <div><strong>System Administrator</strong><span>Authorized operator</span></div>
-      </div>
-      <nav>
-        <button class="admin-nav active" data-section="send">⚠ Send Alert</button>
-        <button class="admin-nav" data-section="history">◷ Alert History</button>
-        <button class="admin-nav" data-section="monitor">◉ Data Monitor</button>
-        <button class="admin-nav" data-section="system">⚙ System Status</button>
-      </nav>
-      <div class="admin-warning">Alerts sent here are intended for authorized disaster-management personnel.</div>
-    </aside>
-
-    <section class="admin-content">
-      <section class="admin-section active" id="section-send">
-        <div class="page-heading">
-          <div><div class="eyebrow">ADMINISTRATOR</div><h1>Send Early Warning Alert</h1><p>Create and issue a preparedness message to selected locations.</p></div>
-          <div class="admin-status-pill">Manual approval required</div>
-        </div>
-
-        <div class="admin-grid">
-          <form id="alertForm" class="form-card">
-            <div class="form-title">Alert configuration</div>
-
-            <label>State<select id="alertState" required><option>Uttarakhand</option><option>Himachal Pradesh</option><option>Sikkim</option><option>Kerala</option><option>Karnataka</option></select></label>
-            <label>District<select id="alertDistrict" required><option>Rudraprayag</option><option>Chamoli</option><option>Tehri Garhwal</option></select></label>
-            <label>Target<select id="alertTarget" required><option>All villages in district</option><option>Selected high-risk villages</option><option>Selected village</option></select></label>
-            <label>Alert severity<select id="alertSeverity" required><option value="HIGH">High — Prepare / Evacuate</option><option value="CRITICAL">Critical — Immediate Action</option><option value="MODERATE">Moderate — Monitor / Prepare</option><option value="INFO">Information</option></select></label>
-
-            <label>Message<textarea id="alertMessage" rows="5" required placeholder="Enter clear instructions for the affected community..."></textarea></label>
-
-            <div class="preview-alert" id="alertPreview">
-              <div class="alert-preview-icon">!</div>
-              <div><strong>Alert Preview</strong><p>Your message will appear here.</p></div>
-            </div>
-
-            <button class="primary-btn" type="submit">Send Alert</button>
-            <div id="sendResult" class="form-result"></div>
-          </form>
-
-          <div class="info-stack">
-            <div class="info-card">
-              <div class="section-heading">CURRENT RISK</div>
-              <div class="big-risk"><span id="adminRiskScore">74</span><small>/100</small></div>
-              <div class="risk-badge high">HIGH</div>
-              <p>Rudraprayag regional risk is currently elevated based on the active forecast snapshot.</p>
-            </div>
-            <div class="info-card">
-              <div class="section-heading">BEFORE SENDING</div>
-              <ul class="check-list">
-                <li>Verify target location.</li>
-                <li>Check current risk snapshot.</li>
-                <li>Use short, actionable instructions.</li>
-                <li>Confirm alert severity.</li>
-                <li>Record the operational reason.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="admin-section" id="section-history">
-        <div class="page-heading"><div><div class="eyebrow">ADMINISTRATOR</div><h1>Alert History</h1><p>Previously issued alerts stored in this browser for the prototype.</p></div></div>
-        <div class="table-card">
-          <table><thead><tr><th>Time</th><th>Location</th><th>Severity</th><th>Target</th><th>Message</th><th>Status</th></tr></thead>
-          <tbody id="historyBody"></tbody></table>
-        </div>
-      </section>
-
-      <section class="admin-section" id="section-monitor">
-        <div class="page-heading"><div><div class="eyebrow">ADMINISTRATOR</div><h1>Data Monitor</h1><p>Overview of the inputs feeding the flood-risk engine.</p></div></div>
-        <div class="monitor-grid">
-          <div class="monitor-card"><span>☔</span><strong>Rainfall</strong><b>72 mm</b><small>3-hour accumulation</small><i class="online">LIVE</i></div>
-          <div class="monitor-card"><span>◉</span><strong>Soil Moisture</strong><b>81%</b><small>Antecedent wetness</small><i class="online">LIVE</i></div>
-          <div class="monitor-card"><span>▱</span><strong>DEM / Slope</strong><b>Loaded</b><small>Terrain features</small><i class="ready">READY</i></div>
-          <div class="monitor-card"><span>⌁</span><strong>Streams</strong><b>Rising</b><small>Exposure indicator</small><i class="online">LIVE</i></div>
-          <div class="monitor-card"><span>◈</span><strong>Historical Events</strong><b>Indexed</b><small>Flood + landslide evidence</small><i class="ready">READY</i></div>
-          <div class="monitor-card"><span>◉</span><strong>IoT</strong><b>Optional</b><small>Sensor correction layer</small><i class="offline">SIMULATED</i></div>
-        </div>
-      </section>
-
-      <section class="admin-section" id="section-system">
-        <div class="page-heading"><div><div class="eyebrow">ADMINISTRATOR</div><h1>System Status</h1><p>Prototype health and integration status.</p></div></div>
-        <div class="status-table">
-          <div><span>Frontend</span><b class="online">Operational</b></div>
-          <div><span>FastAPI backend</span><b class="ready">Ready for integration</b></div>
-          <div><span>Runtime storage</span><b class="ready">JSON / processed</b></div>
-          <div><span>Risk engine</span><b class="ready">SCS-CN + API + terrain</b></div>
-          <div><span>ML calibration</span><b class="offline">Future RF / XGBoost</b></div>
-          <div><span>Alert API</span><b class="offline">Connect backend endpoint</b></div>
-        </div>
-      </section>
-    </section>
-  </main>
-
-  <script src="admin.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="FlashGuard administrator alert console" />
+    <title>FlashGuard — Administrator</title>
+  </head>
+  <body class="admin-body">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>

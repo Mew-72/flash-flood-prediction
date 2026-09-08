@@ -460,6 +460,22 @@ textarea {
     background: #dfe8ee;
 }
 
+.map-error {
+    display: grid;
+    place-items: center;
+
+    width: 100%;
+    height: 100%;
+    padding: 24px;
+
+    color: #991b1b;
+    background: #fef2f2;
+
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+}
+
 
 /* =========================================================
    10. MAP TITLE CARD

@@ -1,6 +1,6 @@
 # FlashGuard React Frontend
 
-React frontend for the SIH Village-Level Flash-Flood Risk Forecasting project. It uses Vite, React Router, and Leaflet.
+React frontend for the SIH Village-Level Flash-Flood Risk Forecasting project. It uses Vite, React Router, and the Google Maps JavaScript API.
 
 The frontend is a single-page React application. `index.html` is only Vite's application shell; all screens and content are implemented as React components under `src/`.
 
@@ -17,6 +17,8 @@ Requirements: Node.js 20.19+ or 22.12+.
 
 ```bash
 npm install
+cp .env.example .env
+# Add your Google Maps JavaScript API key to .env
 npm run dev
 ```
 
@@ -31,7 +33,17 @@ npm run preview
 
 The static output is written to `dist/`. Production servers must route unknown frontend paths, including `/admin`, back to `index.html` so React Router can resolve them.
 
-## API configuration
+## Google Maps configuration
+
+Enable the Google Maps JavaScript API in Google Cloud, create a browser API key, and set it before starting or building the frontend:
+
+```dotenv
+VITE_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+```
+
+Restrict the key to the application's allowed HTTP referrers and to the Maps JavaScript API. Google Maps usage may be billed by Google according to your Cloud account and current pricing.
+
+## Backend API configuration
 
 The frontend uses `http://localhost:8000` while running locally and same-origin API paths in production. Override the API base with one of:
 
@@ -44,7 +56,7 @@ The frontend uses `http://localhost:8000` while running locally and same-origin 
 
 ```text
 src/
-├── components/       shared header, Leaflet map, village modal
+├── components/       shared header, Google map, village modal
 ├── pages/            public dashboard and administrator console
 ├── api.js            backend client and snapshot normalization
 ├── data.js           demonstration map and village data

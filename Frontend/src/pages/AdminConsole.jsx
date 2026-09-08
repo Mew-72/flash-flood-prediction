@@ -597,6 +597,15 @@ export default function AdminConsole() {
       healthOk ? "online" : healthState.phase === "loading" ? "ready" : "offline",
     ],
     [
+      "IMD weather provider",
+      healthOk
+        ? healthState.data.weather_configured
+          ? "Configured"
+          : "IMD_ACCESS_TOKEN required"
+        : "Unverified",
+      healthOk && healthState.data.weather_configured ? "online" : "offline",
+    ],
+    [
       "Data mode",
       healthOk ? String(healthState.data.data_mode).toUpperCase() : "Unknown until /health succeeds",
       healthOk ? "ready" : "offline",

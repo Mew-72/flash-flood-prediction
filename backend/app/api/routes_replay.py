@@ -1,19 +1,17 @@
+from datetime import date
+
 from fastapi import APIRouter, HTTPException, Request
 
-from app.core.data_sources.open_meteo import (
-    extract_daily_latest_soil_moisture,
-    extract_daily_rainfall_totals,
-)
-from app.core.physics.risk_engine import assess_village_risk
+from app.core.data_sources.imd import ImdCapabilityError
 
 router = APIRouter(prefix="/replay", tags=["replay"])
 
 
 @router.get("/{village_id}")
 async def replay_event(
-    request: Request, village_id: str, start_date: str, end_date: str
+    request: Request, village_id: str, start_date: date, end_date: date
 ):
-    """Replay a historical weather window through the production risk path."""
+    """Replay historical forcing when the configured provider supports it."""
     village, catchment = request.app.state.data_store.village_context(village_id)
     if village is None:
         raise HTTPException(status_code=404, detail="Village not found")
@@ -21,38 +19,21 @@ async def replay_event(
         raise HTTPException(
             status_code=500, detail="Village has no valid catchment mapping"
         )
-
-    historical = await request.app.state.weather_client.get_historical(
-        catchment["centroid_lat"],
-        catchment["centroid_lon"],
-        start_date,
-        end_date,
-    )
-    daily_rainfall = extract_daily_rainfall_totals(historical)
-    daily_soil_moisture = extract_daily_latest_soil_moisture(historical)
-    if len(daily_rainfall) != len(daily_soil_moisture):
+    if start_date > end_date:
         raise HTTPException(
-            status_code=502, detail="Historical weather variables cover different dates"
+            status_code=422, detail="start_date must be on or before end_date"
         )
 
-    timeline = []
-    for day_index, soil_moisture in enumerate(daily_soil_moisture, start=1):
-        result = assess_village_risk(
-            village, catchment, daily_rainfall[:day_index], soil_moisture
+    try:
+        await request.app.state.weather_client.get_historical(
+            catchment,
+            start_date.isoformat(),
+            end_date.isoformat(),
         )
-        timeline.append(
-            {
-                "day_index": day_index,
-                "rainfall_mm": daily_rainfall[day_index - 1],
-                "risk": result["overall_risk_level"],
-                "score": result["composite_score"],
-            }
-        )
+    except ImdCapabilityError as exc:
+        raise HTTPException(status_code=501, detail=str(exc)) from exc
 
-    return {
-        "village_id": village["id"],
-        "catchment_id": catchment["id"],
-        "start_date": start_date,
-        "end_date": end_date,
-        "timeline": timeline,
-    }
+    raise HTTPException(
+        status_code=501,
+        detail="The configured weather provider did not return replay data",
+    )

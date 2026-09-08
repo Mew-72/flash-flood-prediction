@@ -7,21 +7,22 @@ from app.main import create_app
 
 
 def _payload():
-    times = [f"2026-01-01T{hour:02d}:00" for hour in range(24)] + [
-        f"2026-01-02T{hour:02d}:00" for hour in range(24)
+    return [
+        {
+            "Date": "2026-01-01",
+            "Station_Code": "DEMO",
+            "Station_Name": "Demo IMD station",
+            "Latitude": "30.35",
+            "Longitude": "78.95",
+            "Past_24_hrs_Rainfall": "24.0",
+        }
     ]
-    return {
-        "current": {"time": "2026-01-01T23:00"},
-        "hourly": {
-            "time": times,
-            "precipitation": [1.0] * len(times),
-            "soil_moisture_0_to_1cm": [0.3] * len(times),
-        },
-    }
 
 
 def test_health_catalog_batch_and_grouped_snapshots_are_mocked(monkeypatch):
     monkeypatch.setenv("DATA_MODE", "demo")
+    monkeypatch.setenv("IMD_API_KEY", "test-api-key")
+    monkeypatch.setenv("IMD_ACCESS_TOKEN", "test-access-token")
     get_settings.cache_clear()
     clear_cache()
     calls = 0
@@ -70,17 +71,16 @@ def test_health_catalog_batch_and_grouped_snapshots_are_mocked(monkeypatch):
         groups = grouped.json()["catchments"]
         assert {group["catchment_id"] for group in groups} == {"c1", "c2"}
         assert all(group["snapshots"] for group in groups)
-        assert calls == 2
+        assert calls == 1
 
         forecast = client.post(
             "/v1/risk/batch",
             json={"village_ids": ["v1"], "include_forecast": True},
         )
         periods = [item["period"] for item in forecast.json()["items"]]
-        assert periods[0] == "current"
-        assert periods[-1] == "forecast"
-        assert forecast.json()["items"][-1]["lead_time_hours"] == 24
-        assert calls == 2
+        assert periods == ["current"]
+        assert forecast.json()["items"][0]["lead_time_hours"] == 0
+        assert calls == 1
 
     get_settings.cache_clear()
     clear_cache()

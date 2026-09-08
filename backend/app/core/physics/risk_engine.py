@@ -127,7 +127,7 @@ def compose_village_risk(
     village: dict,
     catchment: dict,
     catchment_hazard: dict,
-    current_soil_moisture: float,
+    current_soil_moisture: float | None,
 ) -> dict:
     """Compose local exposure with a precomputed catchment hazard."""
     exposure = compute_village_exposure(
@@ -138,18 +138,20 @@ def compose_village_risk(
         FALLBACK_WEIGHTS["village_exposure"] * exposure["score"]
     )
 
-    soil_props = get_soil_hydraulic_properties(catchment["soil_texture"])
-    geotech_props = get_terrain_geotech_properties(village["terrain_class"])
-    slope_indicator = compute_slope_risk(
-        volumetric_soil_moisture=current_soil_moisture,
-        field_capacity=soil_props["field_capacity"],
-        porosity=soil_props["porosity"],
-        cohesion_kpa=geotech_props["c_kpa"],
-        unit_weight_kn_m3=geotech_props["gamma_kn_m3"],
-        soil_depth_m=geotech_props["z_m"],
-        slope_deg=village["slope_deg"],
-        friction_angle_deg=geotech_props["phi_deg"],
-    )
+    slope_indicator = None
+    if current_soil_moisture is not None:
+        soil_props = get_soil_hydraulic_properties(catchment["soil_texture"])
+        geotech_props = get_terrain_geotech_properties(village["terrain_class"])
+        slope_indicator = compute_slope_risk(
+            volumetric_soil_moisture=current_soil_moisture,
+            field_capacity=soil_props["field_capacity"],
+            porosity=soil_props["porosity"],
+            cohesion_kpa=geotech_props["c_kpa"],
+            unit_weight_kn_m3=geotech_props["gamma_kn_m3"],
+            soil_depth_m=geotech_props["z_m"],
+            slope_deg=village["slope_deg"],
+            friction_angle_deg=geotech_props["phi_deg"],
+        )
 
     return {
         "catchment_id": catchment["id"],

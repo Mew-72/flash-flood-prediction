@@ -17,7 +17,10 @@ class DataProvenance(BaseModel):
 
 class HealthOut(BaseModel):
     status: Literal["ok"] = "ok"
-    storage: Literal["json"] = "json"
+    storage: Literal["json+parquet"] = "json+parquet"
     model_unit: Literal["sub-catchment"] = "sub-catchment"
     data_mode: DataMode
+    weather_provider: Literal["imd"] = "imd"
+    weather_configured: bool
+    weather_capabilities: list[str]
     provenance: DataProvenance

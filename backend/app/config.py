@@ -1,18 +1,26 @@
 """Central configuration and physical constants for the risk engines."""
+
 from functools import lru_cache
+from pathlib import Path
 from typing import Literal
 
-from pydantic import Field
+from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
+BACKEND_DIR = Path(__file__).resolve().parents[1]
+
+
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=BACKEND_DIR / ".env",
+        extra="ignore",
+    )
 
     data_mode: Literal["demo", "production"] = "demo"
-    open_meteo_forecast_url: str = "https://api.open-meteo.com/v1/forecast"
-    open_meteo_archive_url: str = "https://archive-api.open-meteo.com/v1/archive"
-    open_meteo_flood_url: str = "https://flood-api.open-meteo.com/v1/flood"
+    imd_api_base_url: str = "https://api.imd.gov.in/api/v1"
+    imd_api_key: SecretStr | None = None
+    imd_access_token: SecretStr | None = None
     weather_timeout_seconds: float = Field(default=15.0, gt=0)
     weather_cache_ttl_seconds: float = Field(default=300.0, gt=0)
     weather_cache_max_entries: int = Field(default=128, gt=0)

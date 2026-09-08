@@ -144,6 +144,16 @@ export function getVillage(villageId, options = {}) {
   return apiRequest(`/v1/villages/${pathSegment(villageId, "villageId")}`, options);
 }
 
+export function getVillageBoundaries(
+  { state_code, district_code, district_name, q, offset, limit } = {},
+  options = {},
+) {
+  return apiRequest("/v1/villages/boundaries", {
+    ...options,
+    params: { state_code, district_code, district_name, q, offset, limit },
+  });
+}
+
 export function getCatchments(
   { district, q, offset, limit } = {},
   options = {},
@@ -290,6 +300,10 @@ export function getAllVillages(params = {}, options = {}) {
   return getAllCatalogPages(getVillages, params, options);
 }
 
+export function getAllVillageBoundaries(params = {}, options = {}) {
+  return getAllCatalogPages(getVillageBoundaries, params, options);
+}
+
 export function getAllCatchments(params = {}, options = {}) {
   return getAllCatalogPages(getCatchments, params, options);
 }
@@ -402,8 +416,10 @@ export function getPeakSnapshot(snapshots) {
 }
 
 export function getSnapshotConditions(snapshot) {
+  const hasThreeHourRainfall = snapshot?.precipitation_3h_mm != null;
   const rainValue =
     snapshot?.precipitation_3h_mm ??
+    snapshot?.precipitation_24h_mm ??
     snapshot?.details?.explain?.today_rainfall_mm ??
     snapshot?.rainfall_3h ??
     snapshot?.rainfall;
@@ -424,5 +440,13 @@ export function getSnapshotConditions(snapshot) {
       ? `${Math.round(soilValue <= 1 ? soilValue * 100 : soilValue)}%`
       : soilValue;
 
-  return { rainfall, soil };
+  return {
+    rainfall,
+    rainfallLabel: hasThreeHourRainfall
+      ? "3-hour accumulation"
+      : rainValue == null
+        ? "rainfall unavailable"
+        : "24-hour accumulation",
+    soil,
+  };
 }

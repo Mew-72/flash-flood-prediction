@@ -23,7 +23,10 @@ DATA_DIR = PROJECT_ROOT.parent / "data" / "processed"
 DEFAULT_EVENT_PATH = (
     Path(__file__).resolve().parent / "events" / "kedar_valley_2024_07_31.json"
 )
-PINNED_EVENT_PATHS = (DEFAULT_EVENT_PATH,)
+PINNED_EVENT_PATHS = (
+    DEFAULT_EVENT_PATH,
+    Path(__file__).resolve().parent / "events" / "wayanad_2024_07_30.json",
+)
 RISK_ALERT_MAPPING = {
     "low": ("INFO", "NORMAL"),
     "moderate": ("MODERATE", "WATCH"),
@@ -253,9 +256,7 @@ def run_hindcast(event: dict[str, Any]) -> dict[str, Any]:
             }
         )
 
-    primary = next(
-        item for item in cases if item["case_id"] == "current-demo-c1-grid"
-    )
+    primary = cases[0]
     return {
         "event_id": event["event_id"],
         "impact_start": event["impact_start"],

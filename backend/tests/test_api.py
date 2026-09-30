@@ -5,78 +5,26 @@ from app.config import get_settings
 from app.core.data_sources.data_store import clear_cache
 from app.main import create_app
 
-CURRENT_DT = 1_800_000_000
 
-
-def _conditions(timestamp: int):
-    return {
-        "dt": timestamp,
-        "main": {
-            "temp": 16.25,
-            "feels_like": 15.75,
-            "humidity": 88,
-            "pressure": 1004,
-        },
-        "wind": {"speed": 3.5, "deg": 190},
-        "clouds": {"all": 91},
-        "visibility": 4500,
-        "weather": [
-            {"main": "Rain", "description": "heavy intensity rain", "icon": "10n"}
-        ],
-    }
-
-
-def _weather_payload():
-    return {**_conditions(CURRENT_DT), "rain": {"1h": 6.0, "3h": 18.0}}
-
-
-def _forecast_payload():
-    entries = []
-    for index in range(1, 10):
-        item = _conditions(CURRENT_DT + index * 3 * 3600)
-        item["rain"] = {"3h": float(index)}
-        entries.append(item)
-    return {"cod": "200", "list": entries}
-
-
-def test_openweather_runtime_health_risk_tiles_and_replay_are_mocked(monkeypatch):
+def test_demo_runtime_is_network_free_and_deterministic(monkeypatch):
     monkeypatch.setenv("DATA_MODE", "demo")
-    monkeypatch.setenv("WEATHER_API", "test-weather-key")
+    monkeypatch.delenv("WEATHER_API", raising=False)
+    monkeypatch.delenv("IMD_API_KEY", raising=False)
+    monkeypatch.delenv("IMD_ACCESS_TOKEN", raising=False)
     get_settings.cache_clear()
     clear_cache()
-    calls: list[str] = []
 
-    def handler(request: httpx.Request):
-        calls.append(request.url.path)
-        assert request.url.params["appid"] == "test-weather-key"
-        if request.url.path == "/data/2.5/weather":
-            assert request.url.params["units"] == "metric"
-            return httpx.Response(200, json=_weather_payload())
-        if request.url.path == "/data/2.5/forecast":
-            assert request.url.params["units"] == "metric"
-            return httpx.Response(200, json=_forecast_payload())
-        if request.url.path == "/map/precipitation_new/3/4/2.png":
-            assert "units" not in request.url.params
-            return httpx.Response(
-                200,
-                content=b"mock-png",
-                headers={"Content-Type": "image/png"},
-            )
-        raise AssertionError(f"Unexpected OpenWeather request: {request.url}")
+    def unexpected_http_client() -> httpx.AsyncClient:
+        raise AssertionError("Demo mode must not create an external HTTP client")
 
-    app = create_app(
-        lambda: httpx.AsyncClient(transport=httpx.MockTransport(handler))
-    )
+    app = create_app(unexpected_http_client)
     with TestClient(app) as client:
         health = client.get("/health")
         assert health.status_code == 200
         assert health.json()["data_mode"] == "demo"
-        assert health.json()["weather_provider"] == "openweather"
+        assert health.json()["weather_provider"] == "demo"
         assert health.json()["weather_configured"] is True
-        assert "five_day_forecast_at_3h_intervals" in health.json()[
-            "weather_capabilities"
-        ]
-        assert "precipitation_and_cloud_tiles" in health.json()[
+        assert "no_external_weather_requests" in health.json()[
             "weather_capabilities"
         ]
         assert health.json()["provenance"]["static_sources"] == [
@@ -105,33 +53,19 @@ def test_openweather_runtime_health_risk_tiles_and_replay_are_mocked(monkeypatch
         ]
         assert all(item["period"] == "current" for item in body["items"])
         snapshot = body["items"][0]
-        assert snapshot["precipitation_24h_mm"] == 18.0
+        assert snapshot["precipitation_24h_mm"] == 42.0
         assert snapshot["provenance"]["weather_source"] == (
-            "openweather-current:rain.3h"
+            "demo-synthetic:current-24h"
         )
+        assert snapshot["hazard"]["antecedent_5day_mm"] == 63.0
         assert snapshot["assessment_mode"] == "canonical"
-        assert snapshot["provenance"]["risk_input_mode"] == "canonical"
-        assert snapshot["temperature_c"] == 16.25
-        assert snapshot["feels_like_c"] == 15.75
-        assert snapshot["humidity_percent"] == 88
-        assert snapshot["pressure_hpa"] == 1004
-        assert snapshot["wind_speed_mps"] == 3.5
-        assert snapshot["wind_direction_deg"] == 190
-        assert snapshot["cloud_cover_percent"] == 91
-        assert snapshot["visibility_m"] == 4500
-        assert snapshot["weather_condition"] == "Rain"
-        assert snapshot["weather_description"] == "heavy intensity rain"
-        assert snapshot["weather_icon"] == "10n"
-        assert calls.count("/data/2.5/weather") == 1
-        assert calls.count("/data/2.5/forecast") == 1
+        assert snapshot["weather_condition"] == "Heavy rain"
 
         grouped = client.get("/v1/risk/snapshots?district=demo")
         assert grouped.status_code == 200, grouped.text
         groups = grouped.json()["catchments"]
         assert {group["catchment_id"] for group in groups} == {"c1", "c2"}
         assert all(group["snapshots"] for group in groups)
-        assert calls.count("/data/2.5/weather") == 2
-        assert calls.count("/data/2.5/forecast") == 2
 
         forecast = client.post(
             "/v1/risk/batch",
@@ -150,32 +84,20 @@ def test_openweather_runtime_health_risk_tiles_and_replay_are_mocked(monkeypatch
             3,
             6,
             24,
-            27,
+            48,
         ]
-        assert calls.count("/data/2.5/weather") == 2
-        assert calls.count("/data/2.5/forecast") == 2
 
         tile = client.get("/v1/weather/tiles/precipitation_new/3/4/2.png")
-        assert tile.status_code == 200
-        assert tile.content == b"mock-png"
-        assert tile.headers["content-type"] == "image/png"
-        assert tile.headers["cache-control"] == "public, max-age=300"
-        cached_tile = client.get(
-            "/v1/weather/tiles/precipitation_new/3/4/2.png"
+        assert tile.status_code == 503
+        assert tile.json()["detail"] == (
+            "Weather tiles are disabled for the active data mode"
         )
-        assert cached_tile.status_code == 200
-        assert calls.count("/map/precipitation_new/3/4/2.png") == 1
-        assert client.get("/v1/weather/tiles/temperature_new/3/4/2.png").status_code == 404
-        assert client.get("/v1/weather/tiles/clouds_new/3/8/2.png").status_code == 422
-        assert calls.count("/map/precipitation_new/3/4/2.png") == 1
 
         replay = client.get(
             "/replay/v1?start_date=2024-07-01&end_date=2024-07-02"
         )
         assert replay.status_code == 501
-        assert replay.json()["detail"] == (
-            "OpenWeather free runtime endpoints do not support historical replay"
-        )
+        assert "pinned event replay" in replay.json()["detail"]
 
     get_settings.cache_clear()
     clear_cache()

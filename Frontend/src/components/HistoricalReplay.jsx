@@ -518,7 +518,7 @@ export default function HistoricalReplay({ onCopyAlert, onRecordAlert }) {
       {replay && frames.length > 0 && currentFrame && (
         <div className="historical-replay-workspace">
           <div className="replay-pinned-banner">
-            <span aria-hidden="true">⌖</span>
+            <span aria-hidden="true">HX</span>
             <div><strong>{replayName}</strong><small>{eventArea} · {textValue(firstValue(replay.payload, ["selected_case_label"], selectedCase?.label), "Default forcing case")}</small></div>
             <b>Historical simulation</b>
           </div>
@@ -526,11 +526,11 @@ export default function HistoricalReplay({ onCopyAlert, onRecordAlert }) {
           <section className="replay-player" aria-label="Historical event playback controls">
             <div className="replay-controls">
               <button type="button" onClick={() => setPlaying((current) => !current)} aria-label={playing ? "Pause historical replay" : "Play historical replay"}>
-                {playing ? "❚❚ Pause" : "▶ Play"}
+                {playing ? "Pause" : "Play"}
               </button>
-              <button type="button" onClick={() => { setFramePosition(0); setPlaying(true); }} aria-label="Restart historical replay">↺ Restart</button>
-              <button type="button" onClick={() => goToFrame(framePosition - 1)} disabled={framePosition === 0} aria-label="Previous replay day">← Previous</button>
-              <button type="button" onClick={() => goToFrame(framePosition + 1)} disabled={framePosition === frames.length - 1} aria-label="Next replay day">Next →</button>
+              <button type="button" onClick={() => { setFramePosition(0); setPlaying(true); }} aria-label="Restart historical replay">Restart</button>
+              <button type="button" onClick={() => goToFrame(framePosition - 1)} disabled={framePosition === 0} aria-label="Previous replay day">Previous</button>
+              <button type="button" onClick={() => goToFrame(framePosition + 1)} disabled={framePosition === frames.length - 1} aria-label="Next replay day">Next</button>
               <label>Playback speed
                 <select value={speed} onChange={(event) => setSpeed(Number(event.target.value))} aria-label="Historical replay playback speed">
                   {SPEED_OPTIONS.map((value) => <option key={value} value={value}>{value}×</option>)}

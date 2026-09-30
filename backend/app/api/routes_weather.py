@@ -1,5 +1,8 @@
 """Server-side proxy routes for allowlisted OpenWeather map tiles."""
 
+from collections.abc import Awaitable, Callable
+from typing import cast
+
 import httpx
 from fastapi import APIRouter, HTTPException, Path, Request, Response
 
@@ -29,8 +32,18 @@ async def weather_tile(
             detail="Tile x and y must be valid indices for the requested zoom",
         )
 
+    get_tile = cast(
+        Callable[[str, int, int, int], Awaitable[bytes]] | None,
+        getattr(request.app.state.weather_client, "get_tile", None),
+    )
+    if not callable(get_tile):
+        raise HTTPException(
+            status_code=503,
+            detail="Weather tiles are disabled for the active data mode",
+        )
+
     try:
-        tile = await request.app.state.weather_client.get_tile(layer, z, x, y)
+        tile = await get_tile(layer, z, x, y)
     except OpenWeatherConfigurationError as exc:
         raise HTTPException(
             status_code=503, detail="Weather tile service is not configured"

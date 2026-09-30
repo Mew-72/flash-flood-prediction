@@ -22,7 +22,7 @@ class HealthOut(BaseModel):
     storage: Literal["json+parquet"] = "json+parquet"
     model_unit: Literal["sub-catchment"] = "sub-catchment"
     data_mode: DataMode
-    weather_provider: Literal["openweather"] = "openweather"
+    weather_provider: Literal["demo", "openweather", "openweather+imd"]
     weather_configured: bool
     weather_capabilities: list[str]
     provenance: DataProvenance

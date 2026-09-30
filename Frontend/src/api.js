@@ -204,6 +204,38 @@ export function getRiskSnapshots(
   });
 }
 
+export async function getAllRiskSnapshots(params = {}, options = {}) {
+  const catchmentsById = new Map();
+  let offset = 0;
+
+  for (let page = 0; page < MAX_CATALOG_PAGES; page += 1) {
+    const payload = await getRiskSnapshots(
+      { ...params, offset, limit: MAX_CATALOG_PAGE_SIZE },
+      options,
+    );
+    const catchments = Array.isArray(payload?.catchments) ? payload.catchments : [];
+    const villageIds = new Set();
+
+    catchments.forEach((catchment) => {
+      const snapshots = Array.isArray(catchment?.snapshots) ? catchment.snapshots : [];
+      snapshots.forEach((snapshot) => villageIds.add(snapshot.village_id));
+      const existing = catchmentsById.get(catchment.catchment_id);
+      if (existing) {
+        existing.snapshots.push(...snapshots);
+      } else {
+        catchmentsById.set(catchment.catchment_id, { ...catchment, snapshots: [...snapshots] });
+      }
+    });
+
+    if (villageIds.size < MAX_CATALOG_PAGE_SIZE) {
+      return { ...payload, catchments: [...catchmentsById.values()] };
+    }
+    offset += villageIds.size;
+  }
+
+  throw new Error("Risk snapshot pagination exceeded the configured page limit.");
+}
+
 export function getRisk(villageId, options = {}) {
   return apiRequest(`/v1/risk/${pathSegment(villageId, "villageId")}`, options);
 }

@@ -1,7 +1,6 @@
 from fastapi import APIRouter, HTTPException, Query, Request, Response
 
 from app.core.data_sources.data_store import DataStoreError
-from app.core.data_sources.village_boundaries import get_village_boundary_store
 from app.schemas.admin import VillageCatalog, VillageOut
 from app.schemas.boundary import VillageBoundaryCatalog
 
@@ -64,6 +63,10 @@ def list_village_boundaries(
             detail="A state_code, district_code, or exact district_name is required",
         )
     try:
+        from app.core.data_sources.village_boundaries import (
+            get_village_boundary_store,
+        )
+
         store = get_village_boundary_store()
         items, total = store.catalog(
             state_code=state_code,

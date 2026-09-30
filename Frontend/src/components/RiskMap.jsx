@@ -338,9 +338,13 @@ export default function RiskMap({
     setLayerVisibility(map, layers.villages, !isDistrictView && visibleLayers.villages);
     setLayerVisibility(map, layers.boundaries, zoom >= BOUNDARY_ZOOM && visibleLayers.villages);
     setLayerVisibility(map, layers.catchments, visibleLayers.catchments);
-    setLayerVisibility(map, layers.precipitation, visibleLayers.precipitation);
-    setLayerVisibility(map, layers.clouds, visibleLayers.clouds);
-  }, [ready, visibleLayers, zoom]);
+    setLayerVisibility(
+      map,
+      layers.precipitation,
+      weatherReady && visibleLayers.precipitation,
+    );
+    setLayerVisibility(map, layers.clouds, weatherReady && visibleLayers.clouds);
+  }, [ready, visibleLayers, weatherReady, zoom]);
 
   useEffect(() => {
     if (!ready || !selectedVillage || !hasCoordinates(selectedVillage)) return;
@@ -378,17 +382,17 @@ export default function RiskMap({
     ? "Backend unavailable"
     : weatherReady
       ? "Live OpenWeather via backend · refreshes every 5 min"
-      : "Risk loaded · OpenWeather provider unavailable";
+      : "Risk loaded · live weather tiles disabled";
 
   return (
     <>
       <div id="map" ref={containerRef} aria-label="Interactive live weather and flood risk map" />
 
       <div className="map-toolbar">
-        <button className="tool-btn active" type="button" onClick={fitRegion}>⌖ Fit Region</button>
-        <button className="tool-btn" type="button" onClick={locateUser}>◎ My Location</button>
+        <button className="tool-btn active" type="button" onClick={fitRegion}>Fit region</button>
+        <button className="tool-btn" type="button" onClick={locateUser}>My location</button>
         <button className="tool-btn" type="button" onClick={onRefresh} disabled={refreshing}>
-          ↻ {refreshing ? "Refreshing…" : "Refresh"}
+          {refreshing ? "Refreshing…" : "Refresh data"}
         </button>
       </div>
 

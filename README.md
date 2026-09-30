@@ -89,7 +89,12 @@ python -m venv .venv
 pip install -r requirements.txt
 copy .env.example .env
 # Add the OpenWeather API key as WEATHER_API in .env.
-# The key stays in FastAPI and must never be sent to the browser.
+# Optional production rainfall overlay:
+# IMD_API_KEY=...
+# IMD_ACCESS_TOKEN=...
+# When both IMD credentials are set, nearest-station observed 24-hour rainfall
+# drives current risk while OpenWeather continues to provide conditions/forecasts.
+# Keys stay in FastAPI and must never be sent to the browser.
 uvicorn app.main:app --reload --port 8000
 ```
 
@@ -125,10 +130,15 @@ Useful endpoints:
   provider date-range route; returns `501` because the free runtime endpoints do
   not support historical replay
 
+In `DATA_MODE=demo`, deterministic weather scenarios run entirely in process:
+no OpenWeather client is created and weather tiles are disabled. In production,
 FastAPI is the only component that calls OpenWeather. The asynchronous runtime
 provider uses the free-compatible metric `/data/2.5/weather` and
 `/data/2.5/forecast` endpoints, caches/coalesces identical requests, fetches
-current and forecast data concurrently, and bounds upstream concurrency.
+current and forecast data concurrently, and bounds upstream concurrency. When
+both IMD credentials are configured, nearest-station observed 24-hour rainfall
+replaces the incomplete OpenWeather current-rain input while OpenWeather remains
+the conditions and forecast provider.
 Villages in one catchment share one weather timeline and one catchment-hazard
 computation. Risk snapshots also expose optional temperature, feels-like,
 humidity, pressure, wind, cloud, visibility, condition, description, and icon

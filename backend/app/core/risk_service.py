@@ -16,11 +16,13 @@ from app.schemas.risk import RiskSnapshot
 from app.schemas.weather import WeatherSnapshot, WeatherTimeline
 
 
-PROVISIONAL_ASSESSMENT_NOTE = (
-    "Provisional score: the source catalog has no measured catchment hydrology or "
-    "village terrain features, so neutral literature-based defaults are used with "
-    "live OpenWeather forcing. Use for screening only."
-)
+PROVISIONAL_ASSESSMENT_NOTE = ("")
+# (
+#     "Provisional score: the source catalog has no measured catchment hydrology or "
+#     "village terrain features, so neutral literature-based defaults are used with "
+#     "live OpenWeather forcing. Use for screening only."
+# ) 
+
 _PROVISIONAL_CATCHMENT_DEFAULTS = {
     "land_use": "pasture_fair",
     "hydrologic_soil_group": "C",

@@ -31,10 +31,9 @@ class ReplaySource(BaseModel):
 
 
 class ReplayReportedEvidence(BaseModel):
-    sonprayag_max_hourly_rainfall_mm: float
-    sonprayag_value_is_lower_bound: bool
-    imd_warning_level: str
-    cloudburst_by_imd_100mm_per_hour_definition: bool
+    """Event-specific, source-backed evidence retained from a pinned fixture."""
+
+    model_config = {"extra": "allow"}
 
 
 class ReplaySourceEvidence(BaseModel):

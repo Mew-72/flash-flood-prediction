@@ -11,10 +11,10 @@ export const STATES = [
 export const DISTRICTS = ["Rudraprayag", "Chamoli", "Tehri Garhwal"];
 
 export const MAP_LAYERS = [
-  { id: "risk", label: "Backend flood risk", iconClass: "risk-icon", defaultVisible: true },
-  { id: "precipitation", label: "Live precipitation", iconClass: "rain-icon", defaultVisible: true },
+  { id: "risk", label: "Backend flood risk", iconClass: "risk-icon", defaultVisible: false },
+  { id: "precipitation", label: "Live precipitation", iconClass: "rain-icon" },
   { id: "clouds", label: "Live cloud cover", iconClass: "cloud-icon" },
-  { id: "catchments", label: "Backend catchments", iconClass: "catch-icon", defaultVisible: true },
+  { id: "catchments", label: "Backend catchments", iconClass: "catch-icon", defaultVisible: false },
   { id: "villages", label: "Villages & boundaries", iconClass: "village-icon", defaultVisible: true },
 ];
 

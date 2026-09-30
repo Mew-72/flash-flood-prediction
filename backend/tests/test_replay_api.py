@@ -34,8 +34,11 @@ def test_replay_event_catalog_is_pinned_and_network_free(client):
 
     assert response.status_code == 200
     body = response.json()
-    assert body["total"] == 1
-    assert body["items"][0]["event_id"] == EVENT_ID
+    assert body["total"] == 2
+    assert [item["event_id"] for item in body["items"]] == [
+        EVENT_ID,
+        "in-kl-wayanad-meppadi-2024-07-30",
+    ]
     assert body["items"][0]["default_case_id"] == "kedarnath-grid-sensitivity"
     assert [case["case_id"] for case in body["items"][0]["cases"]] == [
         "current-demo-c1-grid",

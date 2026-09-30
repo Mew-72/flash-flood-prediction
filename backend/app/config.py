@@ -23,6 +23,13 @@ class Settings(BaseSettings):
     )
     openweather_api_base_url: str = "https://api.openweathermap.org"
     openweather_tile_base_url: str = "https://tile.openweathermap.org"
+    imd_api_base_url: str = "https://api.imd.gov.in/api/v1"
+    imd_api_key: SecretStr | None = Field(
+        default=None, validation_alias="IMD_API_KEY"
+    )
+    imd_access_token: SecretStr | None = Field(
+        default=None, validation_alias="IMD_ACCESS_TOKEN"
+    )
     weather_timeout_seconds: float = Field(default=15.0, gt=0)
     weather_cache_ttl_seconds: float = Field(default=300.0, gt=0)
     weather_cache_max_entries: int = Field(default=128, gt=0)

@@ -18,12 +18,12 @@ import HistoricalReplay from "../components/HistoricalReplay";
 import { DISTRICTS, STATES } from "../data";
 
 const NAV_ITEMS = [
-  { id: "send", label: "⚠ Send Alert" },
-  { id: "history", label: "◷ Alert History" },
-  { id: "scenario", label: "◇ Scenario Lab" },
-  { id: "replay", label: "↶ Historical Replay" },
-  { id: "monitor", label: "◉ Data Monitor" },
-  { id: "system", label: "⚙ System Status" },
+  { id: "send", label: "Send Alert", code: "AL" },
+  { id: "history", label: "Alert History", code: "HI" },
+  { id: "scenario", label: "Scenario Lab", code: "SC" },
+  { id: "replay", label: "Historical Replay", code: "RE" },
+  { id: "monitor", label: "Data Monitor", code: "DM" },
+  { id: "system", label: "System Status", code: "SY" },
 ];
 
 const TARGET_OPTIONS = [
@@ -338,7 +338,7 @@ export default function AdminConsole() {
 
     return [
       {
-        symbol: "☔",
+        symbol: "RN",
         name: "Rainfall",
         value: conditions.rainfall || "Unavailable",
         detail: hasSnapshot ? `Valid ${formatDateTime(monitorSnapshot.valid_at)}` : "No batch snapshot",
@@ -346,7 +346,7 @@ export default function AdminConsole() {
         tone: hasSnapshot ? "online" : "offline",
       },
       {
-        symbol: "◉",
+        symbol: "SM",
         name: "Soil Moisture",
         value: conditions.soil || "Unavailable",
         detail: hasSnapshot ? `For ${monitorSnapshot.village_name}` : "No batch snapshot",
@@ -354,7 +354,7 @@ export default function AdminConsole() {
         tone: hasSnapshot ? "online" : "offline",
       },
       {
-        symbol: "▱",
+        symbol: "DE",
         name: "DEM / Slope",
         value: slope?.risk_class ? `${String(slope.risk_class).toUpperCase()} stability risk` : "Unavailable",
         detail: `Static sources: ${sourceNames}`,
@@ -362,7 +362,7 @@ export default function AdminConsole() {
         tone: provenance ? "ready" : "offline",
       },
       {
-        symbol: "⌁",
+        symbol: "ST",
         name: "Streams",
         value: Number.isFinite(Number(exposure?.distance_to_stream_m))
           ? `${Math.round(Number(exposure.distance_to_stream_m))} m`
@@ -372,7 +372,7 @@ export default function AdminConsole() {
         tone: hasSnapshot ? "ready" : "offline",
       },
       {
-        symbol: "◈",
+        symbol: "HX",
         name: "Historical Events",
         value: Number.isFinite(Number(monitoredVillage?.historical_event_count))
           ? String(monitoredVillage.historical_event_count)
@@ -382,7 +382,7 @@ export default function AdminConsole() {
         tone: monitoredVillage ? "ready" : "offline",
       },
       {
-        symbol: "◉",
+        symbol: "WX",
         name: "Weather Source",
         value: provenance?.weather_source || "Not reported",
         detail: provenance?.retrieved_at
@@ -649,7 +649,8 @@ export default function AdminConsole() {
                 key={item.id}
                 onClick={() => setActiveSection(item.id)}
               >
-                {item.label}
+                <span className="admin-nav-code" aria-hidden="true">{item.code}</span>
+                <span>{item.label}</span>
               </button>
             ))}
           </nav>

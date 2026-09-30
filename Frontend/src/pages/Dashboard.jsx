@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   flattenSnapshots,
   getAllCatchments,
+  getAllRiskSnapshots,
   getAllVillages,
   getAllVillageBoundaries,
   getCatchment,
@@ -10,7 +11,6 @@ import {
   getPeakSnapshot,
   getRisk,
   getRiskLevel,
-  getRiskSnapshots,
   getSnapshotConditions,
   getSnapshotScore,
   getVillage,
@@ -53,7 +53,7 @@ function snapshotForVillage(snapshots, villageId) {
 function openWeatherReady(health) {
   if (!health || health.weather_configured === false) return false;
   const provider = health.provider ?? health.weather_provider ?? health.weather?.provider;
-  return !provider || String(provider).toLowerCase() === "openweather";
+  return !provider || String(provider).toLowerCase().includes("openweather");
 }
 
 function formatUpdatedAt(value) {
@@ -137,12 +137,11 @@ export default function Dashboard() {
         if (stateName) setState(stateName);
 
         try {
-          const risks = await getRiskSnapshots(
+          const risks = await getAllRiskSnapshots(
             {
               ...filters,
               include_forecast: true,
-              summarize_provisional: true,
-              limit: 500,
+              summarize_provisional: false,
             },
             { signal: controller.signal },
           );
@@ -217,16 +216,8 @@ export default function Dashboard() {
   }, [allSnapshots, forecastLead, viewPeriod]);
 
   const villages = useMemo(() => {
-    const provisionalByDistrict = new Map();
-    visibleSnapshots.forEach((snapshot) => {
-      if (snapshot.assessment_mode === "provisional_defaults" && snapshot.district) {
-        provisionalByDistrict.set(snapshot.district, snapshot);
-      }
-    });
-
     return villageRecords.map((record) => {
-      const exactSnapshot = snapshotForVillage(visibleSnapshots, record.id);
-      const snapshot = exactSnapshot ?? provisionalByDistrict.get(record.district);
+      const snapshot = snapshotForVillage(visibleSnapshots, record.id);
       const score = snapshot ? getSnapshotScore(snapshot, 0) : 0;
       const conditions = snapshot ? getSnapshotConditions(snapshot) : {};
       return {
@@ -239,7 +230,7 @@ export default function Dashboard() {
         district: record.district,
         record,
         snapshot,
-        assessmentScope: exactSnapshot ? "village" : snapshot ? "district proxy" : null,
+        assessmentScope: snapshot ? "village" : null,
         weather: conditions,
       };
     });
@@ -434,6 +425,10 @@ export default function Dashboard() {
                   type="checkbox"
                   checked={visibleLayers[layer.id]}
                   onChange={() => toggleLayer(layer.id)}
+                  disabled={
+                    (layer.id === "precipitation" || layer.id === "clouds")
+                    && !openWeatherReady(health)
+                  }
                 />
                 <span className={`layer-icon ${layer.iconClass}`} />
                 {layer.label}
@@ -510,13 +505,13 @@ export default function Dashboard() {
           </div>
 
           <div className="metric-grid">
-            <MetricCard symbol="☔" name="Rainfall" value={summary.rainfall} detail={summary.rainfallLabel} />
-            <MetricCard symbol="℃" name="Temperature" value={summary.temperature} detail="OpenWeather air temperature" />
-            <MetricCard symbol="◉" name="Humidity" value={summary.humidity} detail="OpenWeather relative humidity" />
-            <MetricCard symbol="↝" name="Wind" value={summary.wind} detail="speed and direction" />
-            <MetricCard symbol="⌁" name="Slope" value={averageSlope} detail={`terrain · soil ${summary.soil}`} />
+            <MetricCard symbol="RN" name="Rainfall" value={summary.rainfall} detail={summary.rainfallLabel} />
+            <MetricCard symbol="°C" name="Temperature" value={summary.temperature} detail="OpenWeather air temperature" />
+            <MetricCard symbol="RH" name="Humidity" value={summary.humidity} detail="OpenWeather relative humidity" />
+            <MetricCard symbol="WS" name="Wind" value={summary.wind} detail="speed and direction" />
+            <MetricCard symbol="SL" name="Slope" value={averageSlope} detail={`terrain · soil ${summary.soil}`} />
             <MetricCard
-              symbol="↘"
+              symbol="RT"
               name="Catchment response"
               value={summary.responseTime}
               detail={summary.responseTimeDetail}
@@ -540,7 +535,7 @@ export default function Dashboard() {
                       {village.snapshot?.assessment_mode === "provisional_defaults" ? " · PROVISIONAL" : ""}
                     </span>
                   </span>
-                  <span className="village-score-wrap">
+                  {/* <span className="village-score-wrap">
                     <span
                       className="village-score"
                       style={{ color: village.snapshot ? riskColor(village.score) : "#64748b" }}
@@ -548,7 +543,7 @@ export default function Dashboard() {
                       {village.snapshot ? village.score : "—"}
                     </span>
                     {village.snapshot && <span className="village-meta">/100</span>}
-                  </span>
+                  </span>*/}
                 </button>
               ))}
             </div>

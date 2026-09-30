@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "event_id": "in-kl-wayanad-meppadi-2024-07-30",
+  "name": "Wayanad rainfall-triggered landslides and flash flooding",
+  "event_type": "rainfall_triggered_landslides_and_flash_flooding",
+  "impact_start": "2024-07-30T02:17:00+05:30",
+  "administrative_area": {
+    "state": "Kerala",
+    "district": "Wayanad",
+    "subdistrict": "Vythiri"
+  },
+  "reported_evidence": {
+    "reported_rainfall_mm_in_48_hours": 572.0,
+    "rainfall_period_end": "2024-07-30",
+    "reported_warning_context": "Authorities had moved some residents to relief camps on July 29; public accounts of forecast and warning timing differ.",
+    "affected_places": [
+      "Mundakkai",
+      "Chooralmala",
+      "Punjirimattom",
+      "Vellarimala",
+      "Attamala"
+    ]
+  },
+  "sources": [
+    {
+      "kind": "event_summary",
+      "publisher": "Wikipedia",
+      "title": "2024 Wayanad landslides",
+      "url": "https://en.wikipedia.org/wiki/2024_Wayanad_landslides"
+    },
+    {
+      "kind": "weather_data",
+      "publisher": "Open-Meteo",
+      "title": "Historical Weather API",
+      "url": "https://open-meteo.com/en/docs/historical-weather-api"
+    },
+    {
+      "kind": "weather_data",
+      "publisher": "Open-Meteo",
+      "title": "Previous Model Runs API",
+      "url": "https://open-meteo.com/en/docs/previous-runs-api"
+    }
+  ],
+  "model_context": {
+    "catchment_id": "c1",
+    "village_ids": ["v1", "v3", "v4"],
+    "soil_moisture_assumption": 0.35,
+    "actionable_levels": ["high", "critical"],
+    "notes": [
+      "The catchment and villages are synthetic demo records, not Wayanad features.",
+      "This fixture tests rain-driven escalation only; it does not model debris-flow routing, geology, land use, or the reported temporary dam-burst effect.",
+      "Forecast scenarios reuse completed event-analysis antecedent totals. This is optimistic and leaks future rainfall at 48-hour and 72-hour lead times."
+    ]
+  },
+  "forcing_cases": [
+    {
+      "case_id": "meppadi-grid",
+      "label": "Open-Meteo grid near Meppadi",
+      "requested_coordinates": {"latitude": 11.56, "longitude": 76.08},
+      "returned_grid_coordinates": {"latitude": 11.564148, "longitude": 76.09821},
+      "antecedent_daily_rainfall_mm": [9.1, 35.5, 24.6, 5.9, 9.3, 53.2],
+      "event_day_analysis_rainfall_mm": 52.8,
+      "previous_run_forecast_rainfall_mm": {
+        "24": 10.8,
+        "48": 6.4,
+        "72": 10.6
+      },
+      "retrieval_urls": [
+        "https://archive-api.open-meteo.com/v1/archive?latitude=11.56&longitude=76.08&start_date=2024-07-24&end_date=2024-07-31&daily=precipitation_sum&timezone=Asia%2FKolkata",
+        "https://previous-runs-api.open-meteo.com/v1/forecast?latitude=11.56&longitude=76.08&start_date=2024-07-30&end_date=2024-07-30&hourly=precipitation,precipitation_previous_day1,precipitation_previous_day2,precipitation_previous_day3&timezone=Asia%2FKolkata"
+      ]
+    }
+  ],
+  "expected_conclusion": {
+    "retrospective_detection": true,
+    "reliable_actionable_advance_warning": false,
+    "reason": "The engine detects the completed event-day rainfall, but all Open-Meteo previous-run totals are far lower and leave every synthetic village at moderate risk. The event is also not a full physical reconstruction because debris-flow and terrain processes are outside the rainfall-only engine."
+  }
+}
